@@ -11,3 +11,10 @@ dependencies = [
     "meteo",
     "numpy"
 ]
+
+[tool.setuptools.packages.find]
+where = ["Python"]
+include = [
+    "COARE3.5",
+    "COARE3.6"
+]
