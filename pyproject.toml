@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Python"
+requires-python = ">=3.7"
+license = {text = "MIT License"}
+dependencies = [
+    "meteo",
+    "numpy"
+]
