@@ -20,7 +20,9 @@ import numpy as np
 from coare3p6 import c36, grv, albedo_vector
 import os
 
-def c36warm(Jd, U, Zu, Tair, Zt, RH, Zq, P, Tsea, SW_dn, LW_dn, Lat, Lon, Zi, Rainrate, Ts_depth, Ss, cp=None, sigH=None,zrf_u = 10.0,zrf_t = 10.0,zrf_q = 10.0): 
+def c36warm(Jd, U, Zu, Tair, Zt, RH, Zq, P, Tsea, SW_dn, LW_dn, Lat, Lon,
+            Zi, Rainrate, Ts_depth, Ss, cp=None, sigH=None, zrf_u = 10.0, 
+            zrf_t = 10.0, zrf_q = 10.0): 
 #***********   input data **************
 #       Jd = day-of-year or julian day
 #	    U = wind speed magnitude (m/s) corrected for currents, i.e. relative to water at height zu
