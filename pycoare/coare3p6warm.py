@@ -17,11 +17,10 @@ v1: September 2022
 """
 
 import numpy as np
-import coare36vn_zrf_et as c36
+from coare3p6 import c36, grv, albedo_vector
 import os
 
-def coare36vnWarm_et(Jd, U, Zu, Tair, Zt, RH, Zq, P, Tsea, SW_dn, LW_dn, Lat, Lon, Zi, Rainrate, Ts_depth, Ss, cp=None, sigH=None,zrf_u = 10.0,zrf_t = 10.0,zrf_q = 10.0): 
-    print('WarmCoolLayer')
+def c36warm(Jd, U, Zu, Tair, Zt, RH, Zq, P, Tsea, SW_dn, LW_dn, Lat, Lon, Zi, Rainrate, Ts_depth, Ss, cp=None, sigH=None,zrf_u = 10.0,zrf_t = 10.0,zrf_q = 10.0): 
 #***********   input data **************
 #       Jd = day-of-year or julian day
 #	    U = wind speed magnitude (m/s) corrected for currents, i.e. relative to water at height zu
@@ -127,7 +126,7 @@ def coare36vnWarm_et(Jd, U, Zu, Tair, Zt, RH, Zq, P, Tsea, SW_dn, LW_dn, Lat, Lo
 
 #*********************  housekeep variables  ********
 # Call coare36vn to get initial flux values
-    Bx = c36.coare36vn_zrf_et(U[0],Zu[0],Tair[0],Zt[0],RH[0],Zq[0],P[0],Tsea[0],SW_dn[0],LW_dn[0],Lat[0],Lon[0],Jd[0],Zi[0],Rainrate[0],Ss[0],cp[0],sigH[0],zrf_u,zrf_t,zrf_q)
+    Bx = c36(U[0],Zu[0],Tair[0],Zt[0],RH[0],Zq[0],P[0],Tsea[0],SW_dn[0],LW_dn[0],Lat[0],Lon[0],Jd[0],Zi[0],Rainrate[0],Ss[0],cp[0],sigH[0],zrf_u,zrf_t,zrf_q)
 
     ### check these indices for you latest version of coare!
     tau_old = Bx[0,1]
@@ -185,7 +184,7 @@ def coare36vnWarm_et(Jd, U, Zu, Tair, Zt, RH, Zq, P, Tsea, SW_dn, LW_dn, Lat, Lo
         sw_dn = SW_dn[ibg]
         lw_dn = LW_dn[ibg]
         rain = Rainrate[ibg]
-        grav = c36.grv(Lat[ibg])
+        grav = grv(Lat[ibg])
         lat = Lat[ibg]
         lon = Lon[ibg]
         rhoa = Rhoair[ibg]
@@ -205,7 +204,7 @@ def coare36vnWarm_et(Jd, U, Zu, Tair, Zt, RH, Zq, P, Tsea, SW_dn, LW_dn, Lat, Lo
         # to E, so that lon can be flipped. The function ideally works with
         # longitude positive to the west. Check: albedo should peak at sunrise not
         # sunset.
-        alb,T_sw,solarmax_sw,psi_sw = c36.albedo_vector(sw_dn,jd,lon,lat,'E')
+        alb,T_sw,solarmax_sw,psi_sw = albedo_vector(sw_dn,jd,lon,lat,'E')
         sw_net = np.multiply((1 - alb[0]),sw_dn)
         lw_net = 0.97 * (5.67e-08 * (tsea - dT_skin_old * jcool + T2K) ** 4 - lw_dn)
         cpv = cpa * (1 + 0.84 * q / 1000)
@@ -300,7 +299,7 @@ def coare36vnWarm_et(Jd, U, Zu, Tair, Zt, RH, Zq, P, Tsea, SW_dn, LW_dn, Lat, Lo
         # apply a cool skin to this, completing all calculations needed for Tskin and fluxes.
         # Using COARE ouput from this function, Tskin = Tsnake - dT_skin + dT_warm_to_skin
         # note: in prior COARE lingo/code: dT_warm_to_skin used to be dsea and dT_skin used to be dter
-        Bx = c36.coare36vn_zrf_et(u,zu,t,zt,rh,zq,p,ts,sw_dn,lw_dn,lat,lon,jd,zi,rain,ss,cpi,sigHi,zrf_u,zrf_t,zrf_q)
+        Bx = c36(u,zu,t,zt,rh,zq,p,ts,sw_dn,lw_dn,lat,lon,jd,zi,rain,ss,cpi,sigHi,zrf_u,zrf_t,zrf_q)
         # save values from this time step to be used in next time step, this is how
         # the integral is computed
         tau_old = Bx[0,1]
@@ -326,7 +325,7 @@ def coare36vnWarm_et(Jd, U, Zu, Tair, Zt, RH, Zq, P, Tsea, SW_dn, LW_dn, Lat, Lo
     #**************************************************
     del Bx
     Tsea = Tsea + warm_output[:,2]
-    Bx = c36.coare36vn_zrf_et(U,Zu,Tair,Zt,RH,Zq,P,Tsea,SW_dn,LW_dn,Lat,Lon,Jd,Zi,Rainrate,Ss,cp,sigH,zrf_u,zrf_t,zrf_q)
+    Bx = c36(U,Zu,Tair,Zt,RH,Zq,P,Tsea,SW_dn,LW_dn,Lat,Lon,Jd,Zi,Rainrate,Ss,cp,sigH,zrf_u,zrf_t,zrf_q)
     B = np.hstack((Bx,warm_output))
     
     #************* output from routine  *****************************
@@ -429,7 +428,7 @@ if __name__ == '__main__':
   
     # A=coare36vnWarm_et(Jd, U, Zu, Tair, Zt, RH, Zq, P, Tsg, SW_dn, LW_dn, Lat, Lon, Zi, Rainrate, Ts_depth, Ss, cp = None, sigH = None, zrf_u, zrf_t, zrf_q)
     fnameA = os.path.join(path,'test_36_output_py_082022_withwavesinput_withwarmlayer.txt')
-    A=coare36vnWarm_et(Jd, U, Zu, Tair, Zt, RH, Zq, P, Tsg, SW_dn, LW_dn, Lat, Lon, Zi, Rainrate, Ts_depth, Ss, None, None, zrf_u, zrf_t, zrf_q)
+    A=c36warm(Jd, U, Zu, Tair, Zt, RH, Zq, P, Tsg, SW_dn, LW_dn, Lat, Lon, Zi, Rainrate, Ts_depth, Ss, None, None, zrf_u, zrf_t, zrf_q)
     fnameA = os.path.join(path,'test_36_output_py_082022_withnowavesinput_withwarmlayer.txt')
     A_hdr = 'usr\ttau\thsb\thlb\thbb\thlwebb\ttsr\tqsr\tzo\tzot\tzoq\tCd\t'
     A_hdr += 'Ch\tCe\tL\tzeta\tdT_skinx\tdq_skinx\tdz_skin\tUrf\tTrf\tQrf\t'
