@@ -13,7 +13,7 @@ dependencies = [
 ]
 
 [tool.setuptools.packages.find]
-where = ["Python"]
+where = ["src"]
 include = [
     "COARE3.5",
     "COARE3.6"
