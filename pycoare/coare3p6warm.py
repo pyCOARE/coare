@@ -17,7 +17,7 @@ v1: September 2022
 """
 
 import numpy as np
-from coare3p6 import c36, grv, albedo_vector
+from .coare3p6 import c36, grv, albedo_vector
 import os
 
 def c36warm(Jd, U, Zu, Tair, Zt, RH, Zq, P, Tsea, SW_dn, LW_dn, Lat, Lon,
