@@ -35,7 +35,7 @@ v2: July 2020. Fixed some typos and changed syntax for python 3.7 compatibility.
 
 
 
-def coare35vn(u, t, rh, ts, P=1015, Rs=150, Rl=370, zu=18, zt=18, zq=18, lat=45,
+def c35(u, t, rh, ts, P=1015, Rs=150, Rl=370, zu=18, zt=18, zq=18, lat=45,
 
 
              zi=600, rain=None, cp=None, sigH=None, jcool=1):
