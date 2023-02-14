@@ -7,9 +7,9 @@ PyCOARE
 
 from __future__ import absolute_import
 
-from . import coare35vn
+from . import coare3p5
 from . import meteo
 from . import util
 
-from . import coare36vn_zrf_et
-from . import coare36vnWarm_et
+from . import coare3p6
+from . import coare3p6warm
