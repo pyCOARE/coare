@@ -14,7 +14,7 @@ dependencies = [
 [tool.setuptools.packages.find]
 where = ["pycoare"]
 include = [
-    "COARE3.5",
-    "COARE3.6"
+    "coare3p5",
+    "coare3p6"
 ]
 namespaces = false
