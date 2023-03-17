@@ -10,13 +10,3 @@ license = {text = "MIT License"}
 dependencies = [
     "numpy"
 ]
-
-[tool.setuptools.packages.find]
-where = ["pycoare"]
-include = [
-    "coare*",
-    "meteo*",
-    "util*",
-    "__init__*"
-]
-namespaces = false
