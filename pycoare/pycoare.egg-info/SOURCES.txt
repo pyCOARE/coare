@@ -1,8 +1,0 @@
-LICENSE
-README.md
-pyproject.toml
-pycoare/pycoare.egg-info/PKG-INFO
-pycoare/pycoare.egg-info/SOURCES.txt
-pycoare/pycoare.egg-info/dependency_links.txt
-pycoare/pycoare.egg-info/requires.txt
-pycoare/pycoare.egg-info/top_level.txt
