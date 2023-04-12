@@ -1,3 +1,7 @@
+[![CI](https://github.com/andrew-s28/COARE-algorithm/workflows/tests/badge.svg?branch=main)](https://github.com/andrew-s28/COARE-algorithm/actions)
+[![license](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](ttps://github.com/andrew-s28/COARE-algorithm/blob/master/LICENSE.txt)
+[![Code coverage](https://codecov.io/gh/andrew-s28/COARE-algorithm/branch/master/graph/badge.svg)](https://app.codecov.io/gh/andrew-s28/COARE-algorithm)
+
 # COARE-algorithm
 Repository of the TOGA-COARE bulk air-sea flux algorithm in:
 - Python
