@@ -1,4 +1,4 @@
-name: Publish latest version to PyPi
+name: publish
 
 on:
   push: 
