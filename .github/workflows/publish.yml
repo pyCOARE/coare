@@ -4,6 +4,8 @@ on:
   push: 
     paths:
       - 'pyproject.toml'
+  workflow_dispatch
+
 
 jobs:
   buildpublish:
