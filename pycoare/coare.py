@@ -23,7 +23,7 @@ import numpy as np
 
 def c35(u, t=10, rh=75, zu=10, zt=10, zq=10, ts=10, P=1015, lat=45,
         zi=600, Rs=150, Rl=370, rain=None, cp=None, sigH=None, jcool=1,
-        out='min'):
+        out='full'):
     """
     usage: A = coare35vn(u)  -  include other kwargs as desired
 
@@ -448,18 +448,13 @@ def c35(u, t=10, rh=75, zu=10, zt=10, zq=10, ts=10, P=1015, lat=45,
     qsr = qsr*1000
 
     if out == 'full':
-        list1 = [usr, tau, hsb, hlb, hlwebb, tsr, qsr, zot, zoq, Cd, Ch, Ce, L,
-                 zet, dter, dqer, tkt, RF, Cdn_10, Chn_10, Cen_10]
-        out = tuple(list1)
-        A = np.column_stack(out)
+        A = np.squeeze(np.array([usr, tau, hsb, hlb, hlwebb, tsr, qsr,
+                                 zot, zoq, Cd, Ch, Ce, L, zet, dter, dqer,
+                                 tkt, RF, Cdn_10, Chn_10, Cen_10]))
     elif out == 'u10':
-        list1 = [U10]
-        out = tuple(list1)
-        A = np.column_stack(out)
+        A = np.squeeze(np.array([U10]))
     elif out == 'tau':
-        list1 = [tau]
-        out = tuple(list1)
-        A = np.column_stack(out)
+        A = np.squeeze(np.array([tau]))
 
     return A
 
