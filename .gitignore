@@ -49,6 +49,3 @@ venv.bak/
 
 # Matlab autosave files
 *.asv
-
-# API token file
-tokens.txt
