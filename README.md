@@ -1,12 +1,25 @@
-[![CI](https://github.com/andrew-s28/COARE-algorithm/workflows/tests/badge.svg?branch=main)](https://github.com/andrew-s28/COARE-algorithm/actions)
+# pyCOARE
+[![CI](https://github.com/andrew-s28/COARE-algorithm/workflows/tests/badge.svg?branch=master)](https://github.com/andrew-s28/COARE-algorithm/actions)
 [![license](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](ttps://github.com/andrew-s28/COARE-algorithm/blob/master/LICENSE.txt)
 [![Code coverage](https://codecov.io/gh/andrew-s28/COARE-algorithm/branch/master/graph/badge.svg)](https://app.codecov.io/gh/andrew-s28/COARE-algorithm)
 
-# COARE-algorithm
-Repository of the TOGA-COARE bulk air-sea flux algorithm in:
-- Python
-- MATLAB
-- FORTRAN
+## COARE-algorithm
+
+This is a fork of the Python version of the [COARE algorithm](https://github.com/NOAA-PSL/COARE-algorithm) that was written with the goal of standardizing testing, packaging, and distribution of the algorithm. Currently only COARE v3.5 is implemented - hopefully v3.6 will come soon! 
+
+The functionality of the code is ideally the same as that for the sciprt in the NOAA PSL repository linked above. My only intended contributions are towards formatting, testing, and packaging. To that end, tests have been constructed based on the output of the original MATLAB code for COARE v3.5. [View the results of the tests](https://github.com/andrew-s28/COARE-algorithm/actions) or [download the data](https://github.com/andrew-s28/COARE-algorithm/tree/master/tests/data) and run them yourself. All results from this script agree to at least five significant figures with the MATLAB scripts in the NOAA repository, provided the testing badge above stays green. 
+
+## Installation
+
+You can install the most up-to-date version using 
+```
+pip install git+https://github.com/andrew-s28/COARE-algorithm
+```
+A PyPi install is in the works!
+
+## Contribution
+
+I welcome any contributions - please feel free to raise an issue or submit a pull request. My hope is that this implementation will get better as those with more knowledge on bulk air-sea fluxes or Python software development get involved. 
 
 ## Origins
 The international TOGA-COARE field program which took place in the western Pacific warm pool over 4 months from November 1992 to February 1993 ([Fairall et al. 1996a](https://github.com/noaa-psd/COARE-algorithm/blob/master/References/Fairall%20et%20al.%201996a%20-%20cool%20skin%20warm%20layer.pdf), [1996b](https://github.com/noaa-psd/COARE-algorithm/blob/master/References/Fairall%20et%20al.%201996b%20-%20bulk%20fluxes%20of%20variables.pdf) and [1997](https://github.com/noaa-psd/COARE-algorithm/blob/master/References/Fairall%20et%20al.%201997%20-%20ship%20measurements%20MABL.pdf)) spurred the development of the COARE model. The algorithm is intended to provide estimates of `momentum, sensible heat`, and `latent heat fluxes` using inputs of bulk atmospheric variables (`wind speed, SST, air temperature, air humidity`). The algorithm contains subroutines/functions to handle near-surface gradients of temperature in the ocean.
@@ -18,7 +31,7 @@ The international TOGA-COARE field program which took place in the western Pacif
 - **Version 3.6** is slightly restructured and built around improvements in the representation of the effects of waves on fluxes. This includes improved relationships of `surface roughness`, $z_o$, and `whitecap fraction`, $W_f$, on wave parameters.  More details can be found in [coare3.6\_readme\_1.pdf](https://github.com/noaa-psd/COARE-algorithm/blob/master/References/coare36_readme_1.pdf). This version is available in Python, MATLAB and FORTRAN.
 
 
-# References:
+## References:
 
 *    Edson, J.B., J. V. S. Raju, R.A. Weller, S. Bigorre, A. Plueddemann, C.W. Fairall, S. Miller, L. Mahrt, Dean Vickers, and Hans Hersbach, 2013: On the Exchange of momentum over the open ocean. J. Phys. Oceanogr., 43, 1589–1610. doi: http://dx.doi.org/10.1175/JPO-D-12-0173.1
 
