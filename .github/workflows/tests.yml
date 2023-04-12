@@ -33,9 +33,7 @@ jobs:
           flake8 . --count --exit-zero --max-complexity=10 --statistics
       - name: Test with pytest
         run: |
-          python -m pytest -n 2
-          --cov=coare
-          --cov-report=xmo
+          python -m pytest --cov=coare --cov-report=xmo
 
       - name: Upload test results
         if: always()
