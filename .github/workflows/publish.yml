@@ -1,4 +1,4 @@
-name: publish
+name: Build and publish package to PyPi
 
 on:
   push: 
@@ -7,7 +7,6 @@ on:
 
 jobs:
   buildpublish:
-    name: Build and publish package to PyPi
     runs-on: ubuntu-latest
     
     steps:
