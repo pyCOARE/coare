@@ -16,7 +16,7 @@ import scipy.io as sio
 
 def mat_to_df(path):
     """
-    read mat files into dictionary - excludes header, version, and globals
+    read mat files into dataframe - excludes header, version, and globals
     does NOT work on matlab file version > 7.2, for that need to use h5py
     see here for more info: https://stackoverflow.com/a/19340117
     """
@@ -43,7 +43,6 @@ def test_c35():
             )
         ).to_numpy()
 
-    # all input sagree to at least five decimal places with expected values
     np.testing.assert_allclose(actual, expected, atol=0, rtol=10**-5)
 
 
