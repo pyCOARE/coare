@@ -35,7 +35,7 @@ jobs:
         shell: bash
       - name: Test with pytest
         run: |
-          python -m pytest --cov=pycoare --cov-report=xml --junitxml=pytest.xmls
+          python -m pytest --cov=pycoare --cov-report=xml --junitxml=pytest.xml
         shell: bash
 
       - name: Upload test results
