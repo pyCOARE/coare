@@ -26,15 +26,18 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8 pytest-github-actions-annotate-failures pytest-cov
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        shell: bash
 
       - name: Lint with flake8
         run: |
           # stop the build if there are Python syntax errors or undefined names
           flake8 . --select=E9,F63,F7,F82 --show-source --statistics
           flake8 . --count --exit-zero --max-complexity=10 --statistics
+        shell: bash
       - name: Test with pytest
         run: |
           python -m pytest --cov=coare --cov-report=xml --junitxml=pytest.xmls
+        shell: bash
 
       - name: Upload test results
         if: always()
