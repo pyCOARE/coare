@@ -11,11 +11,15 @@ The functionality of the code is ideally the same as that for the scripts found 
 
 ## Installation
 
+The latest stable version (currently still an alpha) can be downloaded using Pip
+```
+pip install pycoare
+```
+
 You can install the most up-to-date version using 
 ```
 pip install git+https://github.com/andrew-s28/COARE-algorithm
 ```
-A PyPi install is in the works!
 
 ## Contribution
 
