@@ -35,7 +35,7 @@ jobs:
         shell: bash
       - name: Test with pytest
         run: |
-          python -m pytest --cov=coare --cov-report=xml --junitxml=pytest.xmls
+          python -m pytest --cov=pycoare --cov-report=xml --junitxml=pytest.xmls
         shell: bash
 
       - name: Upload test results
@@ -46,8 +46,9 @@ jobs:
           path: pytest.xml
 
       - name: Upload code coverage to Codecov
-        uses: codecov/codecov-action@v3.1.1
+        uses: codecov/codecov-action@v3
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           file: ./coverage.xml
           name: codecov-umbrella
           fail_ci_if_error: false
