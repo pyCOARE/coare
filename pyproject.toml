@@ -3,7 +3,7 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "pyCOARE"
+name = "pycoare"
 authors = [
     {name = 'C. W. Fairall'},
     {name = 'Byron Blomquist'},
@@ -13,7 +13,7 @@ authors = [
 maintainers = [
     {name = 'Andrew Scherer', email = 'scherand@oregonstate.edu'}
 ]
-version = "1.0"
+version = "1.0a"
 description = 'A Python implementation of the COARE bulk air-sea flux algorithm.'
 readme = {file = 'README.md', content-type = 'text/markdown'}
 requires-python = ">=3.7"
