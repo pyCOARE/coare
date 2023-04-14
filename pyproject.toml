@@ -13,7 +13,7 @@ authors = [
 maintainers = [
     {name = 'Andrew Scherer', email = 'scherand@oregonstate.edu'}
 ]
-version = "2023.4a2"
+version = "2023.4a3"
 description = 'A Python implementation of the COARE bulk air-sea flux algorithm.'
 readme = {file = 'README.md', content-type = 'text/markdown'}
 requires-python = ">=3.7"
@@ -28,6 +28,10 @@ classifiers = [
     'Intended Audience :: Science/Research'
 ]
 dependencies = ['numpy']
+
+[project.urls]
+
+Source = 'https://github.com/andrew-s28/COARE-algorithm'
 
 
 
