@@ -2,7 +2,7 @@
 [![CI](https://github.com/andrew-s28/COARE-algorithm/workflows/tests/badge.svg?branch=master)](https://github.com/andrew-s28/COARE-algorithm/actions)
 [![license](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](ttps://github.com/andrew-s28/COARE-algorithm/blob/master/LICENSE.txt)
 [![Code coverage](https://codecov.io/gh/andrew-s28/COARE-algorithm/branch/master/graph/badge.svg)](https://app.codecov.io/gh/andrew-s28/COARE-algorithm)
-[![Available on pypi](https://badge.fury.io/py/pycoare.svg)](https://pypi.python.org/pypi/pycoare/)
+[![Available on pypi](https://badge.fury.io/py/pycoare.svg)](https://badge.fury.io/py/pycoare)
 
 ## COARE-algorithm
 
