@@ -448,8 +448,8 @@ def c35(u, t=10, rh=75, zu=10, zt=10, zq=10, ts=10, P=1015, lat=45,
     qsr = qsr*1000
 
     if out == 'full':
-        A = np.column_stack(
-            np.squeeze(
+        A = np.squeeze(
+            np.column_stack(
                 np.array([
                     usr, tau, hsb, hlb, hlwebb, tsr, qsr,
                     zot, zoq, Cd, Ch, Ce, L, zet, dter, dqer,
@@ -458,10 +458,10 @@ def c35(u, t=10, rh=75, zu=10, zt=10, zq=10, ts=10, P=1015, lat=45,
             )
         )
     elif out == 'u10':
-        A = np.column_stack(np.squeeze(np.array([U10])))
+        A = np.squeeze(np.column_stack(np.array([U10])))
 
     elif out == 'tau':
-        A = np.column_stack(np.squeeze(np.array([tau])))
+        A = np.squeeze(np.column_stack(np.array([tau])))
 
     return A
 
