@@ -1,7 +1,7 @@
 # pyCOARE
 [![CI](https://github.com/pyCOARE/coare/workflows/tests/badge.svg?branch=master)](https://github.com/pyCOARE/coare/actions)
 [![license](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](ttps://github.com/pyCOARE/coare/blob/master/LICENSE.txt)
-[![Code coverage](https://codecov.io/gh/pyCOARE/coare/branch/master/graph/badge.svg)](https://app.codecov.io/gh/pyCOARE/coare)
+[![Code coverage](https://codecov.io/gh/pyCOARE/coare/branch/main/graph/badge.svg)](https://app.codecov.io/gh/pyCOARE/coare)
 [![PyPI version](https://img.shields.io/pypi/v/pycoare?style=plastic)](https://pypi.org/project/pycoare/)
 
 ## COARE-algorithm
