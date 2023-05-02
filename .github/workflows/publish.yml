@@ -1,8 +1,6 @@
 name: Build and publish package to PyPi
 
 on:
-  pull: 
-    type: [opened, reopened]
   workflow_dispatch:
 
 

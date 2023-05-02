@@ -1,9 +1,8 @@
 name: tests
 
 on:
-  push: 
-    paths:
-      - '**.py'
+  pull_request:
+    types: [opened, reopened]
   workflow_dispatch:
 
 
