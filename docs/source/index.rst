@@ -20,7 +20,7 @@ Contents
 --------
 .. toctree::
 
-    Usage
+    usage
     References <https://github.com/andrew-s28/COARE-algorithm/tree/master/docs/References>
 
  
