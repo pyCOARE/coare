@@ -1,9 +1,8 @@
 name: Build and publish package to PyPi
 
 on:
-  push: 
-    paths:
-      - 'pyproject.toml'
+  pull: 
+    type: [opened, reopened]
   workflow_dispatch:
 
 
