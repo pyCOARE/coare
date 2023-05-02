@@ -20,9 +20,7 @@ extensions = [
 ]
 
 source_suffix = {
-    '.rst': 'restructuredtext',
-    '.txt': 'restructuredtext',
-    '.md': 'markdown',
+    '.rst': 'restructuredtext'
 }
 
 intersphinx_mapping = {
