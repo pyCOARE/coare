@@ -1,14 +1,14 @@
 # pyCOARE
-[![CI](https://github.com/andrew-s28/COARE-algorithm/workflows/tests/badge.svg?branch=master)](https://github.com/andrew-s28/COARE-algorithm/actions)
-[![license](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](ttps://github.com/andrew-s28/COARE-algorithm/blob/master/LICENSE.txt)
-[![Code coverage](https://codecov.io/gh/andrew-s28/COARE-algorithm/branch/master/graph/badge.svg)](https://app.codecov.io/gh/andrew-s28/COARE-algorithm)
+[![CI](https://github.com/pyCOARE/coare/workflows/tests/badge.svg?branch=master)](https://github.com/pyCOARE/coare/actions)
+[![license](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](ttps://github.com/pyCOARE/coare/blob/master/LICENSE.txt)
+[![Code coverage](https://codecov.io/gh/pyCOARE/coare/branch/main/graph/badge.svg)](https://app.codecov.io/gh/pyCOARE/coare)
 [![PyPI version](https://img.shields.io/pypi/v/pycoare?style=plastic)](https://pypi.org/project/pycoare/)
 
 ## COARE-algorithm
 
 This is an alpha-quality fork of the Python version of the [COARE algorithm](https://github.com/NOAA-PSL/COARE-algorithm) that was written with the goal of standardizing testing, packaging, and distribution of the algorithm. Currently only COARE v3.5 is implemented - hopefully v3.6 will come soon! 
 
-The functionality of the code is ideally the same as that for the scripts found in the NOAA PSL repository linked above. My only intended contributions are towards formatting, testing, and packaging. To that end, tests have been constructed based on the output of the original MATLAB code for COARE v3.5. [View the results of the tests](https://github.com/andrew-s28/COARE-algorithm/actions) or [download the data](https://github.com/andrew-s28/COARE-algorithm/tree/master/tests/data) and run them yourself. All results from this script agree to at least five significant figures with the MATLAB scripts in the NOAA repository, provided the testing badge above stays green. 
+The functionality of the code is ideally the same as that for the scripts found in the NOAA PSL repository linked above. My only intended contributions are towards formatting, testing, and packaging. To that end, tests have been constructed based on the output of the original MATLAB code for COARE v3.5. [View the results of the tests](https://github.com/pyCOARE/coare/actions) or [download the data](https://github.com/pyCOARE/coare/tree/main/tests/data) and run them yourself. All results from this script agree to at least five significant figures with the MATLAB scripts in the NOAA repository, provided the testing badge above stays green. 
 
 ## Installation
 
@@ -19,7 +19,7 @@ pip install pycoare
 
 You can install the most up-to-date version using 
 ```
-pip install git+https://github.com/andrew-s28/COARE-algorithm
+pip install git+https://github.com/pyCOARE/coare
 ```
 
 ## Contribution
