@@ -1,21 +1,14 @@
 """
 Functions for COARE model bulk flux calculations.
 
-Translated and vectorized from J Edson/ C Fairall MATLAB scripts.
+Translated and vectorized from J Edson/ C Fairall MATLAB scripts by:
 
-Execute '%run coare35vn.py' from the iPython command line for test run with
-'test_35_data.txt' input data file.
+- Byron Blomquist, CU/CIRES, NOAA/ESRL/PSD3
+- Ludovic Bariteau, CU/CIRES, NOAA/ESRL/PSD3
 
-Byron Blomquist, CU/CIRES, NOAA/ESRL/PSD3
-Ludovic Bariteau, CU/CIRES, NOAA/ESRL/PSD3
-Andrew Scherer, OSU
-v1: May 2015:
-Initial Design?
-v2: July 2020:
-Fixed some typos and changed syntax for python 3.7 compatibility.
-v3: April 2022:
-Formatted code to be in closer agreement with PEP8,
-established testing, packaging.
+Packaged, tested, and published to PyPi by:
+
+- Andrew Scherer, Oregon State
 """
 
 import numpy as np
@@ -25,129 +18,17 @@ def c35(u, t=10, rh=75, zu=10, zt=10, zq=10, ts=10, P=1015, lat=45,
         zi=600, Rs=150, Rl=370, rain=None, cp=None, sigH=None, jcool=1,
         out='full'):
     """
-    usage: A = coare35vn(u)  -  include other kwargs as desired
+    :param u: wind speed (m/s)
+    :type u: float or array[float]
+    :return: Chosen outputs with same length as **u**
+    :rtype: array[float]
 
-    Vectorized version of COARE 3 code (Fairall et al, 2003) with modification
-    based on the CLIMODE, MBL and CBLAST experiments (Edson et al., 2013).
-    The cool skin option is retained but warm layer and surface wave options
-    have been removed.
-
-    This version includes parameterizations of wave height and wave slope using
-    cp and sigH.  Unless these are provided the wind speed dependent
-    formulation is used.
-
-    AN IMPORTANT COMPONENT OF THIS CODE IS WHETHER INPUT 'ts' REPRESENTS
-    THE SKIN TEMPERATURE OR A NEAR SURFACE TEMPERATURE.  How this variable is
-    treated is determined by the jcool parameter:  jcool=1 if Ts is bulk
-    ocean temperature (default), jcool=0 if Ts is ocean skin temperature.
-
-    The code assumes u, t, rh, and ts are vectors, but the latter 3 can be
-    a constant; rain, if given, is a vector;
-    P, Rs, Rl, lat, zi, cp and sigH may be passed as vectors or constants;
-    sensor heights (zu, zt, zq) are only constants.  All vectors must be of
-    equal length.
-
-    Default values are assigned for all variables except u,t,rh,ts.  Input
-    arrays may contain NaNs to indicate missing values.  Defaults should be set
-    to representative regional values if possible.
-
-    Input definitions:
-    col    var     description
-    -------------------------------------------------------------------------
-    0      u       ocean surface relative wind speed (m/s) at height zu(m)
-    1      t       bulk air temperature (degC) at height zt(m) (default=10)
-    2      rh      relative humidity (%) at height zq(m) (default=0.5)
-    3      ts      sea water temperature (degC) - see jcool below (default=10)
-    4      P       surface air pressure (mb) (default=1015)
-    5      Rs      downward shortwave radiation (W/m^2) (default=150)
-    6      Rl      downward longwave radiation (W/m^2) (default=370)
-    7      zu      wind sensor height (m) (default=18m)
-    8      zt      bulk temperature sensor height (m) (default=18m)
-    9      zq      RH sensor height (m) (default=18m)
-    10     lat     lat = latitude (default=45 N)
-    11     zi      zi = PBL height (m) (default=600m)
-    12     rain    rain rate (mm/hr) (default=None)
-    13     cp      phase speed of dominant waves (m/s)
-    14     sigH    significant wave height (m)
-    15     jcool   cool skin option (default = 1 for bulk SST)
-
-    Output is a 2-D ndarray with the following variables as 37 columns.
-    Other quantities may be added to output by editing lines 536/537.
-    col    var     description
-    -------------------------------------------------------------------------
-    0      usr     friction velocity that includes gustiness (m/s)
-    1      tau     wind stress (N/m^2)
-    2      hsb     sensible heat flux into ocean (W/m^2)
-    3      hlb     latent heat flux into ocean (W/m^2)
-    4      hbb     buoyancy flux into ocean (W/m^2)
-    5      hsbb    "sonic" buoyancy flux measured directly by sonic anemometer
-    6      hlwebb  Webb correction for latent heat flux, add this to directly
-                   measured eddy covariance latent heat flux from water vapor
-                   mass concentration sensors (e.g. Licor 7500).
-    7      tsr     temperature scaling parameter (K)
-    8      qsr     specific humidity scaling parameter (g/Kg)
-    9      zot     thermal roughness length (m)
-    10     zoq     moisture roughness length (m)
-    11     Cd      wind stress transfer (drag) coefficient at height zu
-    12     Ch      sensible heat transfer coefficient (Stanton number) at ht zu
-    13     Ce      latent heat transfer coefficient (Dalton number) at ht zq
-    14     L       Obukhov length scale (m)
-    15     zet     Monin-Obukhov stability parameter zu/L
-    16     dter    cool-skin temperature depression (degC)
-    17     dqer    cool-skin humidity depression (degC)
-    18     tkt     cool-skin thickness (m)
-    19     Urf     wind speed at reference height (select height below)
-    20     Trf     temperature at reference height
-    21     Qrf     specific humidity at reference height
-    22     RHrf    relative humidity at reference height
-    23     UrfN    neutral value of wind speed at reference height
-    24     Rnl     Upwelling IR radiation computed by COARE
-    25     Le      latent heat of vaporization
-    26     rhoa    density of air
-    27     UN      neutral value of wind speed at zu
-    28     U10     wind speed adjusted to 10 m
-    29     U10N    neutral value of wind speed at 10m
-    30     Cdn_10  neutral value of drag coefficient at 10m
-    31     Chn_10  neutral value of Stanton number at 10m
-    32     Cen_10  neutral value of Dalton number at 10m
-    33     RF      rain heat flux (W/m2)
-    34     Evap    evaporation (mm/hr)
-    35     Qs      sea surface specific humidity (g/kg)
-    36     Q10     specific humidity at 10m (g/kg)
-    37     RH10    RH at 10m (%)
-
-    Notes:
-    1) u is the ocean-relative wind speed, i.e., the magnitude of the
-       difference between the wind (at zu) and ocean surface current
-       vectors.
-    2) Set jcool=0 if ts is true surface skin temperature,
-       otherwise ts is assumed the bulk temperature and jcool=1.
-    3) The code to compute the heat flux caused by precipitation is
-       included if rain data is available (default is no rain).
-    4) Code updates the cool-skin temperature depression dter and thickness
-       tkt during iteration loop for consistency.
-    5) Number of iterations set to nits = 6.
-    6) The warm layer is not implemented in this version.
-
-    Reference:
-
-    Fairall, C.W., E.F. Bradley, J.E. Hare, A.A. Grachev, and J.B. Edson (2003)
-    Bulk parameterization of air sea fluxes: updates and verification for the
-    COARE algorithm, J. Climate, 16, 571-590.
-
-    Code history:
-
-    1) 12/14/05 - created based on scalar version coare26sn.m with input
-       on vectorization from C. Moffat.
-    2) 12/21/05 - sign error in psiu_26 corrected, and code added to use
-       variable values from the first pass through the iteration loop for the
-       stable case with very thin M-O length relative to zu (zetu>50) (as is
-       done in the scalar coare26sn and COARE3 codes).
-    3) 7/26/11 - S = dt was corrected to read S = ut.
-    4) 7/28/11 - modification to roughness length parameterizations based
-       on the CLIMODE, MBL, Gasex and CBLAST experiments are incorporated
-    5) Python translation by BWB, Oct 2014.  Modified to allow user specified
-       vectors for lat and zi.  Defaults added for zu, zt, zq.
+    It is recommended to update default arguments to be relevant to your region.
+    Inputs to variables other than **jcool** and **out** can be single floats or
+    arrays of floats of same length as **u**, if you have data for them.
+    For more information on keyword arguments, see
+    `inputs <https://github.com/pyCOARE/coare/blob/main/docs/io_info/c35_inputs.md>`__ and
+    `outputs <https://github.com/pyCOARE/coare/blob/main/docs/io_info/c35_outputs.md>`__
     """
 
     # be sure array inputs are ndarray floats
@@ -155,6 +36,7 @@ def c35(u, t=10, rh=75, zu=10, zt=10, zq=10, ts=10, P=1015, lat=45,
     # otherwise copies are created in the local namespace
     u = np.copy(np.asarray(u, dtype=float))
     N = u.size
+
     # format optional array inputs
     t = check_size(t, N, 't')
     rh = check_size(rh, N, 'rh')
@@ -203,6 +85,7 @@ def c35(u, t=10, rh=75, zu=10, zt=10, zq=10, ts=10, P=1015, lat=45,
     # between wind and surface current vectors). To follow orginal Fairall
     # code, we set surface current speed us=0. If us data are available
     # construct u prior to using this code.
+
     us = np.zeros(N)
 
     # convert rh to specific humidity
