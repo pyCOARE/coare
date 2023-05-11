@@ -20,13 +20,14 @@ def c35(u, t=10, rh=75, zu=10, zt=10, zq=10, ts=10, P=1015, lat=45,
     """
     :param u: wind speed (m/s)
     :type u: float or array[float]
-    :return: Chosen outputs with same length as u
+    :return: Chosen outputs with same length as **u**
     :rtype: array[float]
-    It is recommended to update default arguments to be relevant to a region.
-    For information on additional arguments, see
-        `inputs <https://github.com/pyCOARE/coare/blob/main/docs/io_info/c35_inputs.md>`__
-        and `outputs <https://github.com/pyCOARE/coare/blob/main/docs/io_info/c35_outputs.md>`__
-        .
+    It is recommended to update default arguments to be relevant to your region.
+    Inputs to variables other than **jcool** and **out** can be single floats or
+    arrays of floats of same length as **u**, if you have data for them.
+    For more information on additional arguments, see:
+    * `inputs <https://github.com/pyCOARE/coare/blob/main/docs/io_info/c35_inputs.md>`__
+    * `outputs <https://github.com/pyCOARE/coare/blob/main/docs/io_info/c35_outputs.md>`__
     """
 
     # be sure array inputs are ndarray floats
@@ -34,6 +35,7 @@ def c35(u, t=10, rh=75, zu=10, zt=10, zq=10, ts=10, P=1015, lat=45,
     # otherwise copies are created in the local namespace
     u = np.copy(np.asarray(u, dtype=float))
     N = u.size
+
     # format optional array inputs
     t = check_size(t, N, 't')
     rh = check_size(rh, N, 'rh')
