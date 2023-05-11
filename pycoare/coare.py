@@ -22,6 +22,7 @@ def c35(u, t=10, rh=75, zu=10, zt=10, zq=10, ts=10, P=1015, lat=45,
     :type u: float or array[float]
     :return: Chosen outputs with same length as **u**
     :rtype: array[float]
+
     It is recommended to update default arguments to be relevant to your region.
     Inputs to variables other than **jcool** and **out** can be single floats or
     arrays of floats of same length as **u**, if you have data for them.
