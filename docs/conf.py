@@ -1,5 +1,9 @@
-
 # Configuration file for the Sphinx documentation builder.
+
+import sys
+import os
+
+sys.path.insert(0, os.path.abspath('../../pycoare'))
 
 # -- Project information
 
@@ -27,6 +31,7 @@ intersphinx_mapping = {
     'python': ('https://docs.python.org/3/', None),
     'sphinx': ('https://www.sphinx-doc.org/en/master/', None),
 }
+
 intersphinx_disabled_domains = ['std']
 
 templates_path = ['_templates']
