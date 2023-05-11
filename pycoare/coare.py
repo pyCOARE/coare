@@ -25,7 +25,7 @@ def c35(u, t=10, rh=75, zu=10, zt=10, zq=10, ts=10, P=1015, lat=45,
     It is recommended to update default arguments to be relevant to your region.
     Inputs to variables other than **jcool** and **out** can be single floats or
     arrays of floats of same length as **u**, if you have data for them.
-    For more information on additional arguments, see:
+    For more information on keyword arguments, see
     `inputs <https://github.com/pyCOARE/coare/blob/main/docs/io_info/c35_inputs.md>`__ and
     `outputs <https://github.com/pyCOARE/coare/blob/main/docs/io_info/c35_outputs.md>`__
 

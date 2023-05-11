@@ -12,8 +12,7 @@ Include other kwargs as desired
 
 .. autofunction:: pycoare.coare.c35
 
-Notes on c35():
----------------
+Additional notes on this COARE v3.5 implementation:
 
 -  This is the vectorized version of COARE 3 code (Fairall et al, 2003) with modification
    based on the CLIMODE, MBL and CBLAST experiments (Edson et al., 2013).
