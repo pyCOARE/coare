@@ -10,7 +10,7 @@ The primary function in the package is the COARE v3.5 algorithm. Usage::
 Include other kwargs as desired
 
 
-.. autofunction:: coare.c35
+.. autofunction:: pycoare.coare.c35
 
 Vectorized version of COARE 3 code (Fairall et al, 2003) with modification
 based on the CLIMODE, MBL and CBLAST experiments (Edson et al., 2013).
