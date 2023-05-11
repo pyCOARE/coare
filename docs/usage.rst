@@ -12,17 +12,16 @@ Include other kwargs as desired
 
 .. autofunction:: pycoare.coare.c35
 
-Vectorized version of COARE 3 code (Fairall et al, 2003) with modification
-based on the CLIMODE, MBL and CBLAST experiments (Edson et al., 2013).
-The cool skin option is retained but warm layer and surface wave options
-have been removed.
+Notes on c35():
+---------------
 
-This version includes parameterizations of wave height and wave slope using
-cp and sigH.  Unless these are provided the wind speed dependent
-formulation is used.
-
-Notes:
-
+-  This is the vectorized version of COARE 3 code (Fairall et al, 2003) with modification
+   based on the CLIMODE, MBL and CBLAST experiments (Edson et al., 2013).
+-  The cool skin option is retained but warm layer and surface wave options
+   have been removed.
+-  This version includes parameterizations of wave height and wave slope using
+   cp and sigH.  Unless these are provided the wind speed dependent
+   formulation is used.
 -  u is the ocean-relative wind speed, i.e., the magnitude of the
    difference between the wind (at zu) and ocean surface current
    vectors.
@@ -33,7 +32,6 @@ Notes:
 -  Code updates the cool-skin temperature depression dter and thickness
    tkt during iteration loop for consistency.
 -  Number of iterations set to nits = 6.
--  The warm layer is not implemented in this version.
 -  Default values are included, but should probably be edited
    to be specific to your region.
    
