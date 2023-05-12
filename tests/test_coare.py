@@ -47,7 +47,7 @@ def test_c35():
 
 
 def test_rhcalc():
-    from pycoare.coare import rhcalc
+    from pycoare.util import rhcalc
     input_data = mat_to_df(
         os.path.join(
             os.path.dirname(__file__), 'data/rh_calcs_input.mat'
@@ -66,7 +66,7 @@ def test_rhcalc():
 
 
 def test_psi():
-    from pycoare.coare import psit_26, psiu_26, psiu_40
+    from pycoare.util import psit_26, psiu_26, psiu_40
     input_data = mat_to_df(
         os.path.join(
             os.path.dirname(__file__), 'data/psi_calcs_data.mat'
@@ -87,7 +87,7 @@ def test_psi():
 
 
 def test_qsat():
-    from pycoare.coare import qsat, qsea, qair
+    from pycoare.util import qsat, qsea, qair
     input_data = mat_to_df(
         os.path.join(
             os.path.dirname(__file__), 'data/qsat_calcs_input.mat'
@@ -114,7 +114,7 @@ def test_qsat():
 
 
 def test_find():
-    from pycoare.coare import find
+    from pycoare.util import find
     input_data = np.arange(-100, 100)
     condition = input_data > 0
     actual = find(condition)
