@@ -12,7 +12,7 @@ Packaged, tested, and published to PyPi by:
 """
 
 import numpy as np
-from util import check_size, grv, find, qsea, qair, psit_26, psiu_26, psiu_40
+from pycoare.util import check_size, grv, find, qsea, qair, psit_26, psiu_26, psiu_40
 
 
 def c35(u, t=10, rh=75, zu=10, zt=10, zq=10, ts=10, P=1015, lat=45,
