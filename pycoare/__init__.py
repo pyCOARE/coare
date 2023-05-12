@@ -7,4 +7,4 @@ PyCOARE
 
 from __future__ import absolute_import
 
-from . import coare
+from . import coare, util

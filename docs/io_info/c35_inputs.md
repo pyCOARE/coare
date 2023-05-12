@@ -15,5 +15,5 @@
 | rain | `float` or `array[floats]` or `None` | rain rate (mm/hr) |
 | cp | `float` or `array[floats]` or `None` | phase speed of dominant waves (m/s) |
 | sigH | `float` or `array[floats]` or `None` | significant wave height (m) |
-| jcool | `int` | cool skin option: <br > 1.  if Ts is bulk ocean temperature (default) <br > 2.   0 if Ts is ocean skin temperature |
+| jcool | `int` | cool skin option: <br > 1 if Ts is bulk ocean temperature (default) <br > 0 if Ts is ocean skin temperature |
 | out | `str` |  Output variables to include (see [outputs](./c35_outputs.md) for more info) <br > 1. `'full'` includes all outputs <br > 2.  tau only outputs wind stress <br > 3. U10 only outputs 10 m adjusted wind speed
