@@ -12,7 +12,7 @@ Packaged, tested, and published to PyPi by:
 """
 
 import numpy as np
-from pycoare.util import check_size, grv, find, qsea, qair, psit_26, psiu_26, psiu_40, rhcalc
+from util import check_size, grv, find, qsea, qair, psit_26, psiu_26, psiu_40, rhcalc
 
 
 def c35(u, t=10, rh=75, zu=10, zt=10, zq=10, ts=10, P=1015, lat=45,
@@ -371,8 +371,6 @@ def c35(u, t=10, rh=75, zu=10, zt=10, zq=10, ts=10, P=1015, lat=45,
     # QrfN2 = SSQ + qsr/von * np.log(zrf_q/zoq)
     RHrf = rhcalc(Trf, P, Qrf/1000)
     RH10 = rhcalc(T10, P, Q10/1000)
-    Q = Q*1000
-    qsr = qsr*1000
 
     if out == 'default':
         A = np.squeeze(
