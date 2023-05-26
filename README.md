@@ -27,8 +27,10 @@ pip install git+https://github.com/pyCOARE/coare
 
 I welcome any contributions - please feel free to [raise an issue](https://github.com/pyCOARE/coare/issues) or submit a [pull request](https://github.com/pyCOARE/coare/pulls).
 
-## Origins
+## Origins and Credits
 The international TOGA-COARE field program which took place in the western Pacific warm pool over 4 months from November 1992 to February 1993 ([Fairall et al. 1996a](https://github.com/noaa-psd/COARE-algorithm/blob/master/References/Fairall%20et%20al.%201996a%20-%20cool%20skin%20warm%20layer.pdf), [1996b](https://github.com/noaa-psd/COARE-algorithm/blob/master/References/Fairall%20et%20al.%201996b%20-%20bulk%20fluxes%20of%20variables.pdf) and [1997](https://github.com/noaa-psd/COARE-algorithm/blob/master/References/Fairall%20et%20al.%201997%20-%20ship%20measurements%20MABL.pdf)) spurred the development of the COARE model. The algorithm is intended to provide estimates of `momentum, sensible heat`, and `latent heat fluxes` using inputs of bulk atmospheric variables (`wind speed, SST, air temperature, air humidity`). The algorithm contains subroutines/functions to handle near-surface gradients of temperature in the ocean.
+
+This Python implementation of the COARE algorithm was initially translated from MATLAB by Byron Blomquist and Ludovic Bariteau. For more information on the people and publications that developed the COARE algorithm, see the references below.
 
 ## Versions
 - **Version 2.5** was published in 1996. 
