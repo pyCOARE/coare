@@ -17,7 +17,7 @@ from pycoare.util import check_size, grv, find, qsea, qair, psit_26, psiu_26, ps
 
 def c35(u, t=10, rh=75, zu=10, zt=10, zq=10, ts=10, P=1015, lat=45,
         zi=600, Rs=150, Rl=370, rain=None, cp=None, sigH=None, jcool=1,
-        out=None):
+        out='default'):
     """
     :param u: wind speed (m/s)
     :type u: float or array[float]
@@ -374,7 +374,7 @@ def c35(u, t=10, rh=75, zu=10, zt=10, zq=10, ts=10, P=1015, lat=45,
     Q = Q*1000
     qsr = qsr*1000
 
-    if out is None:
+    if out == 'default':
         A = np.squeeze(
             np.column_stack(
                 np.array([
@@ -384,7 +384,7 @@ def c35(u, t=10, rh=75, zu=10, zt=10, zq=10, ts=10, P=1015, lat=45,
                 ])
             )
         )
-    if out == 'default':
+    if out == 'all':
         A = np.squeeze(
             np.column_stack(
                 np.array([
