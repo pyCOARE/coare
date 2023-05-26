@@ -12,12 +12,12 @@ Packaged, tested, and published to PyPi by:
 """
 
 import numpy as np
-from pycoare.util import check_size, grv, find, qsea, qair, psit_26, psiu_26, psiu_40, rhcalc
+from pycoare.util import check_size, grv, find, qsea, qair, psit_26, psiu_26, psiu_40
 
 
 def c35(u, t=10, rh=75, zu=10, zt=10, zq=10, ts=10, P=1015, lat=45,
         zi=600, Rs=150, Rl=370, rain=None, cp=None, sigH=None, jcool=1,
-        out='default'):
+        out='full'):
     """
     :param u: wind speed (m/s)
     :type u: float or array[float]
@@ -29,7 +29,7 @@ def c35(u, t=10, rh=75, zu=10, zt=10, zq=10, ts=10, P=1015, lat=45,
     arrays of floats of same length as **u**, if you have data for them.
     For more information on keyword arguments, see
     `inputs <https://github.com/pyCOARE/coare/blob/main/docs/io_info/c35_inputs.md>`__ and
-    `outputs <https://github.com/pyCOARE/coare/blob/main/docs/io_info/c35_outputs.md>`__.
+    `outputs <https://github.com/pyCOARE/coare/blob/main/docs/io_info/c35_outputs.md>`__
     """
 
     # be sure array inputs are ndarray floats
@@ -216,7 +216,6 @@ def c35(u, t=10, rh=75, zu=10, zt=10, zq=10, ts=10, P=1015, lat=45,
         usr = ut*cdhf
         qsr = -(dq - wetc*dter*jcool)*cqhf
         tsr = -(dt - dter*jcool)*cthf
-        tssr = tsr + 0.51*ta*qsr
         tvsr = tsr + 0.61*ta*qsr
         Bf = -grav / ta*usr*tvsr
         ug = 0.2 * np.ones(N)
@@ -282,11 +281,8 @@ def c35(u, t=10, rh=75, zu=10, zt=10, zq=10, ts=10, P=1015, lat=45,
     tau = rhoa*usr*usr/gf           # wind stress
     hsb = -rhoa*cpa*usr*tsr         # sensible heat flux
     hlb = -rhoa*Le*usr*qsr          # latent heat flux
-    hbb = -rhoa*cpa*usr*tvsr        # buoyancy flux
-    hsbb = -rhoa*cpa*usr*tssr       # sonic buoyancy flux
     wbar = 1.61*hlb/Le/(1+1.61*Q)/rhoa + hsb/rhoa/cpa/ta
     hlwebb = rhoa*wbar*Q*Le
-    Evap = 1000*hlb/Le/1000*3600    # mm/hour
 
     # compute transfer coeffs relative to ut @ meas. ht
     Cd = tau/rhoa/ut/np.maximum(0.1, du)
@@ -299,33 +295,17 @@ def c35(u, t=10, rh=75, zu=10, zt=10, zq=10, ts=10, P=1015, lat=45,
     Cen_10 = 1000*von**2 * fdg/np.log(10/zo) / np.log(10/zoq)
 
     # compute the stability functions
-    zrf_u = 10      # User defined reference heights
-    zrf_t = 10
-    zrf_q = 10
     psi = psiu_26(zu/L)
     psi10 = psiu_26(10/L)
     gf = ut/du
-    psirf = psiu_26(zrf_u/L)
-    psiT = psit_26(zt/L)
-    psi10T = psit_26(10/L)
-    psirfT = psit_26(zrf_t/L)
-    psirfQ = psit_26(zrf_q/L)
 
     # Determine the wind speeds relative to ocean surface
     # Note that usr is the friction velocity that includes
     # gustiness usr = sqrt(Cd) S, which is equation (18) in
     # Fairall et al. (1996)
     S = ut
-    U = du
     S10 = S + usr/von*(np.log(10/zu) - psi10 + psi)
     U10 = S10/gf
-    Urf = U + usr/von/gf*(np.log(zrf_u/zu) - psirf + psi)
-    UN = U + psi*usr/von/gf
-    U10N = U10 + psi10*usr/von/gf
-    UrfN = Urf + psirf*usr/von/gf
-    # UN2 = usr/von/gf * np.log(zu/zo)
-    # U10N2 = usr/von/gf * np.log(10/zo)
-    # UrfN2 = usr/von/gf * np.log(zrf_u/zo)
 
     # rain heat flux after Gosnell et al., JGR, 1995
     if rain is None:
@@ -344,35 +324,14 @@ def c35(u, t=10, rh=75, zu=10, zt=10, zq=10, ts=10, P=1015, lat=45,
         alfac = 1/(1 + 0.622*(dqs_dt*Le*dwat)/(cpa*dtmp))
         RF = rain*alfac*cpw*((ts-t-dter*jcool)+(Qs-Q-dqer*jcool)*Le/cpa)/3600
 
-    lapse = grav/cpa
-    T = t
-    T10 = T + tsr/von*(np.log(10/zt) - psi10T + psiT) + lapse*(zt - 10)
-    Trf = T + tsr/von*(np.log(zrf_t/zt) - psirfT + psiT) + lapse*(zt - zrf_t)
-    # TN = T + psiT*tsr/von
-    # T10N = T10 + psi10T*tsr/von
-    # TrfN = Trf + psirfT*tsr/von
-    # SST = ts - dter*jcool
-    # TN2 = SST + tsr/von * np.log(zt/zot) - lapse*zt
-    # T10N2 = SST + tsr/von * np.log(10/zot) - lapse*10
-    # TrfN2 = SST + tsr/von * np.log(zrf_t/zot) - lapse*zrf_t
-
     dqer = wetc*dter*jcool
     SSQ = Qs - dqer
     SSQ = SSQ*1000
+
     Q = Q*1000
     qsr = qsr*1000
-    Q10 = Q + qsr/von*(np.log(10/zq) - psi10T + psiT)
-    Qrf = Q + qsr/von*(np.log(zrf_q/zq) - psirfQ + psiT)
-    # QN = Q + psiT*qsr/von/np.sqrt(gf)
-    # Q10N = Q10 + psi10T*qsr/von
-    # QrfN = Qrf + psirfQ*qsr/von
-    # QN2 = SSQ + qsr/von * np.log(zq/zoq)
-    # Q10N2 = SSQ + qsr/von * np.log(10/zoq)
-    # QrfN2 = SSQ + qsr/von * np.log(zrf_q/zoq)
-    RHrf = rhcalc(Trf, P, Qrf/1000)
-    RH10 = rhcalc(T10, P, Q10/1000)
 
-    if out == 'default':
+    if out == 'full':
         A = np.squeeze(
             np.column_stack(
                 np.array([
@@ -382,90 +341,10 @@ def c35(u, t=10, rh=75, zu=10, zt=10, zq=10, ts=10, P=1015, lat=45,
                 ])
             )
         )
-    if out == 'all':
-        A = np.squeeze(
-            np.column_stack(
-                np.array([
-                    usr, tau, hsb, hlb, hbb, hsbb, hlwebb, tsr, qsr,
-                    zot, zoq, Cd, Ch, Ce, L, zet, dter, dqer, tkt, Urf,
-                    Trf, Qrf, RHrf, UrfN, Rnl, Le, rhoa, UN, U10, U10N,
-                    RF, Cdn_10, Chn_10, Cen_10, Evap, Qs, Q10, RH10
-                ])
-            )
-        )
-    elif out == 'usr':
-        A = np.squeeze(np.column_stack(np.array([usr])))
+    elif out == 'u10':
+        A = np.squeeze(np.column_stack(np.array([U10])))
+
     elif out == 'tau':
         A = np.squeeze(np.column_stack(np.array([tau])))
-    elif out == 'hsb':
-        A = np.squeeze(np.column_stack(np.array([hsb])))
-    elif out == 'hlb':
-        A = np.squeeze(np.column_stack(np.array([hlb])))
-    elif out == 'hbb':
-        A = np.squeeze(np.column_stack(np.array([hbb])))
-    elif out == 'hlwebb':
-        A = np.squeeze(np.column_stack(np.array([hlwebb])))
-    elif out == 'tsr':
-        A = np.squeeze(np.column_stack(np.array([tsr])))
-    elif out == 'qsr':
-        A = np.squeeze(np.column_stack(np.array([qsr])))
-    elif out == 'zot':
-        A = np.squeeze(np.column_stack(np.array([zot])))
-    elif out == 'zoq':
-        A = np.squeeze(np.column_stack(np.array([zoq])))
-    elif out == 'Cd':
-        A = np.squeeze(np.column_stack(np.array([Cd])))
-    elif out == 'Ch':
-        A = np.squeeze(np.column_stack(np.array([Ch])))
-    elif out == 'Ce':
-        A = np.squeeze(np.column_stack(np.array([Ce])))
-    elif out == 'L':
-        A = np.squeeze(np.column_stack(np.array([L])))
-    elif out == 'zet':
-        A = np.squeeze(np.column_stack(np.array([zet])))
-    elif out == 'dter':
-        A = np.squeeze(np.column_stack(np.array([dter])))
-    elif out == 'dqer':
-        A = np.squeeze(np.column_stack(np.array([dqer])))
-    elif out == 'tkt':
-        A = np.squeeze(np.column_stack(np.array([tkt])))
-    elif out == 'Urf':
-        A = np.squeeze(np.column_stack(np.array([Urf])))
-    elif out == 'Trf':
-        A = np.squeeze(np.column_stack(np.array([Trf])))
-    elif out == 'Qrf':
-        A = np.squeeze(np.column_stack(np.array([Qrf])))
-    elif out == 'RHrf':
-        A = np.squeeze(np.column_stack(np.array([RHrf])))
-    elif out == 'UrfN':
-        A = np.squeeze(np.column_stack(np.array([UrfN])))
-    elif out == 'Rnl':
-        A = np.squeeze(np.column_stack(np.array([Rnl])))
-    elif out == 'Le':
-        A = np.squeeze(np.column_stack(np.array([Le])))
-    elif out == 'rhoa':
-        A = np.squeeze(np.column_stack(np.array([rhoa])))
-    elif out == 'UN':
-        A = np.squeeze(np.column_stack(np.array([UN])))
-    elif out == 'U10':
-        A = np.squeeze(np.column_stack(np.array([U10])))
-    elif out == 'U10N':
-        A = np.squeeze(np.column_stack(np.array([U10N])))
-    elif out == 'Cdn_10':
-        A = np.squeeze(np.column_stack(np.array([Cdn_10])))
-    elif out == 'Chn_10':
-        A = np.squeeze(np.column_stack(np.array([Chn_10])))
-    elif out == 'Cen_10':
-        A = np.squeeze(np.column_stack(np.array([Cen_10])))
-    elif out == 'RF':
-        A = np.squeeze(np.column_stack(np.array([RF])))
-    elif out == 'Evap':
-        A = np.squeeze(np.column_stack(np.array([Evap])))
-    elif out == 'Qs':
-        A = np.squeeze(np.column_stack(np.array([Qs])))
-    elif out == 'Q10':
-        A = np.squeeze(np.column_stack(np.array([Q10])))
-    elif out == 'RH10':
-        A = np.squeeze(np.column_stack(np.array([RH10])))
 
     return A

@@ -5,12 +5,15 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "pycoare"
 authors = [
-    {name = 'Andrew Scherer', email = 'scherand@oregonstate.edu'}
+    {name = 'C. W. Fairall'},
+    {name = 'Byron Blomquist'},
+    {name = 'Ludovic Bariteau'},
+    {name = 'J. B. Edson'}
 ]
 maintainers = [
     {name = 'Andrew Scherer', email = 'scherand@oregonstate.edu'}
 ]
-version = "2023.4a5"
+version = "2023.4a4"
 description = 'A Python implementation of the COARE bulk air-sea flux algorithm.'
 readme = {file = 'README.md', content-type = 'text/markdown'}
 requires-python = ">=3.7"
@@ -28,7 +31,7 @@ dependencies = ['numpy']
 
 [project.urls]
 
-Source = 'https://github.com/pyCOARE/coare'
+Source = 'https://github.com/andrew-s28/COARE-algorithm'
 
 
 
