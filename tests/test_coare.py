@@ -36,7 +36,7 @@ def test_c35():
             )
         ).to_dict(orient='list')
 
-    actual = c35(**input_data, out='full')
+    actual = c35(**input_data, out='default')
     expected = pd.read_csv(
         os.path.join(
             os.path.dirname(__file__), 'data/test_35_data_output_final.csv'
