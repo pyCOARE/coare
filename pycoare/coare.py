@@ -12,7 +12,7 @@ Packaged, tested, and published to PyPi by:
 """
 
 import numpy as np
-from util import check_size, grv, find, qsea, qair, psit_26, psiu_26, psiu_40, rhcalc, __return_vars
+from pycoare.util import check_size, grv, find, qsea, qair, psit_26, psiu_26, psiu_40, rhcalc, __return_vars
 
 
 def c35(u, t=10, rh=75, zu=10, zt=10, zq=10, ts=10, P=1015, lat=45,
@@ -398,7 +398,3 @@ def c35(u, t=10, rh=75, zu=10, zt=10, zq=10, ts=10, P=1015, lat=45,
                               RF, Cdn_10, Chn_10, Cen_10, Evap, Qs, Q10, RH10)
             A[:, i] = a
         return np.squeeze(A)
-
-if __name__ == '__main__':
-    print(c35(np.arange(0, 3, 0.5), out='tau'))
-    
