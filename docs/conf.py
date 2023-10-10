@@ -20,8 +20,8 @@ extensions = [
     'sphinx.ext.doctest',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
-    'sphinx.ext.intersphinx',
-    'sphinx_rtd_theme'
+    'sphinx.ext.intersphinx',   
+    'sphinx_search.extension',
 ]
 
 source_suffix = {
