@@ -195,3 +195,109 @@ def check_size(arr, N, name='Input'):
         return arr
     else:
         return arr
+
+
+def __return_vars(out, usr, tau, hsb, hlb, hbb, hsbb, hlwebb, tsr, qsr,
+                  zot, zoq, Cd, Ch, Ce, L, zet, dter, dqer, tkt, Urf,
+                  Trf, Qrf, RHrf, UrfN, Rnl, Le, rhoa, UN, U10, U10N,
+                  RF, Cdn_10, Chn_10, Cen_10, Evap, Qs, Q10, RH10):
+    if out == 'default':
+        A = np.squeeze(
+            np.column_stack(
+                np.array([
+                    usr, tau, hsb, hlb, hlwebb, tsr, qsr,
+                    zot, zoq, Cd, Ch, Ce, L, zet, dter, dqer,
+                    tkt, RF, Cdn_10, Chn_10, Cen_10
+                ])
+            )
+        )
+    elif out == 'all':
+        A = np.squeeze(
+            np.column_stack(
+                np.array([
+                    usr, tau, hsb, hlb, hbb, hsbb, hlwebb, tsr, qsr,
+                    zot, zoq, Cd, Ch, Ce, L, zet, dter, dqer, tkt, Urf,
+                    Trf, Qrf, RHrf, UrfN, Rnl, Le, rhoa, UN, U10, U10N,
+                    RF, Cdn_10, Chn_10, Cen_10, Evap, Qs, Q10, RH10
+                ])
+            )
+        )
+    elif out == 'usr':
+        A = np.squeeze(np.column_stack(np.array([usr])))
+    elif out == 'tau':
+        A = np.squeeze(np.column_stack(np.array([tau])))
+    elif out == 'hsb':
+        A = np.squeeze(np.column_stack(np.array([hsb])))
+    elif out == 'hlb':
+        A = np.squeeze(np.column_stack(np.array([hlb])))
+    elif out == 'hbb':
+        A = np.squeeze(np.column_stack(np.array([hbb])))
+    elif out == 'hlwebb':
+        A = np.squeeze(np.column_stack(np.array([hlwebb])))
+    elif out == 'tsr':
+        A = np.squeeze(np.column_stack(np.array([tsr])))
+    elif out == 'qsr':
+        A = np.squeeze(np.column_stack(np.array([qsr])))
+    elif out == 'zot':
+        A = np.squeeze(np.column_stack(np.array([zot])))
+    elif out == 'zoq':
+        A = np.squeeze(np.column_stack(np.array([zoq])))
+    elif out == 'Cd':
+        A = np.squeeze(np.column_stack(np.array([Cd])))
+    elif out == 'Ch':
+        A = np.squeeze(np.column_stack(np.array([Ch])))
+    elif out == 'Ce':
+        A = np.squeeze(np.column_stack(np.array([Ce])))
+    elif out == 'L':
+        A = np.squeeze(np.column_stack(np.array([L])))
+    elif out == 'zet':
+        A = np.squeeze(np.column_stack(np.array([zet])))
+    elif out == 'dter':
+        A = np.squeeze(np.column_stack(np.array([dter])))
+    elif out == 'dqer':
+        A = np.squeeze(np.column_stack(np.array([dqer])))
+    elif out == 'tkt':
+        A = np.squeeze(np.column_stack(np.array([tkt])))
+    elif out == 'Urf':
+        A = np.squeeze(np.column_stack(np.array([Urf])))
+    elif out == 'Trf':
+        A = np.squeeze(np.column_stack(np.array([Trf])))
+    elif out == 'Qrf':
+        A = np.squeeze(np.column_stack(np.array([Qrf])))
+    elif out == 'RHrf':
+        A = np.squeeze(np.column_stack(np.array([RHrf])))
+    elif out == 'UrfN':
+        A = np.squeeze(np.column_stack(np.array([UrfN])))
+    elif out == 'Rnl':
+        A = np.squeeze(np.column_stack(np.array([Rnl])))
+    elif out == 'Le':
+        A = np.squeeze(np.column_stack(np.array([Le])))
+    elif out == 'rhoa':
+        A = np.squeeze(np.column_stack(np.array([rhoa])))
+    elif out == 'UN':
+        A = np.squeeze(np.column_stack(np.array([UN])))
+    elif out == 'U10':
+        A = np.squeeze(np.column_stack(np.array([U10])))
+    elif out == 'U10N':
+        A = np.squeeze(np.column_stack(np.array([U10N])))
+    elif out == 'Cdn_10':
+        A = np.squeeze(np.column_stack(np.array([Cdn_10])))
+    elif out == 'Chn_10':
+        A = np.squeeze(np.column_stack(np.array([Chn_10])))
+    elif out == 'Cen_10':
+        A = np.squeeze(np.column_stack(np.array([Cen_10])))
+    elif out == 'RF':
+        A = np.squeeze(np.column_stack(np.array([RF])))
+    elif out == 'Evap':
+        A = np.squeeze(np.column_stack(np.array([Evap])))
+    elif out == 'Qs':
+        A = np.squeeze(np.column_stack(np.array([Qs])))
+    elif out == 'Q10':
+        A = np.squeeze(np.column_stack(np.array([Q10])))
+    elif out == 'RH10':
+        A = np.squeeze(np.column_stack(np.array([RH10])))
+    else:
+        raise ValueError(f'String \'{out}\' is not a valid output variable name! See '
+                         + 'https://github.com/pyCOARE/coare/blob/main/docs/io_info/c35_outputs.md'
+                         + ' for a list of valid output variable names.')
+    return A
