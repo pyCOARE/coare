@@ -47,7 +47,7 @@ def find(b):
     Returns 1-D ndarray of int64.
 
     """
-    if type(b) != np.ndarray:
+    if type(b) is not np.ndarray:
         raise ValueError('find: Input should be ndarray')
     if b.dtype != 'bool':
         raise ValueError('find: Input should be boolean array')

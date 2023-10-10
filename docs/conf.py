@@ -10,8 +10,8 @@ sys.path.insert(0, os.path.abspath('..'))
 project = 'pyCOARE'
 author = 'Andrew Scherer'
 
-release = 'a4'
-version = '2023.4a4'
+release = 'b1'
+version = '2023.10b1'
 
 # -- General configuration
 
@@ -38,6 +38,6 @@ templates_path = ['_templates']
 
 # -- Options for HTML output
 
-# html_theme = 'sphinx_rtd_theme'
+html_theme = 'sphinx_rtd_theme'
 
 # -- Options for EPUB output
