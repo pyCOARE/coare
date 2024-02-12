@@ -1,13 +1,12 @@
-# pyCOARE
 [![Tests](https://github.com/pyCOARE/coare/actions/workflows/tests.yml/badge.svg)](https://github.com/pyCOARE/coare/actions/workflows/tests.yml)
 [![License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](ttps://github.com/pyCOARE/coare/blob/master/LICENSE.txt)
 [![Code coverage](https://codecov.io/gh/pyCOARE/coare/branch/main/graph/badge.svg)](https://app.codecov.io/gh/pyCOARE/coare)
 [![Docs](https://readthedocs.org/projects/coare-live/badge/?version=latest)](https://coare-live.readthedocs.io/en/latest/?badge=latest)
 [![PyPI version](https://img.shields.io/pypi/v/pycoare?style=plastic)](https://pypi.org/project/pycoare/)
 
-## COARE-algorithm
+# pyCOARE
 
-This is a beta version of an implementation of the [COARE algorithm](https://doi.org/10.1175/1520-0442(2003)016%3C0571:BPOASF%3E2.0.CO;2) that builds on the original NOAA (https://github.com/NOAA-PSL/COARE-algorithm). Currently only COARE v3.5 is implemented - hopefully v3.6 will come soon! 
+This is a beta version of an implementation of the [COARE algorithm](https://doi.org/10.1175/1520-0442(2003)016%3C0571:BPOASF%3E2.0.CO;2) that builds on the [original NOAA-PSL pyCOARE code](https://github.com/NOAA-PSL/COARE-algorithm). Currently only COARE v3.5 is implemented - hopefully v3.6 will come soon! 
 
 This version makes minor updates to the code itself, refactors code to improve readability, maintability, and distribution, and creates a standardized API for calling functions. [See the changelog](https://github.com/pyCOARE/coare/blob/main/docs/changelog.md) for all mathematically relevant changes made to the original code.
 
