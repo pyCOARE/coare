@@ -5,6 +5,4 @@ PyCOARE
 ===============
 """
 
-from __future__ import absolute_import
-
-from . import coare, util
+from .coare import c35

@@ -22,7 +22,8 @@ share/python-wheels/
 docs/_build/
 
 # Jupyter Notebook
-.ipynb_checkpoints
+*.ipynb_checkpoints
+*.ipynb
 
 # IPython
 profile_default/

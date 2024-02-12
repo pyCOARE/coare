@@ -7,9 +7,9 @@
 
 ## COARE-algorithm
 
-This is an beta version of the implementation of the [COARE algorithm](https://github.com/NOAA-PSL/COARE-algorithm) that was written with the goal of standardizing testing, packaging, and distribution of the algorithm. Currently only COARE v3.5 is implemented - hopefully v3.6 will come soon! 
+This is a beta version of an implementation of the [COARE algorithm](https://doi.org/10.1175/1520-0442(2003)016%3C0571:BPOASF%3E2.0.CO;2) that builds on the original NOAA (https://github.com/NOAA-PSL/COARE-algorithm). Currently only COARE v3.5 is implemented - hopefully v3.6 will come soon! 
 
-The functionality of the code is ideally the same as that for the scripts found in the NOAA PSL repository linked above. My only intended contributions are towards formatting, testing, and packaging. To that end, tests have been constructed based on the output of the original MATLAB code for COARE v3.5. [View the results of the tests](https://github.com/pyCOARE/coare/actions/workflows/tests.yml) or [download the data](https://github.com/pyCOARE/coare/tree/main/tests/data) and run them yourself. All results from this script agree to at least five significant figures with the MATLAB scripts in the NOAA repository, provided the testing badge above stays green. 
+This version makes minor updates to the code itself, refactors code to improve readability, maintability, and distribution, and creates a standardized API for calling functions. [See the changelog](https://github.com/pyCOARE/coare/blob/main/docs/changelog.md) for all mathematically relevant changes made to the original code.
 
 ## Installation
 
@@ -25,7 +25,7 @@ pip install git+https://github.com/pyCOARE/coare
 
 ## Contribution
 
-I welcome any contributions - please feel free to [raise an issue](https://github.com/pyCOARE/coare/issues) or submit a [pull request](https://github.com/pyCOARE/coare/pulls).
+I welcome any contributions. Please feel free to [raise an issue](https://github.com/pyCOARE/coare/issues) or submit a [pull request](https://github.com/pyCOARE/coare/pulls). 
 
 ## Origins and Credits
 The international TOGA-COARE field program which took place in the western Pacific warm pool over 4 months from November 1992 to February 1993 ([Fairall et al. 1996a](https://github.com/noaa-psd/COARE-algorithm/blob/master/References/Fairall%20et%20al.%201996a%20-%20cool%20skin%20warm%20layer.pdf), [1996b](https://github.com/noaa-psd/COARE-algorithm/blob/master/References/Fairall%20et%20al.%201996b%20-%20bulk%20fluxes%20of%20variables.pdf) and [1997](https://github.com/noaa-psd/COARE-algorithm/blob/master/References/Fairall%20et%20al.%201997%20-%20ship%20measurements%20MABL.pdf)) spurred the development of the COARE model. The algorithm is intended to provide estimates of `momentum, sensible heat`, and `latent heat fluxes` using inputs of bulk atmospheric variables (`wind speed, SST, air temperature, air humidity`). The algorithm contains subroutines/functions to handle near-surface gradients of temperature in the ocean.
