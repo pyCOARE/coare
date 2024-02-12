@@ -1,89 +1,75 @@
 import numpy as np
+from numpy.typing import NDArray, ArrayLike
 
 
-def grv(lat):
-    # computes g [m/sec^2] given lat in deg
-    gamma = 9.7803267715
-    c1 = 0.0052790414
-    c2 = 2.32718e-05
-    c3 = 1.262e-07
-    c4 = 7e-10
-    phi = lat * np.pi / 180
-    x = np.sin(phi)
-    g = gamma * (1 + c1 * x ** 2 + c2 * x ** 4 + c3 * x ** 6 + c4 * x ** 8)
-    return g
+def grv(lat: ArrayLike) -> NDArray[np.float64]:
+    """Normal gravity at latitude lat (degrees) using the WGS84 ellipsoid.
 
-
-def rhcalc(t, p, q):
+    :param lat: latitude (degrees)
+    :type lat: ArrayLike
+    :return: normal gravity (m/s^2)
+    :rtype: NDArray[np.float64]
     """
-    usage: rh = rhcalc(t,p,q)
-    Returns RH(%) for given t(C), p(mb) and specific humidity, q(kg/kg)
+    lat = np.deg2rad(np.asarray(lat, dtype=float))
+    e = 8.1819190842622e-2  # first eccentricity of Earth
+    a = 6378137  # semi-major Earth axis (m)
+    b = 6356752.314  # semi-minor Earth axis (m)
+    gamma_p = 9.8321849379  # normal gravity at the pole (m/s^2)
+    gamma_e = 9.7803253359  # normal gravity at the equator (m/s^2)
+    k = b*gamma_p/(a*gamma_e) - 1
+    gamma = gamma_e*(1 + k * np.sin(lat)**2)/np.sqrt(1 - e**2*np.sin(lat)**2)
+    return gamma
 
-    Returns ndarray float for any numeric object input.
+
+def rhcalc(t: ArrayLike,
+           p: ArrayLike,
+           q: ArrayLike,
+           ) -> NDArray[np.float64]:
+    """Compute relative humidity from temperature, pressure, and specific humidity.
+    :param t: temperature (degC)
+    :type t: ArrayLike
+    :param p: pressure (mb)
+    :type p: ArrayLike
+    :param q: specific humidity (g/kg)
+    :type q: ArrayLike
+    :return: relative humidity (%)
+    :rtype: NDArray[np.float64]
     """
-    q2 = np.copy(np.asarray(q, dtype=float))    # conversion to ndarray float
-    p2 = np.copy(np.asarray(p, dtype=float))
-    t2 = np.copy(np.asarray(t, dtype=float))
-    es = qsat(t2, p2)
-    em = p2 * q2 / (0.622 + 0.378 * q2)
+    t = np.asarray(t, dtype=float)
+    p = np.asarray(p, dtype=float)
+    q = np.asarray(q, dtype=float)
+    es = qsat(t, p)
+    em = p * q / (0.622 + 0.378 * q)
     rh = 100.0 * em / es
     return rh
 
 
-def find(b):
+def qsat(t: ArrayLike, p: ArrayLike) -> NDArray[np.float64]:
+    """Returns saturation vapor pressure from temperature and pressure.
+
+    :param t: temperature (degC)
+    :type t: ArrayLike
+    :param p: pressure (mb)
+    :type p: ArrayLike
+    :return: saturation vapor pressure (g/kg)
+    :rtype: NDArray[np.float64]
     """
-
-    Usage: idx = find(b) - Returns sorted array of indices where boolean
-    input array b is true.  Similar to MATLAB find function.
-
-    Input may be a 1-D boolean array or any expression that evaluates to
-    a 1-D boolean: e.g. ii = find(x < 3), where x is a 1-D ndarray.
-    This syntax is similar to MATLAB usage.
-
-    2-D or higher arrays could be flattened prior to calling find() and
-    then reconstituted with reshape.  This modification could be added to
-    this function as well to support N-D arrays.
-
-    Returns 1-D ndarray of int64.
-
-    """
-    if type(b) is not np.ndarray:
-        raise ValueError('find: Input should be ndarray')
-    if b.dtype != 'bool':
-        raise ValueError('find: Input should be boolean array')
-    if b.ndim > 1:
-        raise ValueError('find: Input should be 1-D')
-
-    F = b.size - np.sum(b)    # number of False in b
-    idx = np.argsort(b)[F:]   # argsort puts True at the end, so select [F:]
-    idx = np.sort(idx)        # be sure values in idx are ordered low to high
-
-    return idx
-
-
-def qsat(t, p):
-    """
-    usage: es = qsat(t,p)
-    Returns saturation vapor pressure es (mb) given t(C) and p(mb).
-
-    After Buck, 1981: J.Appl.Meteor., 20, 1527-1532
-
-    Returns ndarray float for any numeric object input.
-    """
-    t2 = np.copy(np.asarray(t, dtype=float))  # convert to ndarray float
-    p2 = np.copy(np.asarray(p, dtype=float))
-    es = 6.1121 * np.exp(17.502 * t2 / (240.97 + t2))
-    es = es * (1.0007 + p2 * 3.46e-6)
+    t = np.asarray(t, dtype=float)
+    p = np.asarray(p, dtype=float)
+    es = 6.1121 * np.exp(17.502 * t / (240.97 + t))
+    es = es * (1.0007 + p * 3.46e-6)
     return es
 
 
-def qsea(t, p):
-    """
-    usage: qs = qsea(t,p)
-    Returns saturation specific humidity (g/kg) at sea surface
-    given t(C) and p(mb) input of any numeric type.
+def qsea(t: ArrayLike, p: ArrayLike) -> NDArray[np.float64]:
+    """Returns saturation specific humidity at sea surface from temperature and pressure.
 
-    Returns ndarray float for any numeric object input.
+    :param t: temperature (degC)
+    :type t: ArrayLike
+    :param p: pressure (mb)
+    :type p: ArrayLike
+    :return: saturation specific humidity (g/kg)
+    :rtype: NDArray[np.float64]
     """
     ex = qsat(t, p)  # returns ex as ndarray float
     es = 0.98 * ex
@@ -91,213 +77,143 @@ def qsea(t, p):
     return qs
 
 
-def qair(t, p, rh):
+def qair(t: ArrayLike,
+         p: ArrayLike,
+         rh: ArrayLike
+         ) -> NDArray[np.float64]:
+    """Returns specific humidity given temperature, pressure, and relative humidity.
+
+    :param t: temperature (degC)
+    :type t: ArrayLike
+    :param p: pressure (mb)
+    :type p: ArrayLike
+    :param rh: relative humidity (%)
+    :type rh: ArrayLike
+    :return: specific humidity (g/kg), partial pressure (mb)
+    :rtype: tuple[NDArray[np.float64], NDArray[np.float64]]
     """
-    usage: qa, em = qair(t,p,rh)
-    Returns specific humidity (g/kg) and partial pressure (mb)
-    given t(C), p(mb) and rh(%).
-
-    Returns ndarray float for any numeric object input.
-    """
-    rh2 = np.copy(np.asarray(rh, dtype=float))  # conversion to ndarray float
-    rh2 /= 100.0                         # frational rh
-    p2 = np.copy(np.asarray(p, dtype=float))
-    t2 = np.copy(np.asarray(t, dtype=float))
-    em = rh2 * qsat(t2, p2)
-    qa = 621.97 * em / (p2 - 0.378 * em)
-    return (qa, em)
+    rh = np.asarray(rh, dtype=float)
+    rh /= 100.0
+    p = np.asarray(p, dtype=float)
+    t = np.asarray(t, dtype=float)
+    em = rh * qsat(t, p=p)
+    qa = 621.97 * em / (p - 0.378 * em)
+    return qa
 
 
-def psit_26(z_L):
-    """
-    usage psi = psit_26(z_L)
+def psit_26(z_L: ArrayLike) -> NDArray[np.float64]:
+    """Computes the temperature structure function given z/L
 
-    Computes the temperature structure function given z/L.
+    :param z_L: stability parameter
+    :type z_L: ArrayLike
+    :return: temperature structure function
+    :rtype: NDArray[np.float64]
     """
     zet = np.copy(np.asarray(z_L, dtype=float))  # conversion to ndarray float
-    dzet = 0.35*zet
-    dzet[dzet > 50] = 50.           # stable
-    psi = -((1 + 0.6667*zet)**1.5 + 0.6667*(zet - 14.28)*np.exp(-dzet) + 8.525)
-    k = find(zet < 0)            # unstable
-    x = (1 - 15*zet[k])**0.5
-    psik = 2*np.log((1 + x)/2.)
-    x = (1 - 34.15*zet[k])**0.3333
-    psic = (1.5*np.log((1.+x+x**2)/3.)
-            - np.sqrt(3)*np.arctan((1 + 2*x)/np.sqrt(3)))
-    psic += 4*np.arctan(1.)/np.sqrt(3.)
+    # compute psi_t for stable conditions by Beljaars & Holtslag 1991
+    a = 1
+    b = 0.6667
+    c = 5
+    d = 0.35
+    dzet = d*zet
+    dzet[dzet > 50] = 50.
+    psi = np.nan*np.empty(zet.shape, dtype=float)
+    k = np.flatnonzero(zet >= 0)
+    psi[k] = -((1 + 2/3*a*zet[k])**(3/2) + b*(zet[k] - c/d)*np.exp(-dzet[k]) + b*c/d - 1)
+    # compute convective psi_t for unstable conditions by Grachev et. al., 2000
+    k = np.flatnonzero(zet < 0)
+    x = (1 - 15*zet[k])**(1/2)
+    psik = 2*np.log((1 + x)/2.)  # kansas psi
+    x = (1 - 34.15*zet[k])**(1/3)
+    psic = (3/2*np.log((x**2 + x + 1)/3)  # free convective psi
+            - np.sqrt(3)*np.arctan((2*x + 1)/np.sqrt(3))
+            + np.pi/np.sqrt(3))
+    # combine free convective and kansas psi
     f = zet[k]**2 / (1. + zet[k]**2.)
     psi[k] = (1-f)*psik + f*psic
     return psi
 
 
-def psiu_26(z_L):
-    """
-    usage: psi = psiu_26(z_L)
+def psiu_26(z_L: ArrayLike) -> NDArray[np.float64]:
+    """Computes the velocity structure function given z/L
 
-    Computes velocity structure function given z/L
+    :param z_L: stability parameter
+    :type z_L: ArrayLike
+    :return: velocity structure function
+    :rtype: NDArray[np.float64]
     """
     zet = np.copy(np.asarray(z_L, dtype=float))   # conversion to ndarray float
-    dzet = 0.35*zet
-    dzet[dzet > 50] = 50.           # stable
+    # compute psi_u for stable conditions by Beljaars & Holtslag 1991
     a = 0.7
     b = 3./4.
     c = 5.
     d = 0.35
-    psi = -(a*zet + b*(zet - c/d)*np.exp(-dzet) + b*c/d)
-    k = find(zet < 0)         # unstable
-    x = (1 - 15*zet[k])**0.25
-    psik = (2.*np.log((1.+x)/2.) + np.log((1.+x*x)/2.)
-            - 2.*np.arctan(x) + 2.*np.arctan(1.))
-    x = (1 - 10.15*zet[k])**0.3333
-    psic = (1.5*np.log((1.+x+x**2)/3.)
-            - np.sqrt(3.)*np.arctan((1.+2.*x)/np.sqrt(3.)))
-    psic += 4*np.arctan(1.)/np.sqrt(3.)
+    dzet = d*zet
+    dzet[dzet > 50] = 50.
+    psi = np.nan*np.empty(zet.shape, dtype=float)
+    k = np.flatnonzero(zet >= 0)
+    psi[k] = -(a*zet[k] + b*(zet[k] - c/d)*np.exp(-dzet[k]) + b*c/d)
+    # compute convective psi for unstable conditions by Grachev et. al., 2000
+    k = np.flatnonzero(zet < 0)  # only compute where zet < 0
+    x = (1 - 15*zet[k])**(1/4)
+    psik = (2.*np.log((1.+x)/2.) + np.log((1.+x*x)/2.)  # kansas psi
+            - 2.*np.arctan(x) + np.pi/2)
+    x = (1 - 10.15*zet[k])**(1/3)
+    psic = (3/2*np.log((x**2 + x + 1)/3)  # free convective psi
+            - np.sqrt(3)*np.arctan((2*x + 1)/np.sqrt(3))
+            + np.pi/np.sqrt(3))
+    # combine free convective and kansas psi
     f = zet[k]**2 / (1.+zet[k]**2)
     psi[k] = (1-f)*psik + f*psic
     return psi
 
 
-def psiu_40(z_L):
-    """
-    usage: psi = psiu_40(z_L)
+def psiu_40(z_L: ArrayLike) -> NDArray[np.float64]:
+    """Computes velocity structure function given z/L
 
-    Computes velocity structure function given z/L
+    :param z_L: stability parameter
+    :type z_L: ArrayLike
+    :return: velocity structure function
+    :rtype: NDArray[np.float64]
     """
-    zet = np.copy(np.asarray(z_L, dtype=float))  # conversion to ndarray float
-    dzet = 0.35*zet
-    dzet[dzet > 50] = 50.           # stable
+    zet = np.copy(np.asarray(z_L, dtype=float))
+    # compute psi_u for stable conditions by Beljaars & Holtslag 1991
     a = 1.
     b = 3./4.
     c = 5.
     d = 0.35
-    psi = -(a*zet + b*(zet - c/d)*np.exp(-dzet) + b*c/d)
-    k = find(zet < 0)         # unstable
-    x = (1. - 18.*zet[k])**0.25
-    psik = (2.*np.log((1.+x)/2.) + np.log((1.+x*x)/2.)
-            - 2.*np.arctan(x) + 2.*np.arctan(1.))
-    x = (1. - 10.*zet[k])**0.3333
-    psic = (1.5*np.log((1.+x+x**2)/3.)
-            - np.sqrt(3.)*np.arctan((1.+2.*x)/np.sqrt(3.)))
-    psic += 4.*np.arctan(1.)/np.sqrt(3.)
+    dzet = d*zet
+    dzet[dzet > 50] = 50.
+    psi = np.nan*np.empty(zet.shape, dtype=float)
+    k = np.flatnonzero(zet >= 0)
+    psi[k] = -(a*zet[k] + b*(zet[k] - c/d)*np.exp(-dzet[k]) + b*c/d)
+    # compute convective psi for unstable conditions by Grachev et. al., 2000
+    k = np.flatnonzero(zet < 0)
+    x = (1. - 18.*zet[k])**(1/4)
+    psik = (2.*np.log((1.+x)/2.) + np.log((1.+x*x)/2.)  # kansas psi
+            - 2.*np.arctan(x) + np.pi/2)
+    x = (1. - 10*zet[k])**(1/3)
+    psic = (3/2*np.log((x**2 + x + 1)/3)  # free convective psi
+            - np.sqrt(3)*np.arctan((2*x + 1)/np.sqrt(3))
+            + np.pi/np.sqrt(3))
+    # combine free convective and kansas psi
     f = zet[k]**2 / (1.+zet[k]**2)
     psi[k] = (1-f)*psik + f*psic
     return psi
 
 
-def check_size(arr, N, name='Input'):
-    arr = np.copy(np.asarray(arr, dtype=float))
+def _check_size(arr: ArrayLike, N: int, name: str = 'Input', warn=False) -> NDArray[np.float64]:
+    arr = np.asarray(arr, dtype=float)
     if arr.size != N and arr.size != 1:
         raise ValueError(
-            f'coare35vn: {name} array of different length than u'
+            f'pyCOARE: {name} array of different length than u'
         )
     elif arr.size == 1:
-        arr = arr * np.ones(N)
+        if warn:
+            print(
+                f'pyCOARE: {name} array of length 1, broadcasting to length {N}'
+            )
+        arr = arr * np.ones(N, dtype=np.float64)
         return arr
     else:
         return arr
-
-
-def __return_vars(out, usr, tau, hsb, hlb, hbb, hsbb, hlwebb, tsr, qsr,
-                  zot, zoq, Cd, Ch, Ce, L, zet, dter, dqer, tkt, Urf,
-                  Trf, Qrf, RHrf, UrfN, Rnl, Le, rhoa, UN, U10, U10N,
-                  RF, Cdn_10, Chn_10, Cen_10, Evap, Qs, Q10, RH10):
-    if out == 'default':
-        A = np.squeeze(
-            np.column_stack(
-                np.array([
-                    usr, tau, hsb, hlb, hlwebb, tsr, qsr,
-                    zot, zoq, Cd, Ch, Ce, L, zet, dter, dqer,
-                    tkt, RF, Cdn_10, Chn_10, Cen_10
-                ])
-            )
-        )
-    elif out == 'all':
-        A = np.squeeze(
-            np.column_stack(
-                np.array([
-                    usr, tau, hsb, hlb, hbb, hsbb, hlwebb, tsr, qsr,
-                    zot, zoq, Cd, Ch, Ce, L, zet, dter, dqer, tkt, Urf,
-                    Trf, Qrf, RHrf, UrfN, Rnl, Le, rhoa, UN, U10, U10N,
-                    RF, Cdn_10, Chn_10, Cen_10, Evap, Qs, Q10, RH10
-                ])
-            )
-        )
-    elif out == 'usr':
-        A = np.squeeze(np.column_stack(np.array([usr])))
-    elif out == 'tau':
-        A = np.squeeze(np.column_stack(np.array([tau])))
-    elif out == 'hsb':
-        A = np.squeeze(np.column_stack(np.array([hsb])))
-    elif out == 'hlb':
-        A = np.squeeze(np.column_stack(np.array([hlb])))
-    elif out == 'hbb':
-        A = np.squeeze(np.column_stack(np.array([hbb])))
-    elif out == 'hlwebb':
-        A = np.squeeze(np.column_stack(np.array([hlwebb])))
-    elif out == 'tsr':
-        A = np.squeeze(np.column_stack(np.array([tsr])))
-    elif out == 'qsr':
-        A = np.squeeze(np.column_stack(np.array([qsr])))
-    elif out == 'zot':
-        A = np.squeeze(np.column_stack(np.array([zot])))
-    elif out == 'zoq':
-        A = np.squeeze(np.column_stack(np.array([zoq])))
-    elif out == 'Cd':
-        A = np.squeeze(np.column_stack(np.array([Cd])))
-    elif out == 'Ch':
-        A = np.squeeze(np.column_stack(np.array([Ch])))
-    elif out == 'Ce':
-        A = np.squeeze(np.column_stack(np.array([Ce])))
-    elif out == 'L':
-        A = np.squeeze(np.column_stack(np.array([L])))
-    elif out == 'zet':
-        A = np.squeeze(np.column_stack(np.array([zet])))
-    elif out == 'dter':
-        A = np.squeeze(np.column_stack(np.array([dter])))
-    elif out == 'dqer':
-        A = np.squeeze(np.column_stack(np.array([dqer])))
-    elif out == 'tkt':
-        A = np.squeeze(np.column_stack(np.array([tkt])))
-    elif out == 'Urf':
-        A = np.squeeze(np.column_stack(np.array([Urf])))
-    elif out == 'Trf':
-        A = np.squeeze(np.column_stack(np.array([Trf])))
-    elif out == 'Qrf':
-        A = np.squeeze(np.column_stack(np.array([Qrf])))
-    elif out == 'RHrf':
-        A = np.squeeze(np.column_stack(np.array([RHrf])))
-    elif out == 'UrfN':
-        A = np.squeeze(np.column_stack(np.array([UrfN])))
-    elif out == 'Rnl':
-        A = np.squeeze(np.column_stack(np.array([Rnl])))
-    elif out == 'Le':
-        A = np.squeeze(np.column_stack(np.array([Le])))
-    elif out == 'rhoa':
-        A = np.squeeze(np.column_stack(np.array([rhoa])))
-    elif out == 'UN':
-        A = np.squeeze(np.column_stack(np.array([UN])))
-    elif out == 'U10':
-        A = np.squeeze(np.column_stack(np.array([U10])))
-    elif out == 'U10N':
-        A = np.squeeze(np.column_stack(np.array([U10N])))
-    elif out == 'Cdn_10':
-        A = np.squeeze(np.column_stack(np.array([Cdn_10])))
-    elif out == 'Chn_10':
-        A = np.squeeze(np.column_stack(np.array([Chn_10])))
-    elif out == 'Cen_10':
-        A = np.squeeze(np.column_stack(np.array([Cen_10])))
-    elif out == 'RF':
-        A = np.squeeze(np.column_stack(np.array([RF])))
-    elif out == 'Evap':
-        A = np.squeeze(np.column_stack(np.array([Evap])))
-    elif out == 'Qs':
-        A = np.squeeze(np.column_stack(np.array([Qs])))
-    elif out == 'Q10':
-        A = np.squeeze(np.column_stack(np.array([Q10])))
-    elif out == 'RH10':
-        A = np.squeeze(np.column_stack(np.array([RH10])))
-    else:
-        raise ValueError(f'String \'{out}\' is not a valid output variable name! See '
-                         + 'https://github.com/pyCOARE/coare/blob/main/docs/io_info/c35_outputs.md'
-                         + ' for a list of valid output variable names.')
-    return A

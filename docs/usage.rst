@@ -5,20 +5,18 @@ Usage
 
 The primary function in the package is the COARE v3.5 algorithm. Usage::
 
-    >>> from pycoare.coare import c35
+    >>> from pycoare import c35
     >>> c35(u, **kwargs)
     
 Include other kwargs as desired
 
-
-.. autofunction:: pycoare.coare.c35
+.. autofunction:: pycoare.c35
 
 Usage example of obtaining wind stress with default values::
 
-    >>> from pycoare.coare import c35
-    >>> c35(np.arange(0, 3, 0.5), out='tau')
-    [0.         0.00060099 0.00165964 0.00319525 0.00520422 0.0076875 ]
-
+    >>> from pycoare import c35
+    >>> c35.tau([0.0, 0.5, 1.0, 1.5, 2.0, 2.5])
+    array([0.        , 0.00060093, 0.00165957, 0.00319516, 0.00520412, 0.00768739])
 
 Additional notes on this COARE v3.5 implementation:
 
