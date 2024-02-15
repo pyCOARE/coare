@@ -10,7 +10,8 @@ The primary function in the package is the COARE v3.5 algorithm. Usage::
     
 Include other kwargs as desired
 
-.. autoclass:: pycoare.c35
+.. automodule:: pycoare.coare
+   :members:
 
 Usage example of obtaining wind stress with default values::
 

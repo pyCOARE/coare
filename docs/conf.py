@@ -10,8 +10,8 @@ sys.path.insert(0, os.path.abspath('..'))
 project = 'pyCOARE'
 author = 'Andrew Scherer'
 
-release = 'b1'
-version = '2023.10b1'
+release = '1'
+version = '0.1.0'
 
 # -- General configuration
 
@@ -37,8 +37,31 @@ intersphinx_disabled_domains = ['std']
 
 templates_path = ['_templates']
 
-# -- Options for HTML output
+# -- Options for HTML output ----------------------------------------------
+# The theme to use for HTML and HTML Help pages.  See the documentation for
+# a list of builtin themes.
+html_theme = "sphinx_book_theme"
+html_title = ""
 
-html_theme = 'sphinx_rtd_theme'
+html_context = {
+    "github_user": "pycoare",
+    "github_repo": "coare",
+    "github_version": "main",
+    "doc_path": "docs",
+}
 
-# -- Options for EPUB output
+# Theme options are theme-specific and customize the look and feel of a theme
+# further.  For a list of options available for each theme, see the
+# documentation.
+html_theme_options = dict(
+    repository_url="https://github.com/pyCOARE/coare",
+    repository_branch="main",
+    html_title="pyCOARE",
+    navigation_with_keys=False,
+    path_to_docs="doc",
+    use_edit_page_button=True,
+    use_repository_button=True,
+    use_issues_button=True,
+    home_page_in_toc=False,
+    icon_links=[],
+)
