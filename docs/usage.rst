@@ -3,8 +3,11 @@ Usage
 
 .. _Usage:
 
-The COARE v3.5 algorithm is based on the `COARE 3.0 code <https://doi.org/10.1175/1520-0442(2003)016<0571:BPOASF>2.0.CO;2>`_ 
-with modifications from the results of the `CLIMODE, MBL and CBLAST experiments <https://doi.org/10.1175/JPO-D-12-0173.1>`_.
+The COARE v3.5 algorithm is based on the `COARE 3.0 code <_fairall2003>`_ 
+with modifications from the results of the `CLIMODE, MBL and CBLAST experiments <_edson2013>`_.
+
+.. _fairall2003: https://doi.org/10.1175/1520-0442(2003)016<0571:BPOASF>2.0.CO;2
+.. _edson2013: https://doi.org/10.1175/JPO-D-12-0173.1
 
 Functions within pycoare can be invoked to access specific variables such as wind stress or friction velocity,
 accessed via static functions:
@@ -41,6 +44,6 @@ otherwise use jcool=1 if ts is the bulk temperature (default case).
 Default values are included, but should probably be edited to be specific to your region.
 ```
 
-.. autoclass:: pycoare.coare
+.. autoclass:: pycoare.coare.c35
    :members:
    
