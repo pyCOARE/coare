@@ -24,15 +24,14 @@ which improves performance. After instantiation, desired variables can be access
     >>> c = c35([0.0, 0.5, 1.0, 1.5, 2.0, 2.5])  # algorith is run only once, right now
     >>> c.tau()  # only prints wind stress, does not run algorithm
     array([0.        , 0.00060093, 0.00165957, 0.00319516, 0.00520412, 0.00768739])
-    >>> c.ustar()  # can access other variables as well
-
 
 Only a handful of variables are currently accessible by functions, which are all included in this page (if you want a dedicated function added, consider `contributing on GitHub <https://github.com/pyCOARE/coare/issues>`_).
-However, all variables used in the bulk flux algorithm are accesible through the object oriented API in subclasses of the main c35 class:
+However, all variables used in the bulk flux algorithm are accesible through the object oriented API as instance variables accessible through an instance of the c35 class:
 
     >>> from pycoare import c35
     >>> c = c35([0.0, 0.5, 1.0, 1.5, 2.0, 2.5])
-    >>> c.bulk_loop_outputs.obukL
+    >>> c.fluxes.tau
+    array([0.        , 0.00060093, 0.00165957, 0.00319516, 0.00520412, 0.00768739])
 
 ```{note}
 Parameter jcool is used for interpretation of the ocean temperature
@@ -46,4 +45,17 @@ Default values are included, but should probably be edited to be specific to you
 
 .. autoclass:: pycoare.coare.c35
    :members:
-   
+
+.. autoclass:: pycoare.coare.fluxes
+
+.. autoclass:: pycoare.coare.transfer_coeffs
+
+.. autoclass:: pycoare.coare.stability_functions
+
+.. autoclass:: pycoare.coare.stability_parameters
+
+.. autoclass:: pycoare.coare.velocities
+
+.. autoclass:: pycoare.coare.temperatures
+
+.. autoclass:: pycoare.coare.humidities

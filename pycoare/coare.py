@@ -200,109 +200,6 @@ class c35:
         zoq: NDArray[np.float64]
         ta: NDArray[np.float64]
 
-    class _Fluxes:
-        def __init__(self, bulk_loop_inputs, bulk_loop_outputs):
-            # compute fluxes
-            self.tau = bulk_loop_inputs.rhoa*bulk_loop_outputs.usr**2/bulk_loop_outputs.gf
-            self.hsb = -bulk_loop_inputs.rhoa*c35.CPA*bulk_loop_outputs.usr*bulk_loop_outputs.tsr
-            self.hlb = (-bulk_loop_inputs.rhoa*bulk_loop_inputs.lhvap
-                        * bulk_loop_outputs.usr*bulk_loop_outputs.qsr)
-            self.hbb = -bulk_loop_inputs.rhoa*c35.CPA*bulk_loop_outputs.usr*bulk_loop_outputs.tvsr
-            self.hsbb = -bulk_loop_inputs.rhoa*c35.CPA*bulk_loop_outputs.usr*bulk_loop_outputs.tssr
-            self.wbar = (1.61*self.hlb/bulk_loop_inputs.lhvap
-                         / (1+1.61*bulk_loop_inputs.q) / bulk_loop_inputs.rhoa
-                         + self.hsb/bulk_loop_inputs.rhoa/c35.CPA/bulk_loop_outputs.ta)
-            self.hlwebb = bulk_loop_inputs.rhoa*self.wbar*bulk_loop_inputs.q*bulk_loop_inputs.lhvap
-            self.evap = 1000*self.hlb/bulk_loop_inputs.lhvap/1000*3600
-            # rain heat flux after Gosnell et al., JGR, 1995
-            if bulk_loop_inputs.rain is None:
-                self.rf = np.nan*np.zeros(bulk_loop_outputs.usr.size)
-            else:
-                # water vapour diffusivity
-                dwat = 2.11e-5*((bulk_loop_inputs.t + c35.TDK)/c35.TDK)**1.94
-                # heat diffusivity
-                dtmp = ((1 + 3.309e-3*bulk_loop_inputs.t - 1.44e-6*bulk_loop_inputs.t**2)
-                        * 0.02411/(bulk_loop_inputs.rhoa*c35.CPA))
-                # Clausius-Clapeyron
-                dqs_dt = (bulk_loop_inputs.q*bulk_loop_inputs.lhvap
-                          / (c35.RGAS*(bulk_loop_inputs.t + c35.TDK)**2))
-                # wet bulb factor
-                alfac = 1/(1 + 0.622*(dqs_dt*bulk_loop_inputs.lhvap*dwat)/(c35.CPA*dtmp))
-                self.rf = (bulk_loop_inputs.rain*alfac*c35.CPW
-                           * ((bulk_loop_inputs.ts - bulk_loop_inputs.t
-                               - bulk_loop_outputs.dter*bulk_loop_inputs.jcool)
-                              + (bulk_loop_inputs.qs - bulk_loop_inputs.q
-                                 - bulk_loop_outputs.dqer*bulk_loop_inputs.jcool)
-                              * bulk_loop_inputs.lhvap/c35.CPA)/3600)
-
-    class _TransferCoeffs:
-        def __init__(self, bulk_loop_inputs, bulk_loop_outputs, fluxes):
-            # compute transfer coeffs relative to ut @ meas. ht
-            self.cd = (fluxes.tau/bulk_loop_inputs.rhoa/bulk_loop_outputs.ut
-                       / np.maximum(0.1, bulk_loop_outputs.du))
-            self.ch = (-bulk_loop_outputs.usr*bulk_loop_outputs.tsr/bulk_loop_outputs.ut
-                       / (bulk_loop_outputs.dt - bulk_loop_outputs.dter*bulk_loop_inputs.jcool))
-            self.ce = (-bulk_loop_outputs.usr*bulk_loop_outputs.qsr
-                       / (bulk_loop_outputs.dq - bulk_loop_outputs.dqer*bulk_loop_inputs.jcool)
-                       / bulk_loop_outputs.ut)
-            # compute at ref height zrf neutral coeff relative to ut
-            self.cdn_rf = (1000*c35.VON**2
-                           / np.log(bulk_loop_inputs.zrf/bulk_loop_outputs.zo)**2)
-            self.chn_rf = (1000*c35.VON**2 * c35.FDG
-                           / np.log(bulk_loop_inputs.zrf/bulk_loop_outputs.zo)
-                           / np.log(bulk_loop_inputs.zrf/bulk_loop_outputs.zot))
-            self.cen_rf = (1000*c35.VON**2 * c35.FDG
-                           / np.log(bulk_loop_inputs.zrf/bulk_loop_outputs.zo)
-                           / np.log(bulk_loop_inputs.zrf/bulk_loop_outputs.zoq))
-
-    class _StabilityFunctions:
-        def __init__(self, bulk_loop_inputs, bulk_loop_outputs):
-            # compute the stability functions
-            self.psi_u = psiu_26(bulk_loop_inputs.zu/bulk_loop_outputs.obukL)
-            self.psi_u_rf = psiu_26(bulk_loop_inputs.zrf/bulk_loop_outputs.obukL)
-            self.psi_t = psit_26(bulk_loop_inputs.zt/bulk_loop_outputs.obukL)
-            self.psi_t_rf = psit_26(bulk_loop_inputs.zrf/bulk_loop_outputs.obukL)
-            self.psi_q = psit_26(bulk_loop_inputs.zq/bulk_loop_outputs.obukL)
-            self.psi_q_rf = psit_26(bulk_loop_inputs.zrf/bulk_loop_outputs.obukL)
-
-    class _AirProperties:
-        def __init__(self, bulk_loop_inputs, bulk_loop_outputs, stability_functions):
-            # Determine the wind speeds relative to ocean surface
-            # Note that usr is the friction velocity that includes
-            # gustiness usr = sqrt(cd) S, which is equation (18) in
-            # Fairall et al. (1996)
-            self.lapse = bulk_loop_inputs.grav/c35.CPA
-            self.u = bulk_loop_outputs.du
-            self.u_rf = (self.u
-                         + (bulk_loop_outputs.usr / c35.VON / bulk_loop_outputs.gf
-                            * (np.log(bulk_loop_inputs.zrf / bulk_loop_inputs.zu)
-                               - stability_functions.psi_u_rf + stability_functions.psi_u)))
-            self.u_n = (self.u + stability_functions.psi_u * bulk_loop_outputs.usr
-                        / c35.VON / bulk_loop_outputs.gf)
-            self.u_n_rf = (self.u_rf + stability_functions.psi_u_rf * bulk_loop_outputs.usr
-                           / c35.VON / bulk_loop_outputs.gf)
-            self.t_rf = (bulk_loop_inputs.t
-                         + bulk_loop_outputs.tsr/c35.VON
-                         * (np.log(bulk_loop_inputs.zrf/bulk_loop_inputs.zt)
-                            - stability_functions.psi_t_rf + stability_functions.psi_t)
-                         + self.lapse*(bulk_loop_inputs.zt - bulk_loop_inputs.zrf))
-            self.t_n = bulk_loop_inputs.t + stability_functions.psi_t*bulk_loop_outputs.tsr/c35.VON
-            self.t_n_rf = self.t_rf + stability_functions.psi_t_rf*bulk_loop_outputs.tsr/c35.VON
-            self.q_rf = (bulk_loop_inputs.q
-                         + bulk_loop_outputs.qsr/c35.VON
-                         * np.log(bulk_loop_inputs.zrf/bulk_loop_inputs.zq)
-                         - stability_functions.psi_q_rf
-                         + stability_functions.psi_t)
-            self.q_n = (bulk_loop_inputs.q
-                        + (stability_functions.psi_t*bulk_loop_outputs.qsr
-                           / c35.VON/np.sqrt(bulk_loop_outputs.gf)))
-            self.q_n_rf = self.q_rf + stability_functions.psi_q_rf*bulk_loop_outputs.qsr/c35.VON
-            self.rh_rf = rhcalc(self.t_rf, bulk_loop_inputs.p, self.q_rf)
-            # convert to g/kg
-            self.q_rf *= 1000
-            self.q_n *= 1000
-            self.q_n_rf *= 1000
-
     @staticmethod
     def tau(
         u: ArrayLike,
@@ -398,7 +295,7 @@ class c35:
     ) -> NDArray[np.float64]:
         """Calculate friction velocity (m/s) with gustiness.
 
-        :param: see :func:`tau`
+        :param: see inputs to :func:`tau`
         :return: friction velocity (m/s)
         :rtype: NDArray[np.float64]
         """
@@ -432,7 +329,7 @@ class c35:
     ) -> NDArray[np.float64]:
         """Calculate buoyancy flux (W/m^2) into the ocean.
 
-        :param: see :func:`tau`
+        :param: see inputs to :func:`tau`
         :return: buoyancy flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
@@ -466,7 +363,7 @@ class c35:
     ) -> NDArray[np.float64]:
         """Calculate buoyancy flux (W/m^2) into the ocean.
 
-        :param: see :func:`tau`
+        :param: see inputs to :func:`tau`
         :return: buoyancy flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
@@ -500,7 +397,7 @@ class c35:
     ) -> NDArray[np.float64]:
         """Calculate sensible heat flux (W/m^2) into the ocean.
 
-        :param: see :func:`tau`
+        :param: see inputs to :func:`tau`
         :return: sensible heat flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
@@ -534,7 +431,7 @@ class c35:
     ) -> NDArray[np.float64]:
         """Calculate latent heat flux (W/m^2) into the ocean.
 
-        :param: see :func:`tau`
+        :param: see inputs to :func:`tau`
         :return: latent heat flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
@@ -568,7 +465,7 @@ class c35:
     ) -> NDArray[np.float64]:
         """Calculate buoyancy flux (W/m^2) into the ocean.
 
-        :param: see :func:`tau`
+        :param: see inputs to :func:`tau`
         :return: buoyancy flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
@@ -602,7 +499,7 @@ class c35:
     ) -> NDArray[np.float64]:
         """Calculate buoyancy flux (W/m^2) into the ocean.
 
-        :param: see :func:`tau`
+        :param: see inputs to :func:`tau`
         :return: buoyancy flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
@@ -636,7 +533,7 @@ class c35:
     ) -> NDArray[np.float64]:
         """Calculate buoyancy flux (W/m^2) into the ocean.
 
-        :param: see :func:`tau`
+        :param: see inputs to :func:`tau`
         :return: buoyancy flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
@@ -651,23 +548,34 @@ class c35:
         """
         self.bulk_loop_outputs = self._bulk_loop()
 
-        self.fluxes = self._Fluxes(
+        self.fluxes = fluxes(
             self.bulk_loop_inputs,
             self.bulk_loop_outputs
         )
-        self.transfer_coeffs = self._TransferCoeffs(
+        self.transfer_coefficients = transfer_coefficients(
             self.bulk_loop_inputs,
             self.bulk_loop_outputs,
             self.fluxes
         )
-        self.stability_functions = self._StabilityFunctions(
+        self.stability_functions = stability_functions(
             self.bulk_loop_inputs,
             self.bulk_loop_outputs
         )
-        self.air_properties = self._AirProperties(
+        self.velocities = velocities(
             self.bulk_loop_inputs,
             self.bulk_loop_outputs,
             self.stability_functions
+        )
+        self.temperatures = temperatures(
+            self.bulk_loop_inputs,
+            self.bulk_loop_outputs,
+            self.stability_functions
+        )
+        self.humidities = humidities(
+            self.bulk_loop_inputs,
+            self.bulk_loop_outputs,
+            self.stability_functions,
+            self.temperatures
         )
 
     def _bulk_loop(self):
@@ -864,6 +772,304 @@ class c35:
         outputs.update({key: value for key, value in vars(self.bulk_loop_inputs).items()})
         outputs.update({key: value for key, value in vars(self.bulk_loop_outputs).items()})
         outputs.update({key: value for key, value in vars(self.fluxes).items()})
-        outputs.update({key: value for key, value in vars(self.transfer_coeffs).items()})
-        outputs.update({key: value for key, value in vars(self.air_properties).items()})
+        outputs.update({key: value for key, value in vars(self.transfer_coefficients).items()})
+        outputs.update({key: value for key, value in vars(self.velocities).items()})
+        outputs.update({key: value for key, value in vars(self.temperatures).items()})
+        outputs.update({key: value for key, value in vars(self.humidities).items()})
+        outputs.update({key: value for key, value in vars(self.stability_functions).items()})
         return outputs[out]
+
+
+class fluxes:
+    """Fluxes computed from COARE.
+    Should typically be accessed only through an instance of the :class:`c35` class, e.g.,::
+
+        from pycoare import c35
+        c = c35([1])
+        # accessing the Webb correction for latent heat flux
+        c.fluxes.hlwebb
+
+    :ivar rnl: upwelling IR radiataion (W/m^2)
+    :type rnl: ArrayLike
+    :ivar tau: wind stress (N/m^2)
+    :type tau: ArrayLike
+    :ivar hsb: sensible heat flux (W/m^2)
+    :type hsb: ArrayLike
+    :ivar hlb: latent heat flux (W/m^2)
+    :type hlb: ArrayLike
+    :ivar hbb: buoyancy flux (W/m^2)
+    :type hbb: ArrayLike
+    :ivar hsbb: sonic buoyancy flux (W/m^2)
+    :type hsbb: ArrayLike
+    :ivar hlwebb: Webb correction for latent heat flux (W/m^2)
+    :type hlwebb: ArrayLike
+    :ivar evap: evaporation (mm/hr)
+    :type evap: ArrayLike
+    :ivar rf: rain heat flux (W/m^2)
+    :type rf: ArrayLike
+    """
+    def __init__(self, bulk_loop_inputs, bulk_loop_outputs):
+        # compute fluxes
+        self.rnl = bulk_loop_outputs.rnl    #: upwelling IR radiation (W/m^2)
+        self.tau = bulk_loop_inputs.rhoa*bulk_loop_outputs.usr**2/bulk_loop_outputs.gf
+        self.hsb = -bulk_loop_inputs.rhoa*c35.CPA*bulk_loop_outputs.usr*bulk_loop_outputs.tsr
+        self.hlb = (-bulk_loop_inputs.rhoa*bulk_loop_inputs.lhvap
+                    * bulk_loop_outputs.usr*bulk_loop_outputs.qsr)
+        self.hbb = -bulk_loop_inputs.rhoa*c35.CPA*bulk_loop_outputs.usr*bulk_loop_outputs.tvsr
+        self.hsbb = -bulk_loop_inputs.rhoa*c35.CPA*bulk_loop_outputs.usr*bulk_loop_outputs.tssr
+        self.wbar = (1.61*self.hlb/bulk_loop_inputs.lhvap
+                     / (1+1.61*bulk_loop_inputs.q) / bulk_loop_inputs.rhoa
+                     + self.hsb/bulk_loop_inputs.rhoa/c35.CPA/bulk_loop_outputs.ta)
+        self.hlwebb = bulk_loop_inputs.rhoa*self.wbar*bulk_loop_inputs.q*bulk_loop_inputs.lhvap
+        self.evap = 1000*self.hlb/bulk_loop_inputs.lhvap/1000*3600
+        # rain heat flux after Gosnell et al., JGR, 1995
+        if bulk_loop_inputs.rain is None:
+            self.rf = np.nan*np.zeros(bulk_loop_outputs.usr.size)
+        else:
+            # water vapour diffusivity
+            dwat = 2.11e-5*((bulk_loop_inputs.t + c35.TDK)/c35.TDK)**1.94
+            # heat diffusivity
+            dtmp = ((1 + 3.309e-3*bulk_loop_inputs.t - 1.44e-6*bulk_loop_inputs.t**2)
+                    * 0.02411/(bulk_loop_inputs.rhoa*c35.CPA))
+            # Clausius-Clapeyron
+            dqs_dt = (bulk_loop_inputs.q*bulk_loop_inputs.lhvap
+                      / (c35.RGAS*(bulk_loop_inputs.t + c35.TDK)**2))
+            # wet bulb factor
+            alfac = 1/(1 + 0.622*(dqs_dt*bulk_loop_inputs.lhvap*dwat)/(c35.CPA*dtmp))
+            self.rf = (bulk_loop_inputs.rain*alfac*c35.CPW
+                       * ((bulk_loop_inputs.ts - bulk_loop_inputs.t
+                           - bulk_loop_outputs.dter*bulk_loop_inputs.jcool)
+                          + (bulk_loop_inputs.qs - bulk_loop_inputs.q
+                             - bulk_loop_outputs.dqer*bulk_loop_inputs.jcool)
+                          * bulk_loop_inputs.lhvap/c35.CPA)/3600)
+
+
+class velocities:
+    """Velocities computed from COARE.
+    Should typically be accessed only through an instance of the :class:`c35` class, e.g.,::
+
+        from pycoare import c35
+        c = c35([1])
+        # accessing the friction velocity
+        c.velocities.usr
+
+    :ivar ut: wind speed at height zt (m/s)
+    :type ut: ArrayLike
+    :ivar usr: friction velocity (m/s)
+    :type usr: ArrayLike
+    :ivar du: difference between wind speed u and ocean surface current us (m/s)
+    :type du: ArrayLike
+    :ivar gf: ratio of du/ut
+    :type gf: ArrayLike
+    :ivar u: wind speed at height zu (m/s)
+    :type u: ArrayLike
+    :ivar u_rf: wind speed at reference height zrf (m/s)
+    :type u_rf: ArrayLike
+    :ivar u_n: neutral wind speed at height zu (m/s)
+    :type u_n: ArrayLike
+    :ivar u_n_rf: neutral wind speed at reference height zrf (m/s)
+    :type u_n_rf: ArrayLike
+    """
+    def __init__(self, bulk_loop_inputs, bulk_loop_outputs, stability_functions):
+        self.ut = bulk_loop_outputs.ut
+        self.usr = bulk_loop_outputs.usr
+        self.du = bulk_loop_outputs.du
+        self.gf = bulk_loop_outputs.gf
+        self.u = bulk_loop_outputs.du + bulk_loop_inputs.us
+        self.u_rf = (self.u + (bulk_loop_outputs.usr/c35.VON/bulk_loop_outputs.gf
+                               * (np.log(bulk_loop_inputs.zrf / bulk_loop_inputs.zu)
+                                  - stability_functions.psi_u_rf + stability_functions.psi_u)))
+        self.u_n = (self.u + stability_functions.psi_u
+                    * bulk_loop_outputs.usr/c35.VON/bulk_loop_outputs.gf)
+        self.u_n_rf = (self.u_rf + stability_functions.psi_u_rf
+                       * bulk_loop_outputs.usr/c35.VON/bulk_loop_outputs.gf)
+
+
+class temperatures:
+    """Temperatures computed from COARE.
+    Should typically be accessed only through an instance of the :class:`c35` class, e.g.,::
+
+        from pycoare import c35
+        c = c35([1])
+        # accessing the adiabatic lapse rate
+        c.temperatures.lapse
+
+    :ivar lapse: adiabatic lapse rate (K/m)
+    :type lapse: ArrayLike
+    :ivar dt: difference between t and ts (K)
+    :type dt: ArrayLike
+    :ivar dter: cool skin temperature depression (K)
+    :type dter: ArrayLike
+    :ivar t_rf: temperature at reference height zrf (K)
+    :type t_rf: ArrayLike
+    :ivar t_n: neutral temperature at height zt (K)
+    :type t_n: ArrayLike
+    :ivar t_n_rf: neutral temperature at reference height zrf (K)
+    :type t_n_rf: ArrayLike
+    """
+    def __init__(self, bulk_loop_inputs, bulk_loop_outputs, stability_functions):
+        self.lapse = bulk_loop_inputs.grav/c35.CPA
+        self.dt = bulk_loop_outputs.dt
+        self.dter = bulk_loop_outputs.dter
+        self.t_rf = (bulk_loop_inputs.t + bulk_loop_outputs.tsr/c35.VON
+                     * (np.log(bulk_loop_inputs.zrf/bulk_loop_inputs.zt)
+                        - stability_functions.psi_t_rf + stability_functions.psi_t)
+                     + self.lapse*(bulk_loop_inputs.zt - bulk_loop_inputs.zrf))
+        self.t_n = bulk_loop_inputs.t + stability_functions.psi_t*bulk_loop_outputs.tsr/c35.VON
+        self.t_n_rf = self.t_rf + stability_functions.psi_t_rf*bulk_loop_outputs.tsr/c35.VON
+
+
+class humidities:
+    """Stability parameters computed from COARE.
+    Should typically be accessed only through an instance of the :class:`c35` class, e.g.,::
+
+        from pycoare import c35
+        c = c35([1])
+        # accessing the sonic temperature scaling parameter
+        c.humidities.tsr
+
+    :ivar dq: difference between q and qs (g/kg)
+    :type tsr: ArrayLike
+    :ivar dqer: cool skin humidity depression (g/kg)
+    :type tvsr: ArrayLike
+    :ivar q_rf: humidity at reference height zrf (g/kg)
+    :type q_rf: ArrayLike
+    :ivar q_n: neutral humidity at height zq (g/kg)
+    :type q_n: ArrayLike
+    :ivar q_n_rf: neutral humidity at reference height zrf (g/kg)
+    :type q_n_rf: ArrayLike
+    :ivar rh_rf: relative humidity at reference height zrf (%)
+    :type rh_rf: ArrayLike
+    """
+    def __init__(self, bulk_loop_inputs, bulk_loop_outputs, stability_functions, temperatures):
+        self.dq = bulk_loop_outputs.dq
+        self.dqer = bulk_loop_outputs.dqer
+        self.q_rf = (bulk_loop_inputs.q + bulk_loop_outputs.qsr/c35.VON
+                     * (np.log(bulk_loop_inputs.zrf/bulk_loop_inputs.zq)
+                        - stability_functions.psi_q_rf + stability_functions.psi_t))
+        self.q_n = (bulk_loop_inputs.q + (stability_functions.psi_t
+                                          * bulk_loop_outputs.qsr/c35.VON/np.sqrt(bulk_loop_outputs.gf)))
+        self.q_n_rf = self.q_rf + stability_functions.psi_q_rf*bulk_loop_outputs.qsr/c35.VON
+        self.rh_rf = rhcalc(temperatures.t_rf, bulk_loop_inputs.p, self.q_rf)
+        # convert to g/kg
+        self.q_rf *= 1000
+        self.q_n *= 1000
+        self.q_n_rf *= 1000
+
+
+class stability_parameters:
+    """Stability parameters computed from COARE.
+    Should typically be accessed only through an instance of the :class:`c35` class, e.g.,::
+
+        from pycoare import c35
+        c = c35([1])
+        # accessing the sonic temperature scaling parameter
+        c.stability_parameters.tsr
+
+    :ivar tsr: sonic temperature scaling parameter (K)
+    :type tsr: ArrayLike
+    :ivar tvsr: virtual potential temperature scaling parameter (K)
+    :type tvsr: ArrayLike
+    :ivar tssr: sonic temperature scaling parameter (K)
+    :type tssr: ArrayLike
+    :ivar qsr: humidity scaling parameter (g/kg)
+    :type qsr: ArrayLike
+    :ivar tkt: cool skin thickness (m)
+    :type tkt: ArrayLike
+    :ivar obukL: Obukhov length scale (m)
+    :type obukL: ArrayLike
+    :ivar zet: Monin-Obukhov stability parameter
+    :type zet: ArrayLike
+    :ivar zo: roughness length (m)
+    :type zo: ArrayLike
+    :ivar zot: thermal roughness length (m)
+    :type zot: ArrayLike
+    :ivar zoq: moisture roughness length (m)
+    :type zoq: ArrayLike
+    """
+    def __init__(self, tsr, tvsr, tssr, qsr, tkt, obukL, zet, zo, zot, zoq):
+        self.tsr = tsr          #: sonic temperature scaling parameter (K)
+        self.tvsr = tvsr        #: virtual potential temperature scaling parameter (K)
+        self.tssr = tssr        #: sonic temperature scaling parameter (K)
+        self.qsr = qsr          #: humidity scaling parameter (g/kg)
+        self.tkt = tkt          #: cool skin thickness (m)
+        self.obukL = obukL      #: Obukhov length scale (m)
+        self.zet = zet          #: Monin-Obukhov stability parameter
+        self.zo = zo            #: roughness length (m)
+        self.zot = zot          #: thermal roughness length (m)
+        self.zoq = zoq          #: moisture roughness length (m)
+
+
+class transfer_coefficients:
+    """Transfer coefficients computed from COARE.
+    Should typically be accessed only through an instance of the :class:`c35` class, e.g.,::
+
+        from pycoare import c35
+        c = c35([1])
+        # accessing the wind stress transfer coefficient
+        c.transfer_coefficients.cd
+
+    :ivar cd: wind stress transfer (drag) coefficient at height zu
+    :type cd: ArrayLike
+    :ivar ch: sensible heat transfer coefficient (Stanton number) at height zu
+    :type ch: ArrayLike
+    :ivar ce: latent heat transfer coefficient (Dalton number) at height zu
+    :type ce: ArrayLike
+    :ivar cdn_rf: neutral wind stress transfer (drag) coefficient at reference height zrf
+    :type cdn_rf: ArrayLike
+    :ivar chn_rf: neutral sensible heat transfer coefficient (Stanton number) at reference height zrf
+    :type chn_rf: ArrayLike
+    :ivar cen_rf: neutral latent heat transfer coefficient (Dalton number) at reference height zrf
+    :type cen_rf: ArrayLike
+    """
+    def __init__(self, bulk_loop_inputs, bulk_loop_outputs, fluxes):
+        # compute transfer coeffs relative to ut @ meas. ht
+        self.cd = (fluxes.tau/bulk_loop_inputs.rhoa/bulk_loop_outputs.ut
+                   / np.maximum(0.1, bulk_loop_outputs.du))
+        self.ch = (-bulk_loop_outputs.usr*bulk_loop_outputs.tsr/bulk_loop_outputs.ut
+                   / (bulk_loop_outputs.dt - bulk_loop_outputs.dter*bulk_loop_inputs.jcool))
+        self.ce = (-bulk_loop_outputs.usr*bulk_loop_outputs.qsr
+                   / (bulk_loop_outputs.dq - bulk_loop_outputs.dqer*bulk_loop_inputs.jcool)
+                   / bulk_loop_outputs.ut)
+        # compute at ref height zrf neutral coeff relative to ut
+        self.cdn_rf = (1000*c35.VON**2
+                       / np.log(bulk_loop_inputs.zrf/bulk_loop_outputs.zo)**2)
+        self.chn_rf = (1000*c35.VON**2 * c35.FDG
+                       / np.log(bulk_loop_inputs.zrf/bulk_loop_outputs.zo)
+                       / np.log(bulk_loop_inputs.zrf/bulk_loop_outputs.zot))
+        self.cen_rf = (1000*c35.VON**2 * c35.FDG
+                       / np.log(bulk_loop_inputs.zrf/bulk_loop_outputs.zo)
+                       / np.log(bulk_loop_inputs.zrf/bulk_loop_outputs.zoq))
+
+
+class stability_functions:
+    """Stability functions computed from COARE.
+    Should typically be accessed only through an instance of the :class:`c35` class, e.g.,::
+
+        from pycoare import c35
+        c = c35([1])
+        # accessing the wind stress transfer coefficient
+        c.stability_functions.cd
+
+    :ivar psi_u: velocity structure function
+    :type psi_u: ArrayLike
+    :ivar psi_u_rf: velocity structure function at reference height zrf
+    :type psi_u_rf: ArrayLike
+    :ivar psi_t: temperature structure function
+    :type psi_t: ArrayLike
+    :ivar psi_t_rf: temperature structure function at reference height zrf
+    :type psi_t_rf: ArrayLike
+    :ivar psi_q: moisture structure function
+    :type psi_q: ArrayLike
+    :ivar psi_q_rf: moisture structure function at reference height zrf
+    :type psi_q_rf: ArrayLike
+
+    """
+    def __init__(self, bulk_loop_inputs, bulk_loop_outputs):
+        # compute the stability functions
+        self.psi_u = psiu_26(bulk_loop_inputs.zu/bulk_loop_outputs.obukL)
+        self.psi_u_rf = psiu_26(bulk_loop_inputs.zrf/bulk_loop_outputs.obukL)
+        self.psi_t = psit_26(bulk_loop_inputs.zt/bulk_loop_outputs.obukL)
+        self.psi_t_rf = psit_26(bulk_loop_inputs.zrf/bulk_loop_outputs.obukL)
+        self.psi_q = psit_26(bulk_loop_inputs.zq/bulk_loop_outputs.obukL)
+        self.psi_q_rf = psit_26(bulk_loop_inputs.zrf/bulk_loop_outputs.obukL)

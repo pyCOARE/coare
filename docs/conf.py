@@ -24,6 +24,8 @@ extensions = [
     'sphinx_search.extension',
 ]
 
+autodoc_typehints = "none"
+
 source_suffix = {
     '.rst': 'restructuredtext'
 }
