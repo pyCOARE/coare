@@ -22,8 +22,6 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.intersphinx',
     'sphinx_search.extension',
-    'autoclasstoc',
-    'sphinx.ext.viewcode',
 ]
 
 autodoc_typehints = "none"
