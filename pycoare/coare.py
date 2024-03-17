@@ -298,7 +298,7 @@ class c35:
         jcool: int = 1.,
         nits: int = 10
     ) -> NDArray[np.float64]:
-        """Calculate friction velocity (m/s) with gustiness.
+        """Calculate friction velocity (m/s) that includes gustiness.
 
         :param: see inputs to :class:`c35`
         :return: friction velocity (m/s)
@@ -332,10 +332,10 @@ class c35:
         jcool: int = 1.,
         nits: int = 10,
     ) -> NDArray[np.float64]:
-        """Calculate buoyancy flux (W/m^2) into the ocean.
+        """Calculate the temperature scaling parameter.
 
         :param: see inputs to :class:`c35`
-        :return: buoyancy flux (W/m^2)
+        :return: temperature scaling parameter (K)
         :rtype: NDArray[np.float64]
         """
         coare = c35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
@@ -366,10 +366,10 @@ class c35:
         jcool: int = 1.,
         nits: int = 10,
     ) -> NDArray[np.float64]:
-        """Calculate buoyancy flux (W/m^2) into the ocean.
+        """Calculate the humiditiy scaling parameter.
 
         :param: see inputs to :class:`c35`
-        :return: buoyancy flux (W/m^2)
+        :return: humidity scaling parameter (g/kg)
         :rtype: NDArray[np.float64]
         """
         coare = c35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
@@ -502,10 +502,10 @@ class c35:
         jcool: int = 1.,
         nits: int = 10,
     ) -> NDArray[np.float64]:
-        """Calculate buoyancy flux (W/m^2) into the ocean.
+        """Calculate the Webb correction for latent heat flux (W/m^2).
 
         :param: see inputs to :class:`c35`
-        :return: buoyancy flux (W/m^2)
+        :return: Webb correction for latent heat flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
         coare = c35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
@@ -536,10 +536,10 @@ class c35:
         jcool: int = 1.,
         nits: int = 10,
     ) -> NDArray[np.float64]:
-        """Calculate buoyancy flux (W/m^2) into the ocean.
+        """Calculate the wind stress transfer (drag) coefficient at height zu. 
 
-        :param: see inputs to :class:`buoyancy`
-        :return: buoyancy flux (W/m^2)
+        :param: see inputs to :class:`c35`
+        :return: drag coefficient
         :rtype: NDArray[np.float64]
         """
         coare = c35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
@@ -930,13 +930,13 @@ class humidities:
 
         from pycoare import c35
         c = c35([1])
-        # accessing the sonic temperature scaling parameter
-        c.humidities.tsr
+        # accessing the humidity at height zrf
+        c.humidities.q_rf
 
     :ivar dq: difference between q and qs (g/kg)
-    :type tsr: ArrayLike
+    :type dq: ArrayLike
     :ivar dqer: cool skin humidity depression (g/kg)
-    :type tvsr: ArrayLike
+    :type dqer: ArrayLike
     :ivar q_rf: humidity at reference height zrf (g/kg)
     :type q_rf: ArrayLike
     :ivar q_n: neutral humidity at height zq (g/kg)
@@ -968,10 +968,10 @@ class stability_parameters:
 
         from pycoare import c35
         c = c35([1])
-        # accessing the sonic temperature scaling parameter
+        # accessing the temperature scaling parameter
         c.stability_parameters.tsr
 
-    :ivar tsr: sonic temperature scaling parameter (K)
+    :ivar tsr: temperature scaling parameter (K)
     :type tsr: ArrayLike
     :ivar tvsr: virtual potential temperature scaling parameter (K)
     :type tvsr: ArrayLike
