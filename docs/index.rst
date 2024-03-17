@@ -26,6 +26,7 @@ Contents
 .. toctree::
 
     usage
+    c35_api
     References <https://github.com/pyCOARE/coare/tree/main/docs/References>
 
  
