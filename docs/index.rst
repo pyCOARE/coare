@@ -30,8 +30,8 @@ Contents
     References <https://github.com/pyCOARE/coare/tree/main/docs/References>
  
  .. toctree::
-    :caption: API Reference
     :maxdepth: 1
+    :caption: API Reference
 
     c35_api
     util_api

@@ -37,10 +37,10 @@ See the `COARE v3.5 API documentation <_c35_api>`_ for a complete list of method
 
 .. note::
 
-Parameter jcool is used for interpretation of the ocean temperature
-Set jcool=0 if ts is true surface skin temperature,
-otherwise use jcool=1 if ts is the bulk temperature (default case).
+    Parameter jcool is used for interpretation of the ocean temperature
+    Set jcool=0 if ts is true surface skin temperature,
+    otherwise use jcool=1 if ts is the bulk temperature (default case).
 
 .. attention::
 
-Default values are included, but should probably be edited to be specific to your region.
+    Default values are included, but should probably be edited to be specific to your region.
