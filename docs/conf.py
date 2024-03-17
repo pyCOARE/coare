@@ -67,8 +67,8 @@ html_theme_options = dict(
     use_edit_page_button=True,
     use_repository_button=True,
     use_issues_button=True,
-    home_page_in_toc=False,
     icon_links=[],
     show_toc_level=3,
     max_navbar_depth=5,
+    home_page_in_toc=True,
 )

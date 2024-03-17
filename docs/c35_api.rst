@@ -1,19 +1,21 @@
+.. currentmodule:: pycoare
+
 COARE v3.5 API Reference
 ========================
 
-.. autoclass:: pycoare.coare.c35
+.. autoclass:: coare_35
    :members:
 
-.. autoclass:: pycoare.coare.fluxes
+.. autoclass:: pycoare.coare_35.fluxes
 
-.. autoclass:: pycoare.coare.transfer_coefficients
+.. autoclass:: pycoare.coare_35.transfer_coefficients
 
-.. autoclass:: pycoare.coare.stability_functions
+.. autoclass:: pycoare.coare_35.stability_functions
 
-.. autoclass:: pycoare.coare.stability_parameters
+.. autoclass:: pycoare.coare_35.stability_parameters
 
-.. autoclass:: pycoare.coare.velocities
+.. autoclass:: pycoare.coare_35.velocities
 
-.. autoclass:: pycoare.coare.temperatures
+.. autoclass:: pycoare.coare_35.temperatures
 
-.. autoclass:: pycoare.coare.humidities
+.. autoclass:: pycoare.coare_35.humidities
