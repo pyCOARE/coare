@@ -1,6 +1,3 @@
-# TODO: Add docstrings where appropriate
-# TODO: Possibly break up bulk loop inputs/bulk loop outputs into smaller classes
-
 """
 Functions for COARE model bulk flux calculations.
 
@@ -21,7 +18,7 @@ from numpy.typing import ArrayLike, NDArray
 from .util import _check_size, grv, qsea, qair, psit_26, psiu_26, psiu_40, rhcalc
 
 
-class c35:
+class coare_35:
     """
     :param u: ocean surface wind speed (m/s) at height zu
     :type u: ArrayLike
@@ -61,6 +58,13 @@ class c35:
     :type jcool: int, optional
     :param nits: number of iterations of bulk flux loop
     :type nits: int, optional
+    :ivar fluxes: instance of the :class:`fluxes` class
+    :ivar transfer_coefficients: instance of the :class:`transfer_coefficients` class
+    :ivar stability_functions: instance of the :class:`stability_functions` class
+    :ivar velocities: instance of the :class:`velocities` class
+    :ivar temperatures: instance of the :class:`temperatures` class
+    :ivar humidities: instance of the :class:`humidities` class
+    :ivar stability_parameters: instance of the :class:`stability_parameters` class
     """
 
     # set constants
@@ -202,19 +206,19 @@ class c35:
 
         def _get_air_constants(self):
             lhvap = (2.501 - 0.00237*self.ts) * 1e6
-            rhoa = self.p*100. / (c35.RGAS * (self.t + c35.TDK) * (1 + 0.61*self.q))
+            rhoa = self.p*100. / (coare_35.RGAS * (self.t + coare_35.TDK) * (1 + 0.61*self.q))
             visa = 1.326e-5 * (1 + 6.542e-3*self.t + 8.301e-6*self.t**2 - 4.84e-9*self.t**3)
             return lhvap, rhoa, visa
 
         def _get_cool_skin(self):
             al = 2.1e-5 * (self.ts + 3.2)**0.79
-            bigc = 16. * self.grav * c35.CPW * (c35.RHOW * c35.VISW)**3 / (c35.TCW**2 * self.rhoa**2)
-            wetc = 0.622 * self.lhvap * self.qs / (c35.RGAS * (self.ts + c35.TDK)**2)
+            bigc = 16. * self.grav * coare_35.CPW * (coare_35.RHOW * coare_35.VISW)**3 / (coare_35.TCW**2 * self.rhoa**2)
+            wetc = 0.622 * self.lhvap * self.qs / (coare_35.RGAS * (self.ts + coare_35.TDK)**2)
             return al, bigc, wetc
 
         def _get_radiation_fluxes(self):
             rns = 0.945 * self.rs
-            rnl = 0.97 * (5.67e-8 * (self.ts - 0.3*self.jcool + c35.TDK)**4 - self.rl)
+            rnl = 0.97 * (5.67e-8 * (self.ts - 0.3*self.jcool + coare_35.TDK)**4 - self.rl)
             return (rns, rnl)
 
     @dataclass
@@ -264,11 +268,11 @@ class c35:
     ) -> NDArray[np.float64]:
         """Calculate wind stress (N/m^2) with gustiness.
 
-        :param: see inputs to :class:`c35`
+        :param: see inputs to :class:`coare_35`
         :return: wind stress (N/m^2)
         :rtype: NDArray[np.float64]
         """
-        coare = c35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
+        coare = coare_35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
         return coare._return_vars('tau')
 
     def _instance_tau(self) -> NDArray[np.float64]:
@@ -298,11 +302,11 @@ class c35:
     ) -> NDArray[np.float64]:
         """Calculate friction velocity (m/s) that includes gustiness.
 
-        :param: see inputs to :class:`c35`
+        :param: see inputs to :class:`coare_35`
         :return: friction velocity (m/s)
         :rtype: NDArray[np.float64]
         """
-        coare = c35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
+        coare = coare_35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
         return coare._return_vars('usr')
 
     def _instance_ustar(self) -> NDArray[np.float64]:
@@ -332,11 +336,11 @@ class c35:
     ) -> NDArray[np.float64]:
         """Calculate the temperature scaling parameter.
 
-        :param: see inputs to :class:`c35`
+        :param: see inputs to :class:`coare_35`
         :return: temperature scaling parameter (K)
         :rtype: NDArray[np.float64]
         """
-        coare = c35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
+        coare = coare_35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
         return coare._return_vars('tsr')
 
     def _instance_tstar(self) -> NDArray[np.float64]:
@@ -366,11 +370,11 @@ class c35:
     ) -> NDArray[np.float64]:
         """Calculate the humiditiy scaling parameter.
 
-        :param: see inputs to :class:`c35`
+        :param: see inputs to :class:`coare_35`
         :return: humidity scaling parameter (g/kg)
         :rtype: NDArray[np.float64]
         """
-        coare = c35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
+        coare = coare_35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
         return coare._return_vars('qsr')
 
     def _instance_qstar(self) -> NDArray[np.float64]:
@@ -400,11 +404,11 @@ class c35:
     ) -> NDArray[np.float64]:
         """Calculate sensible heat flux (W/m^2) into the ocean.
 
-        :param: see inputs to :class:`c35`
+        :param: see inputs to :class:`coare_35`
         :return: sensible heat flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
-        coare = c35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
+        coare = coare_35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
         return coare._return_vars('hsb')
 
     def _instance_sensible(self) -> NDArray[np.float64]:
@@ -434,11 +438,11 @@ class c35:
     ) -> NDArray[np.float64]:
         """Calculate latent heat flux (W/m^2) into the ocean.
 
-        :param: see inputs to :class:`c35`
+        :param: see inputs to :class:`coare_35`
         :return: latent heat flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
-        coare = c35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
+        coare = coare_35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
         return coare._return_vars('hlb')
 
     def _instance_latent(self) -> NDArray[np.float64]:
@@ -468,11 +472,11 @@ class c35:
     ) -> NDArray[np.float64]:
         """Calculate buoyancy flux (W/m^2) into the ocean.
 
-        :param: see inputs to :class:`c35`
+        :param: see inputs to :class:`coare_35`
         :return: buoyancy flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
-        coare = c35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
+        coare = coare_35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
         return coare._return_vars('hbb')
 
     def _instance_buoyancy(self) -> NDArray[np.float64]:
@@ -502,11 +506,11 @@ class c35:
     ) -> NDArray[np.float64]:
         """Calculate the Webb correction for latent heat flux (W/m^2).
 
-        :param: see inputs to :class:`c35`
+        :param: see inputs to :class:`coare_35`
         :return: Webb correction for latent heat flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
-        coare = c35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
+        coare = coare_35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
         return coare._return_vars('hlwebb')
 
     def _instance_webb(self) -> NDArray[np.float64]:
@@ -536,11 +540,11 @@ class c35:
     ) -> NDArray[np.float64]:
         """Calculate the wind stress transfer (drag) coefficient at height zu.
 
-        :param: see inputs to :class:`c35`
+        :param: see inputs to :class:`coare_35`
         :return: drag coefficient
         :rtype: NDArray[np.float64]
         """
-        coare = c35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
+        coare = coare_35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
         return coare._return_vars('cd')
 
     def _instance_cd(self) -> NDArray[np.float64]:
@@ -786,10 +790,10 @@ class c35:
 class fluxes:
     """Fluxes computed from COARE.
 
-    Should typically be accessed only through an instance of the :class:`c35` class::
+    Should typically be accessed only through an instance of the :class:`coare_35` class::
 
-        from pycoare import c35
-        c = c35([1])
+        from pycoare import coare_35
+        c = coare_35([1])
         # accessing the Webb correction for latent heat flux
         c.fluxes.hlwebb
 
@@ -816,14 +820,14 @@ class fluxes:
         # compute fluxes
         self.rnl = _bulk_loop_outputs.rnl    #: upwelling IR radiation (W/m^2)
         self.tau = _bulk_loop_inputs.rhoa*_bulk_loop_outputs.usr**2/_bulk_loop_outputs.gf
-        self.hsb = -_bulk_loop_inputs.rhoa*c35.CPA*_bulk_loop_outputs.usr*_bulk_loop_outputs.tsr
+        self.hsb = -_bulk_loop_inputs.rhoa*coare_35.CPA*_bulk_loop_outputs.usr*_bulk_loop_outputs.tsr
         self.hlb = (-_bulk_loop_inputs.rhoa*_bulk_loop_inputs.lhvap
                     * _bulk_loop_outputs.usr*_bulk_loop_outputs.qsr)
-        self.hbb = -_bulk_loop_inputs.rhoa*c35.CPA*_bulk_loop_outputs.usr*_bulk_loop_outputs.tvsr
-        self.hsbb = -_bulk_loop_inputs.rhoa*c35.CPA*_bulk_loop_outputs.usr*_bulk_loop_outputs.tssr
+        self.hbb = -_bulk_loop_inputs.rhoa*coare_35.CPA*_bulk_loop_outputs.usr*_bulk_loop_outputs.tvsr
+        self.hsbb = -_bulk_loop_inputs.rhoa*coare_35.CPA*_bulk_loop_outputs.usr*_bulk_loop_outputs.tssr
         self.wbar = (1.61*self.hlb/_bulk_loop_inputs.lhvap
                      / (1+1.61*_bulk_loop_inputs.q) / _bulk_loop_inputs.rhoa
-                     + self.hsb/_bulk_loop_inputs.rhoa/c35.CPA/_bulk_loop_outputs.ta)
+                     + self.hsb/_bulk_loop_inputs.rhoa/coare_35.CPA/_bulk_loop_outputs.ta)
         self.hlwebb = _bulk_loop_inputs.rhoa*self.wbar*_bulk_loop_inputs.q*_bulk_loop_inputs.lhvap
         self.evap = 1000*self.hlb/_bulk_loop_inputs.lhvap/1000*3600
         # rain heat flux after Gosnell et al., JGR, 1995
@@ -831,30 +835,30 @@ class fluxes:
             self.rf = np.nan*np.zeros(_bulk_loop_outputs.usr.size)
         else:
             # water vapour diffusivity
-            dwat = 2.11e-5*((_bulk_loop_inputs.t + c35.TDK)/c35.TDK)**1.94
+            dwat = 2.11e-5*((_bulk_loop_inputs.t + coare_35.TDK)/coare_35.TDK)**1.94
             # heat diffusivity
             dtmp = ((1 + 3.309e-3*_bulk_loop_inputs.t - 1.44e-6*_bulk_loop_inputs.t**2)
-                    * 0.02411/(_bulk_loop_inputs.rhoa*c35.CPA))
+                    * 0.02411/(_bulk_loop_inputs.rhoa*coare_35.CPA))
             # Clausius-Clapeyron
             dqs_dt = (_bulk_loop_inputs.q*_bulk_loop_inputs.lhvap
-                      / (c35.RGAS*(_bulk_loop_inputs.t + c35.TDK)**2))
+                      / (coare_35.RGAS*(_bulk_loop_inputs.t + coare_35.TDK)**2))
             # wet bulb factor
-            alfac = 1/(1 + 0.622*(dqs_dt*_bulk_loop_inputs.lhvap*dwat)/(c35.CPA*dtmp))
-            self.rf = (_bulk_loop_inputs.rain*alfac*c35.CPW
+            alfac = 1/(1 + 0.622*(dqs_dt*_bulk_loop_inputs.lhvap*dwat)/(coare_35.CPA*dtmp))
+            self.rf = (_bulk_loop_inputs.rain*alfac*coare_35.CPW
                        * ((_bulk_loop_inputs.ts - _bulk_loop_inputs.t
                            - _bulk_loop_outputs.dter*_bulk_loop_inputs.jcool)
                           + (_bulk_loop_inputs.qs - _bulk_loop_inputs.q
                              - _bulk_loop_outputs.dqer*_bulk_loop_inputs.jcool)
-                          * _bulk_loop_inputs.lhvap/c35.CPA)/3600)
+                          * _bulk_loop_inputs.lhvap/coare_35.CPA)/3600)
 
 
 class velocities:
     """Velocities computed from COARE.
 
-    Should typically be accessed only through an instance of the :class:`c35` class::
+    Should typically be accessed only through an instance of the :class:`coare_35` class::
 
-        from pycoare import c35
-        c = c35([1])
+        from pycoare import coare_35
+        c = coare_35([1])
         # accessing the friction velocity
         c.velocities.usr
 
@@ -881,22 +885,22 @@ class velocities:
         self.du = _bulk_loop_outputs.du
         self.gf = _bulk_loop_outputs.gf
         self.u = _bulk_loop_outputs.du + _bulk_loop_inputs.us
-        self.u_rf = (self.u + (_bulk_loop_outputs.usr/c35.VON/_bulk_loop_outputs.gf
+        self.u_rf = (self.u + (_bulk_loop_outputs.usr/coare_35.VON/_bulk_loop_outputs.gf
                                * (np.log(_bulk_loop_inputs.zrf / _bulk_loop_inputs.zu)
                                   - stability_functions.psi_u_rf + stability_functions.psi_u)))
         self.u_n = (self.u + stability_functions.psi_u
-                    * _bulk_loop_outputs.usr/c35.VON/_bulk_loop_outputs.gf)
+                    * _bulk_loop_outputs.usr/coare_35.VON/_bulk_loop_outputs.gf)
         self.u_n_rf = (self.u_rf + stability_functions.psi_u_rf
-                       * _bulk_loop_outputs.usr/c35.VON/_bulk_loop_outputs.gf)
+                       * _bulk_loop_outputs.usr/coare_35.VON/_bulk_loop_outputs.gf)
 
 
 class temperatures:
     """Temperatures computed from COARE.
 
-    Should typically be accessed only through an instance of the :class:`c35` class::
+    Should typically be accessed only through an instance of the :class:`coare_35` class::
 
-        from pycoare import c35
-        c = c35([1])
+        from pycoare import coare_35
+        c = coare_35([1])
         # accessing the adiabatic lapse rate
         c.temperatures.lapse
 
@@ -914,24 +918,24 @@ class temperatures:
     :type t_n_rf: ArrayLike
     """
     def __init__(self, _bulk_loop_inputs, _bulk_loop_outputs, stability_functions):
-        self.lapse = _bulk_loop_inputs.grav/c35.CPA
+        self.lapse = _bulk_loop_inputs.grav/coare_35.CPA
         self.dt = _bulk_loop_outputs.dt
         self.dter = _bulk_loop_outputs.dter
-        self.t_rf = (_bulk_loop_inputs.t + _bulk_loop_outputs.tsr/c35.VON
+        self.t_rf = (_bulk_loop_inputs.t + _bulk_loop_outputs.tsr/coare_35.VON
                      * (np.log(_bulk_loop_inputs.zrf/_bulk_loop_inputs.zt)
                         - stability_functions.psi_t_rf + stability_functions.psi_t)
                      + self.lapse*(_bulk_loop_inputs.zt - _bulk_loop_inputs.zrf))
-        self.t_n = _bulk_loop_inputs.t + stability_functions.psi_t*_bulk_loop_outputs.tsr/c35.VON
-        self.t_n_rf = self.t_rf + stability_functions.psi_t_rf*_bulk_loop_outputs.tsr/c35.VON
+        self.t_n = _bulk_loop_inputs.t + stability_functions.psi_t*_bulk_loop_outputs.tsr/coare_35.VON
+        self.t_n_rf = self.t_rf + stability_functions.psi_t_rf*_bulk_loop_outputs.tsr/coare_35.VON
 
 
 class humidities:
     """Stability parameters computed from COARE.
 
-    Should typically be accessed only through an instance of the :class:`c35` class::
+    Should typically be accessed only through an instance of the :class:`coare_35` class::
 
-        from pycoare import c35
-        c = c35([1])
+        from pycoare import coare_35
+        c = coare_35([1])
         # accessing the humidity at height zrf
         c.humidities.q_rf
 
@@ -951,12 +955,12 @@ class humidities:
     def __init__(self, _bulk_loop_inputs, _bulk_loop_outputs, stability_functions, temperatures):
         self.dq = _bulk_loop_outputs.dq
         self.dqer = _bulk_loop_outputs.dqer
-        self.q_rf = (_bulk_loop_inputs.q + _bulk_loop_outputs.qsr/c35.VON
+        self.q_rf = (_bulk_loop_inputs.q + _bulk_loop_outputs.qsr/coare_35.VON
                      * (np.log(_bulk_loop_inputs.zrf/_bulk_loop_inputs.zq)
                         - stability_functions.psi_q_rf + stability_functions.psi_t))
         self.q_n = (_bulk_loop_inputs.q + (stability_functions.psi_t
-                                           * _bulk_loop_outputs.qsr/c35.VON/np.sqrt(_bulk_loop_outputs.gf)))
-        self.q_n_rf = self.q_rf + stability_functions.psi_q_rf*_bulk_loop_outputs.qsr/c35.VON
+                                           * _bulk_loop_outputs.qsr/coare_35.VON/np.sqrt(_bulk_loop_outputs.gf)))
+        self.q_n_rf = self.q_rf + stability_functions.psi_q_rf*_bulk_loop_outputs.qsr/coare_35.VON
         self.rh_rf = rhcalc(temperatures.t_rf, _bulk_loop_inputs.p, self.q_rf)
         # convert to g/kg
         self.q_rf *= 1000
@@ -967,10 +971,10 @@ class humidities:
 class stability_parameters:
     """Stability parameters computed from COARE.
 
-    Should typically be accessed only through an instance of the :class:`c35` class::
+    Should typically be accessed only through an instance of the :class:`coare_35` class::
 
-        from pycoare import c35
-        c = c35([1])
+        from pycoare import coare_35
+        c = coare_35([1])
         # accessing the temperature scaling parameter
         c.stability_parameters.tsr
 
@@ -1011,10 +1015,10 @@ class stability_parameters:
 class transfer_coefficients:
     """Transfer coefficients computed from COARE.
 
-    Should typically be accessed only through an instance of the :class:`c35` class::
+    Should typically be accessed only through an instance of the :class:`coare_35` class::
 
-        from pycoare import c35
-        c = c35([1])
+        from pycoare import coare_35
+        c = coare_35([1])
         # accessing the wind stress transfer coefficient
         c.transfer_coefficients.cd
 
@@ -1041,12 +1045,12 @@ class transfer_coefficients:
                    / (_bulk_loop_outputs.dq - _bulk_loop_outputs.dqer*_bulk_loop_inputs.jcool)
                    / _bulk_loop_outputs.ut)
         # compute at ref height zrf neutral coeff relative to ut
-        self.cdn_rf = (1000*c35.VON**2
+        self.cdn_rf = (1000*coare_35.VON**2
                        / np.log(_bulk_loop_inputs.zrf/_bulk_loop_outputs.zo)**2)
-        self.chn_rf = (1000*c35.VON**2 * c35.FDG
+        self.chn_rf = (1000*coare_35.VON**2 * coare_35.FDG
                        / np.log(_bulk_loop_inputs.zrf/_bulk_loop_outputs.zo)
                        / np.log(_bulk_loop_inputs.zrf/_bulk_loop_outputs.zot))
-        self.cen_rf = (1000*c35.VON**2 * c35.FDG
+        self.cen_rf = (1000*coare_35.VON**2 * coare_35.FDG
                        / np.log(_bulk_loop_inputs.zrf/_bulk_loop_outputs.zo)
                        / np.log(_bulk_loop_inputs.zrf/_bulk_loop_outputs.zoq))
 
@@ -1054,10 +1058,10 @@ class transfer_coefficients:
 class stability_functions:
     """Stability functions computed from COARE.
 
-    Should typically be accessed only through an instance of the :class:`c35` class::
+    Should typically be accessed only through an instance of the :class:`coare_35` class::
 
-        from pycoare import c35
-        c = c35([1])
+        from pycoare import coare_35
+        c = coare_35([1])
         # accessing the wind stress transfer coefficient
         c.stability_functions.cd
 

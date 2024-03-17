@@ -70,4 +70,5 @@ html_theme_options = dict(
     home_page_in_toc=False,
     icon_links=[],
     show_toc_level=3,
+    max_navbar_depth=5,
 )
