@@ -23,11 +23,13 @@ For more information on the people and publications that developed the COARE alg
 
 .. toctree::
     :maxdepth: 2
+
     usage
     References <https://github.com/pyCOARE/coare/tree/main/docs/References>
 
 .. toctree::
     :maxdepth: 2
     :caption: API Reference
+    
     c35_api
     util_api
