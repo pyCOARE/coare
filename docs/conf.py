@@ -11,7 +11,7 @@ project = 'pyCOARE'
 author = 'Andrew Scherer'
 
 release = '1'
-version = '0.1.0'
+version = '0.2.0'
 
 # -- General configuration
 
@@ -26,7 +26,7 @@ extensions = [
 
 autodoc_typehints = "none"
 
-autodoc_member_order = "bysource"
+autodoc_member_order = "alphabetical"
 toc_object_entries_show_parents = "hide"
 
 source_suffix = {
@@ -46,7 +46,7 @@ templates_path = ['_templates']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 html_theme = "sphinx_book_theme"
-html_title = ""
+html_title = "pyCOARE"
 
 html_context = {
     "github_user": "pycoare",

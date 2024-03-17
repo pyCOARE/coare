@@ -33,29 +33,14 @@ However, all variables used in the bulk flux algorithm are accesible through the
     >>> c.fluxes.tau
     array([0.        , 0.00060093, 0.00165957, 0.00319516, 0.00520412, 0.00768739])
 
-```{note}
+See the `COARE v3.5 API documentation <_c35_api>`_ for a complete list of methods and variables.
+
+.. note::
+
 Parameter jcool is used for interpretation of the ocean temperature
 Set jcool=0 if ts is true surface skin temperature,
 otherwise use jcool=1 if ts is the bulk temperature (default case).
-```
 
-```{attention}
+.. attention::
+
 Default values are included, but should probably be edited to be specific to your region.
-```
-
-.. autoclass:: pycoare.coare.c35
-   :members:
-
-.. autoclass:: pycoare.coare.fluxes
-
-.. autoclass:: pycoare.coare.transfer_coefficients
-
-.. autoclass:: pycoare.coare.stability_functions
-
-.. autoclass:: pycoare.coare.stability_parameters
-
-.. autoclass:: pycoare.coare.velocities
-
-.. autoclass:: pycoare.coare.temperatures
-
-.. autoclass:: pycoare.coare.humidities
