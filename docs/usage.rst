@@ -45,6 +45,7 @@ Default values are included, but should probably be edited to be specific to you
 
 .. autoclass:: pycoare.coare.c35
    :members:
+   :autoclasstoc:
 
 .. autoclass:: pycoare.coare.fluxes
 
