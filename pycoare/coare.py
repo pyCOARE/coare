@@ -22,6 +22,48 @@ from .util import _check_size, grv, qsea, qair, psit_26, psiu_26, psiu_40, rhcal
 
 
 class c35:
+    """
+    :param u: ocean surface wind speed (m/s) at height zu
+    :type u: ArrayLike
+    :param t: bulk air temperature (degC) at height zt
+    :type t: ArrayLike, optional
+    :param rh: relative humidity (%) at height zq
+    :type rh: ArrayLike, optional
+    :param zu: wind sensor height (m)
+    :type zu: ArrayLike, optional
+    :param zt: bulk air temperature sensor height (m)
+    :type zt: ArrayLike, optional
+    :param zq: relative humidity sensory height (m)
+    :type zq: ArrayLike, optional
+    :param zrf: reference height (m)
+    :type zrf: ArrayLike, optional
+    :param us: ocean surface currents (m/s) (defaults to zero, i.e., u is relative wind speed)
+    :type us: ArrayLike, optional
+    :param ts: sea water temperature (degC) (also see jcool)
+    :type ts: ArrayLike, optional
+    :param p: surface air pressure (mb)
+    :type p: ArrayLike, optional
+    :param lat: latitude (deg)
+    :type lat: ArrayLike, optional
+    :param zi: planetary boundary layer height (m)
+    :type zi: ArrayLike, optional
+    :param rs: downward shortwave radiation (W/m^2)
+    :type rs: ArrayLike, optional
+    :param rl: downward longwave radiation (W/m^2)
+    :type rl: ArrayLike, optional
+    :param rain: rain rate (mm/hr)
+    :type rain: ArrayLike, optional
+    :param cp: phase speed of dominant waves (m/s)
+    :type cp: ArrayLike, optional
+    :param sigH: significant wave height (m)
+    :type sigH: ArrayLike, optional
+    :param jcool: cool skin option, 1 if ts is bulk ocean temperature, 0 if ts is ocean skin temperature
+    :type jcool: int, optional
+    :param nits: number of iterations of bulk flux loop
+    :type nits: int, optional
+    :return: instance of c35
+    :rtype: c35
+    """
 
     # set constants
     BETA = 1.2
@@ -86,7 +128,7 @@ class c35:
         self.webb = self._instance_webb
         self.cd = self._instance_cd
 
-        self.bulk_loop_inputs = self._Bulk_Loop_Inputs(
+        self._bulk_loop_inputs = self._Bulk_Loop_Inputs(
             u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits
         )
 
@@ -224,44 +266,7 @@ class c35:
     ) -> NDArray[np.float64]:
         """Calculate wind stress (N/m^2) with gustiness.
 
-        :param u: ocean surface wind speed (m/s) at height zu
-        :type u: ArrayLike
-        :param t: bulk air temperature (degC) at height zt
-        :type t: ArrayLike, optional
-        :param rh: relative humidity (%) at height zq
-        :type rh: ArrayLike, optional
-        :param zu: wind sensor height (m)
-        :type zu: ArrayLike, optional
-        :param zt: bulk air temperature sensor height (m)
-        :type zt: ArrayLike, optional
-        :param zq: relative humidity sensory height (m)
-        :type zq: ArrayLike, optional
-        :param zrf: reference height (m)
-        :type zrf: ArrayLike, optional
-        :param us: ocean surface currents (m/s) (defaults to zero, i.e., u is relative wind speed)
-        :type us: ArrayLike, optional
-        :param ts: sea water temperature (degC) (also see jcool)
-        :type ts: ArrayLike, optional
-        :param p: surface air pressure (mb)
-        :type p: ArrayLike, optional
-        :param lat: latitude (deg)
-        :type lat: ArrayLike, optional
-        :param zi: planetary boundary layer height (m)
-        :type zi: ArrayLike, optional
-        :param rs: downward shortwave radiation (W/m^2)
-        :type rs: ArrayLike, optional
-        :param rl: downward longwave radiation (W/m^2)
-        :type rl: ArrayLike, optional
-        :param rain: rain rate (mm/hr)
-        :type rain: ArrayLike, optional
-        :param cp: phase speed of dominant waves (m/s)
-        :type cp: ArrayLike, optional
-        :param sigH: significant wave height (m)
-        :type sigH: ArrayLike, optional
-        :param jcool: cool skin option, 1 if ts is bulk ocean temperature, 0 if ts is ocean skin temperature
-        :type jcool: int, optional
-        :param nits: number of iterations of bulk flux loop
-        :type nits: int, optional
+        :param: see inputs to :class:`c35`
         :return: wind stress (N/m^2)
         :rtype: NDArray[np.float64]
         """
@@ -295,7 +300,7 @@ class c35:
     ) -> NDArray[np.float64]:
         """Calculate friction velocity (m/s) with gustiness.
 
-        :param: see inputs to :func:`tau`
+        :param: see inputs to :class:`c35`
         :return: friction velocity (m/s)
         :rtype: NDArray[np.float64]
         """
@@ -329,7 +334,7 @@ class c35:
     ) -> NDArray[np.float64]:
         """Calculate buoyancy flux (W/m^2) into the ocean.
 
-        :param: see inputs to :func:`tau`
+        :param: see inputs to :class:`c35`
         :return: buoyancy flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
@@ -363,7 +368,7 @@ class c35:
     ) -> NDArray[np.float64]:
         """Calculate buoyancy flux (W/m^2) into the ocean.
 
-        :param: see inputs to :func:`tau`
+        :param: see inputs to :class:`c35`
         :return: buoyancy flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
@@ -397,7 +402,7 @@ class c35:
     ) -> NDArray[np.float64]:
         """Calculate sensible heat flux (W/m^2) into the ocean.
 
-        :param: see inputs to :func:`tau`
+        :param: see inputs to :class:`c35`
         :return: sensible heat flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
@@ -431,7 +436,7 @@ class c35:
     ) -> NDArray[np.float64]:
         """Calculate latent heat flux (W/m^2) into the ocean.
 
-        :param: see inputs to :func:`tau`
+        :param: see inputs to :class:`c35`
         :return: latent heat flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
@@ -465,7 +470,7 @@ class c35:
     ) -> NDArray[np.float64]:
         """Calculate buoyancy flux (W/m^2) into the ocean.
 
-        :param: see inputs to :func:`tau`
+        :param: see inputs to :class:`c35`
         :return: buoyancy flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
@@ -499,7 +504,7 @@ class c35:
     ) -> NDArray[np.float64]:
         """Calculate buoyancy flux (W/m^2) into the ocean.
 
-        :param: see inputs to :func:`tau`
+        :param: see inputs to :class:`c35`
         :return: buoyancy flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
@@ -533,7 +538,7 @@ class c35:
     ) -> NDArray[np.float64]:
         """Calculate buoyancy flux (W/m^2) into the ocean.
 
-        :param: see inputs to :func:`tau`
+        :param: see inputs to :class:`buoyancy`
         :return: buoyancy flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
@@ -546,68 +551,68 @@ class c35:
     def _run(self) -> NDArray[np.float64]:
         """Run the COARE bulk flux calculations.
         """
-        self.bulk_loop_outputs = self._bulk_loop()
+        self._bulk_loop_outputs = self._bulk_loop()
 
         self.fluxes = fluxes(
-            self.bulk_loop_inputs,
-            self.bulk_loop_outputs
+            self._bulk_loop_inputs,
+            self._bulk_loop_outputs
         )
         self.transfer_coefficients = transfer_coefficients(
-            self.bulk_loop_inputs,
-            self.bulk_loop_outputs,
+            self._bulk_loop_inputs,
+            self._bulk_loop_outputs,
             self.fluxes
         )
         self.stability_functions = stability_functions(
-            self.bulk_loop_inputs,
-            self.bulk_loop_outputs
+            self._bulk_loop_inputs,
+            self._bulk_loop_outputs
         )
         self.velocities = velocities(
-            self.bulk_loop_inputs,
-            self.bulk_loop_outputs,
+            self._bulk_loop_inputs,
+            self._bulk_loop_outputs,
             self.stability_functions
         )
         self.temperatures = temperatures(
-            self.bulk_loop_inputs,
-            self.bulk_loop_outputs,
+            self._bulk_loop_inputs,
+            self._bulk_loop_outputs,
             self.stability_functions
         )
         self.humidities = humidities(
-            self.bulk_loop_inputs,
-            self.bulk_loop_outputs,
+            self._bulk_loop_inputs,
+            self._bulk_loop_outputs,
             self.stability_functions,
             self.temperatures
         )
 
     def _bulk_loop(self):
 
-        bulk_loop_inputs = self.bulk_loop_inputs
-        rnl = bulk_loop_inputs.rnl
+        _bulk_loop_inputs = self._bulk_loop_inputs
+        rnl = _bulk_loop_inputs.rnl
 
         # first guess
         du, dt, dq = self._get_dudtdq()
-        ta = bulk_loop_inputs.t + self.TDK
+        ta = _bulk_loop_inputs.t + self.TDK
         ug = 0.5
         dter = 0.3
 
         ut = np.sqrt(du**2 + ug**2)
-        u10 = ut * np.log(10 / 1e-4) / np.log(bulk_loop_inputs.zu / 1e-4)
+        u10 = ut * np.log(10 / 1e-4) / np.log(_bulk_loop_inputs.zu / 1e-4)
         usr = 0.035 * u10
 
         zo10, _, zot10 = self._get_roughness(np.nan, usr, setup=True)
         zetu, k50 = self._get_mo_stability_setup(ta, ut, zo10, dt, dq, dter)
         obukL10 = self._get_obukhov_length(zetu)
         usr, tsr, qsr = self._get_star(ut, dt, dq, dter, zo10, zot10, np.nan, obukL10, setup=True)
-        tkt = 0.001 * np.ones(bulk_loop_inputs.N)
+        tkt = 0.001 * np.ones(_bulk_loop_inputs.N)
         charnC, charnW, charnS = self._get_charn(u10, usr, setup=True)
 
-        for i in range(bulk_loop_inputs.nits):
-            zet = (self.VON * bulk_loop_inputs.grav * bulk_loop_inputs.zu
+        for i in range(_bulk_loop_inputs.nits):
+            zet = (self.VON * _bulk_loop_inputs.grav * _bulk_loop_inputs.zu
                    / ta * (tsr + 0.61 * ta * qsr)
                    / (usr**2))
 
             charn = charnC
-            charn[bulk_loop_inputs.waveage_flag] = charnW[bulk_loop_inputs.waveage_flag]
-            charn[bulk_loop_inputs.seastate_flag] = charnS[bulk_loop_inputs.seastate_flag]
+            charn[_bulk_loop_inputs.waveage_flag] = charnW[_bulk_loop_inputs.waveage_flag]
+            charn[_bulk_loop_inputs.seastate_flag] = charnS[_bulk_loop_inputs.seastate_flag]
 
             obukL = self._get_obukhov_length(zet)
             zo, zoq, zot = self._get_roughness(charn, usr)
@@ -618,13 +623,13 @@ class c35:
             ug = self._get_ug(ta, usr, tvsr)
             ut = np.sqrt(du**2 + ug**2)
             # probably a better way to do this, but this avoids a divide by zero runtime warning
-            gf = np.full(bulk_loop_inputs.N, np.inf)
+            gf = np.full(_bulk_loop_inputs.N, np.inf)
             k = np.flatnonzero(du != 0)
             gf[k] = ut[k] / du[k]
 
             tkt, dter, dqer = self._get_cool_skin(usr, tsr, qsr, tkt, rnl)
-            rnl = 0.97*(5.67e-8 * (bulk_loop_inputs.ts - dter * bulk_loop_inputs.jcool + self.TDK)**4
-                        - bulk_loop_inputs.rl)
+            rnl = 0.97*(5.67e-8 * (_bulk_loop_inputs.ts - dter * _bulk_loop_inputs.jcool + self.TDK)**4
+                        - _bulk_loop_inputs.rl)
 
             # save first iteration solution for case of zetu>50
             if i == 0:
@@ -638,7 +643,7 @@ class c35:
                 tkt50 = tkt[k50]
 
             u10N = usr / self.VON / gf * np.log(10 / zo)
-            charnC, charnW, charnS = self._get_charn(u10N, usr, bulk_loop_inputs)
+            charnC, charnW, charnS = self._get_charn(u10N, usr, _bulk_loop_inputs)
 
         usr[k50] = usr50
         tsr[k50] = tsr50
@@ -648,41 +653,41 @@ class c35:
         dter[k50] = dter50
         dqer[k50] = dqer50
         tkt[k50] = tkt50
-        bulk_loop_outputs = self._Bulk_Loop_Outputs(
+        _bulk_loop_outputs = self._Bulk_Loop_Outputs(
             ut, usr, tsr, qsr, du, dt, dq, dter, dqer, tvsr, tssr, tkt, obukL, rnl, zet, gf, zo, zot, zoq, ta
         )
-        return bulk_loop_outputs
+        return _bulk_loop_outputs
 
     def _get_dudtdq(self):
-        bulk_loop_inputs = self.bulk_loop_inputs
-        du = bulk_loop_inputs.u - bulk_loop_inputs.us
-        dt = bulk_loop_inputs.ts - bulk_loop_inputs.t - 0.0098 * bulk_loop_inputs.zt
-        dq = bulk_loop_inputs.qs - bulk_loop_inputs.q
+        _bulk_loop_inputs = self._bulk_loop_inputs
+        du = _bulk_loop_inputs.u - _bulk_loop_inputs.us
+        dt = _bulk_loop_inputs.ts - _bulk_loop_inputs.t - 0.0098 * _bulk_loop_inputs.zt
+        dq = _bulk_loop_inputs.qs - _bulk_loop_inputs.q
         return du, dt, dq
 
     def _get_ug(self, ta, usr, tvsr):
-        bulk_loop_inputs = self.bulk_loop_inputs
-        Bf = -bulk_loop_inputs.grav / ta * usr * tvsr
-        ug = 0.2 * np.ones(bulk_loop_inputs.N)
+        _bulk_loop_inputs = self._bulk_loop_inputs
+        Bf = -_bulk_loop_inputs.grav / ta * usr * tvsr
+        ug = 0.2 * np.ones(_bulk_loop_inputs.N)
         k = np.flatnonzero(Bf > 0)
-        if bulk_loop_inputs.zrf.size == 1:
-            ug[k] = self.BETA * (Bf[k] * bulk_loop_inputs.zi)**(1/3)
+        if _bulk_loop_inputs.zrf.size == 1:
+            ug[k] = self.BETA * (Bf[k] * _bulk_loop_inputs.zi)**(1/3)
         else:
-            ug[k] = self.BETA * (Bf[k] * bulk_loop_inputs.zi[k])**(1/3)
+            ug[k] = self.BETA * (Bf[k] * _bulk_loop_inputs.zi[k])**(1/3)
         return ug
 
     def _get_mo_stability_setup(self, ta, ut, zo, dt, dq, dter):
-        bulk_loop_inputs = self.bulk_loop_inputs
+        _bulk_loop_inputs = self._bulk_loop_inputs
         cd10 = (self.VON / np.log(10/zo))**2
         ch10 = 0.00115
         ct10 = ch10 / np.sqrt(cd10)
         zot10 = 10 / np.exp(self.VON/ct10)
-        cd = (self.VON / np.log(bulk_loop_inputs.zu / zo))**2
-        ct = self.VON / np.log(bulk_loop_inputs.zt / zot10)
+        cd = (self.VON / np.log(_bulk_loop_inputs.zu / zo))**2
+        ct = self.VON / np.log(_bulk_loop_inputs.zt / zot10)
         cc = self.VON * ct/cd
-        ribcu = -bulk_loop_inputs.zu / bulk_loop_inputs.zi / 0.004 / self.BETA**3
-        ribu = (-bulk_loop_inputs.grav * bulk_loop_inputs.zu/ta
-                * ((dt - dter*bulk_loop_inputs.jcool) + 0.61*ta*dq) / ut**2)
+        ribcu = -_bulk_loop_inputs.zu / _bulk_loop_inputs.zi / 0.004 / self.BETA**3
+        ribu = (-_bulk_loop_inputs.grav * _bulk_loop_inputs.zu/ta
+                * ((dt - dter*_bulk_loop_inputs.jcool) + 0.61*ta*dq) / ut**2)
         zetu = cc * ribu * (1 + 27/9 * ribu/cc)
         k50 = np.flatnonzero(zetu > 50)   # stable with thin M-O length relative to zu
 
@@ -694,24 +699,24 @@ class c35:
         return zetu, k50
 
     def _get_charn(self, u, usr, setup=False):
-        bulk_loop_inputs = self.bulk_loop_inputs
+        _bulk_loop_inputs = self._bulk_loop_inputs
         # The following gives the new formulation for the Charnock variable
         charnC = self.A1 * u + self.A2
         k = np.flatnonzero(u > self.UMAX)
         charnC[k] = self.A1 * self.UMAX + self.A2
-        charnW = self.A * (usr/bulk_loop_inputs.cp)**self.B
+        charnW = self.A * (usr/_bulk_loop_inputs.cp)**self.B
         if setup:
-            zoS = bulk_loop_inputs.sigH * self.AD * (usr/bulk_loop_inputs.cp)**self.BD
+            zoS = _bulk_loop_inputs.sigH * self.AD * (usr/_bulk_loop_inputs.cp)**self.BD
         else:
-            zoS = (bulk_loop_inputs.sigH * self.AD * (usr/bulk_loop_inputs.cp)**self.BD
-                   - 0.11 * bulk_loop_inputs.visa/usr)
-        charnS = zoS * bulk_loop_inputs.grav / usr**2
+            zoS = (_bulk_loop_inputs.sigH * self.AD * (usr/_bulk_loop_inputs.cp)**self.BD
+                   - 0.11 * _bulk_loop_inputs.visa/usr)
+        charnS = zoS * _bulk_loop_inputs.grav / usr**2
         return charnC, charnW, charnS
 
     def _get_roughness(self, charn, usr, setup=False):
-        bulk_loop_inputs = self.bulk_loop_inputs
+        _bulk_loop_inputs = self._bulk_loop_inputs
         if setup:
-            zo = 0.011 * usr**2 / bulk_loop_inputs.grav + 0.11 * bulk_loop_inputs.visa / usr
+            zo = 0.011 * usr**2 / _bulk_loop_inputs.grav + 0.11 * _bulk_loop_inputs.visa / usr
             cd = (self.VON / np.log(10/zo))**2
             ch = 0.00115
             ct = ch / np.sqrt(cd)
@@ -720,57 +725,57 @@ class c35:
         else:
             # thermal roughness lengths give Stanton and Dalton numbers that
             # closely approximate COARE 3.0
-            zo = charn*usr**2 / bulk_loop_inputs.grav + 0.11*bulk_loop_inputs.visa / usr
-            rr = zo*usr / bulk_loop_inputs.visa
+            zo = charn*usr**2 / _bulk_loop_inputs.grav + 0.11*_bulk_loop_inputs.visa / usr
+            rr = zo*usr / _bulk_loop_inputs.visa
             zoq = np.minimum(1.6e-4, 5.8e-5 / rr**0.72)
             zot = zoq
         return zo, zoq, zot
 
     def _get_obukhov_length(self, zet):
-        return self.bulk_loop_inputs.zu / zet
+        return self._bulk_loop_inputs.zu / zet
 
     def _get_star(self, ut, dt, dq, dter, zo, zot, zoq, obukL, setup=False):
-        bulk_loop_inputs = self.bulk_loop_inputs
+        _bulk_loop_inputs = self._bulk_loop_inputs
         if setup:
             # unclear why psiu_40 is used here rather than psiu_26 - only place psiu_40 is used
-            usr = ut * self.VON / (np.log(bulk_loop_inputs.zu / zo) - psiu_40(bulk_loop_inputs.zu / obukL))
-            tsr = (-(dt - dter*bulk_loop_inputs.jcool) * self.VON * self.FDG
-                   / (np.log(bulk_loop_inputs.zt / zot) - psit_26(bulk_loop_inputs.zt / obukL)))
-            qsr = (-(dq - bulk_loop_inputs.wetc * dter * bulk_loop_inputs.jcool) * self.VON * self.FDG
-                   / (np.log(bulk_loop_inputs.zq / zot) - psit_26(bulk_loop_inputs.zq / obukL)))
+            usr = ut * self.VON / (np.log(_bulk_loop_inputs.zu / zo) - psiu_40(_bulk_loop_inputs.zu / obukL))
+            tsr = (-(dt - dter*_bulk_loop_inputs.jcool) * self.VON * self.FDG
+                   / (np.log(_bulk_loop_inputs.zt / zot) - psit_26(_bulk_loop_inputs.zt / obukL)))
+            qsr = (-(dq - _bulk_loop_inputs.wetc * dter * _bulk_loop_inputs.jcool) * self.VON * self.FDG
+                   / (np.log(_bulk_loop_inputs.zq / zot) - psit_26(_bulk_loop_inputs.zq / obukL)))
         else:
-            cdhf = (self.VON / (np.log(bulk_loop_inputs.zu / zo)
-                                - psiu_26(bulk_loop_inputs.zu / obukL)))
-            cqhf = (self.VON*self.FDG / (np.log(bulk_loop_inputs.zq / zoq)
-                                         - psit_26(bulk_loop_inputs.zq / obukL)))
-            cthf = (self.VON*self.FDG / (np.log(bulk_loop_inputs.zt / zot)
-                                         - psit_26(bulk_loop_inputs.zt / obukL)))
+            cdhf = (self.VON / (np.log(_bulk_loop_inputs.zu / zo)
+                                - psiu_26(_bulk_loop_inputs.zu / obukL)))
+            cqhf = (self.VON*self.FDG / (np.log(_bulk_loop_inputs.zq / zoq)
+                                         - psit_26(_bulk_loop_inputs.zq / obukL)))
+            cthf = (self.VON*self.FDG / (np.log(_bulk_loop_inputs.zt / zot)
+                                         - psit_26(_bulk_loop_inputs.zt / obukL)))
             usr = ut*cdhf
-            qsr = -(dq - bulk_loop_inputs.wetc * dter * bulk_loop_inputs.jcool) * cqhf
-            tsr = -(dt - dter * bulk_loop_inputs.jcool)*cthf
+            qsr = -(dq - _bulk_loop_inputs.wetc * dter * _bulk_loop_inputs.jcool) * cqhf
+            tsr = -(dt - dter * _bulk_loop_inputs.jcool)*cthf
         return usr, tsr, qsr
 
     def _get_cool_skin(self, usr, tsr, qsr, tkt, rnl):
-        bulk_loop_inputs = self.bulk_loop_inputs
-        hsb = -bulk_loop_inputs.rhoa*self.CPA*usr*tsr
-        hlb = -bulk_loop_inputs.rhoa*bulk_loop_inputs.lhvap*usr*qsr
+        _bulk_loop_inputs = self._bulk_loop_inputs
+        hsb = -_bulk_loop_inputs.rhoa*self.CPA*usr*tsr
+        hlb = -_bulk_loop_inputs.rhoa*_bulk_loop_inputs.lhvap*usr*qsr
         qout = rnl + hsb + hlb
-        dels = bulk_loop_inputs.rns * (0.065 + 11 * tkt - 6.6e-5 / tkt * (1 - np.exp(-tkt / 8.0e-4)))
+        dels = _bulk_loop_inputs.rns * (0.065 + 11 * tkt - 6.6e-5 / tkt * (1 - np.exp(-tkt / 8.0e-4)))
         qcol = qout - dels
-        alq = bulk_loop_inputs.al * qcol + self.BE * hlb * self.CPW / bulk_loop_inputs.lhvap
-        xlamx = 6.0 * np.ones(bulk_loop_inputs.N)
-        tkt = np.minimum(0.01, xlamx * self.VISW / (np.sqrt(bulk_loop_inputs.rhoa / self.RHOW) * usr))
+        alq = _bulk_loop_inputs.al * qcol + self.BE * hlb * self.CPW / _bulk_loop_inputs.lhvap
+        xlamx = 6.0 * np.ones(_bulk_loop_inputs.N)
+        tkt = np.minimum(0.01, xlamx * self.VISW / (np.sqrt(_bulk_loop_inputs.rhoa / self.RHOW) * usr))
         k = np.flatnonzero(alq > 0)
-        xlamx[k] = 6 / (1 + (bulk_loop_inputs.bigc[k] * alq[k] / usr[k]**4)**0.75)**0.333
-        tkt[k] = xlamx[k] * self.VISW / (np.sqrt(bulk_loop_inputs.rhoa[k] / self.RHOW) * usr[k])
+        xlamx[k] = 6 / (1 + (_bulk_loop_inputs.bigc[k] * alq[k] / usr[k]**4)**0.75)**0.333
+        tkt[k] = xlamx[k] * self.VISW / (np.sqrt(_bulk_loop_inputs.rhoa[k] / self.RHOW) * usr[k])
         dter = qcol * tkt / self.TCW
-        dqer = bulk_loop_inputs.wetc * dter
+        dqer = _bulk_loop_inputs.wetc * dter
         return tkt, dter, dqer
 
     def _return_vars(self, out):
         outputs = {}
-        outputs.update({key: value for key, value in vars(self.bulk_loop_inputs).items()})
-        outputs.update({key: value for key, value in vars(self.bulk_loop_outputs).items()})
+        outputs.update({key: value for key, value in vars(self._bulk_loop_inputs).items()})
+        outputs.update({key: value for key, value in vars(self._bulk_loop_outputs).items()})
         outputs.update({key: value for key, value in vars(self.fluxes).items()})
         outputs.update({key: value for key, value in vars(self.transfer_coefficients).items()})
         outputs.update({key: value for key, value in vars(self.velocities).items()})
@@ -808,40 +813,40 @@ class fluxes:
     :ivar rf: rain heat flux (W/m^2)
     :type rf: ArrayLike
     """
-    def __init__(self, bulk_loop_inputs, bulk_loop_outputs):
+    def __init__(self, _bulk_loop_inputs, _bulk_loop_outputs):
         # compute fluxes
-        self.rnl = bulk_loop_outputs.rnl    #: upwelling IR radiation (W/m^2)
-        self.tau = bulk_loop_inputs.rhoa*bulk_loop_outputs.usr**2/bulk_loop_outputs.gf
-        self.hsb = -bulk_loop_inputs.rhoa*c35.CPA*bulk_loop_outputs.usr*bulk_loop_outputs.tsr
-        self.hlb = (-bulk_loop_inputs.rhoa*bulk_loop_inputs.lhvap
-                    * bulk_loop_outputs.usr*bulk_loop_outputs.qsr)
-        self.hbb = -bulk_loop_inputs.rhoa*c35.CPA*bulk_loop_outputs.usr*bulk_loop_outputs.tvsr
-        self.hsbb = -bulk_loop_inputs.rhoa*c35.CPA*bulk_loop_outputs.usr*bulk_loop_outputs.tssr
-        self.wbar = (1.61*self.hlb/bulk_loop_inputs.lhvap
-                     / (1+1.61*bulk_loop_inputs.q) / bulk_loop_inputs.rhoa
-                     + self.hsb/bulk_loop_inputs.rhoa/c35.CPA/bulk_loop_outputs.ta)
-        self.hlwebb = bulk_loop_inputs.rhoa*self.wbar*bulk_loop_inputs.q*bulk_loop_inputs.lhvap
-        self.evap = 1000*self.hlb/bulk_loop_inputs.lhvap/1000*3600
+        self.rnl = _bulk_loop_outputs.rnl    #: upwelling IR radiation (W/m^2)
+        self.tau = _bulk_loop_inputs.rhoa*_bulk_loop_outputs.usr**2/_bulk_loop_outputs.gf
+        self.hsb = -_bulk_loop_inputs.rhoa*c35.CPA*_bulk_loop_outputs.usr*_bulk_loop_outputs.tsr
+        self.hlb = (-_bulk_loop_inputs.rhoa*_bulk_loop_inputs.lhvap
+                    * _bulk_loop_outputs.usr*_bulk_loop_outputs.qsr)
+        self.hbb = -_bulk_loop_inputs.rhoa*c35.CPA*_bulk_loop_outputs.usr*_bulk_loop_outputs.tvsr
+        self.hsbb = -_bulk_loop_inputs.rhoa*c35.CPA*_bulk_loop_outputs.usr*_bulk_loop_outputs.tssr
+        self.wbar = (1.61*self.hlb/_bulk_loop_inputs.lhvap
+                     / (1+1.61*_bulk_loop_inputs.q) / _bulk_loop_inputs.rhoa
+                     + self.hsb/_bulk_loop_inputs.rhoa/c35.CPA/_bulk_loop_outputs.ta)
+        self.hlwebb = _bulk_loop_inputs.rhoa*self.wbar*_bulk_loop_inputs.q*_bulk_loop_inputs.lhvap
+        self.evap = 1000*self.hlb/_bulk_loop_inputs.lhvap/1000*3600
         # rain heat flux after Gosnell et al., JGR, 1995
-        if bulk_loop_inputs.rain is None:
-            self.rf = np.nan*np.zeros(bulk_loop_outputs.usr.size)
+        if _bulk_loop_inputs.rain is None:
+            self.rf = np.nan*np.zeros(_bulk_loop_outputs.usr.size)
         else:
             # water vapour diffusivity
-            dwat = 2.11e-5*((bulk_loop_inputs.t + c35.TDK)/c35.TDK)**1.94
+            dwat = 2.11e-5*((_bulk_loop_inputs.t + c35.TDK)/c35.TDK)**1.94
             # heat diffusivity
-            dtmp = ((1 + 3.309e-3*bulk_loop_inputs.t - 1.44e-6*bulk_loop_inputs.t**2)
-                    * 0.02411/(bulk_loop_inputs.rhoa*c35.CPA))
+            dtmp = ((1 + 3.309e-3*_bulk_loop_inputs.t - 1.44e-6*_bulk_loop_inputs.t**2)
+                    * 0.02411/(_bulk_loop_inputs.rhoa*c35.CPA))
             # Clausius-Clapeyron
-            dqs_dt = (bulk_loop_inputs.q*bulk_loop_inputs.lhvap
-                      / (c35.RGAS*(bulk_loop_inputs.t + c35.TDK)**2))
+            dqs_dt = (_bulk_loop_inputs.q*_bulk_loop_inputs.lhvap
+                      / (c35.RGAS*(_bulk_loop_inputs.t + c35.TDK)**2))
             # wet bulb factor
-            alfac = 1/(1 + 0.622*(dqs_dt*bulk_loop_inputs.lhvap*dwat)/(c35.CPA*dtmp))
-            self.rf = (bulk_loop_inputs.rain*alfac*c35.CPW
-                       * ((bulk_loop_inputs.ts - bulk_loop_inputs.t
-                           - bulk_loop_outputs.dter*bulk_loop_inputs.jcool)
-                          + (bulk_loop_inputs.qs - bulk_loop_inputs.q
-                             - bulk_loop_outputs.dqer*bulk_loop_inputs.jcool)
-                          * bulk_loop_inputs.lhvap/c35.CPA)/3600)
+            alfac = 1/(1 + 0.622*(dqs_dt*_bulk_loop_inputs.lhvap*dwat)/(c35.CPA*dtmp))
+            self.rf = (_bulk_loop_inputs.rain*alfac*c35.CPW
+                       * ((_bulk_loop_inputs.ts - _bulk_loop_inputs.t
+                           - _bulk_loop_outputs.dter*_bulk_loop_inputs.jcool)
+                          + (_bulk_loop_inputs.qs - _bulk_loop_inputs.q
+                             - _bulk_loop_outputs.dqer*_bulk_loop_inputs.jcool)
+                          * _bulk_loop_inputs.lhvap/c35.CPA)/3600)
 
 
 class velocities:
@@ -870,19 +875,19 @@ class velocities:
     :ivar u_n_rf: neutral wind speed at reference height zrf (m/s)
     :type u_n_rf: ArrayLike
     """
-    def __init__(self, bulk_loop_inputs, bulk_loop_outputs, stability_functions):
-        self.ut = bulk_loop_outputs.ut
-        self.usr = bulk_loop_outputs.usr
-        self.du = bulk_loop_outputs.du
-        self.gf = bulk_loop_outputs.gf
-        self.u = bulk_loop_outputs.du + bulk_loop_inputs.us
-        self.u_rf = (self.u + (bulk_loop_outputs.usr/c35.VON/bulk_loop_outputs.gf
-                               * (np.log(bulk_loop_inputs.zrf / bulk_loop_inputs.zu)
+    def __init__(self, _bulk_loop_inputs, _bulk_loop_outputs, stability_functions):
+        self.ut = _bulk_loop_outputs.ut
+        self.usr = _bulk_loop_outputs.usr
+        self.du = _bulk_loop_outputs.du
+        self.gf = _bulk_loop_outputs.gf
+        self.u = _bulk_loop_outputs.du + _bulk_loop_inputs.us
+        self.u_rf = (self.u + (_bulk_loop_outputs.usr/c35.VON/_bulk_loop_outputs.gf
+                               * (np.log(_bulk_loop_inputs.zrf / _bulk_loop_inputs.zu)
                                   - stability_functions.psi_u_rf + stability_functions.psi_u)))
         self.u_n = (self.u + stability_functions.psi_u
-                    * bulk_loop_outputs.usr/c35.VON/bulk_loop_outputs.gf)
+                    * _bulk_loop_outputs.usr/c35.VON/_bulk_loop_outputs.gf)
         self.u_n_rf = (self.u_rf + stability_functions.psi_u_rf
-                       * bulk_loop_outputs.usr/c35.VON/bulk_loop_outputs.gf)
+                       * _bulk_loop_outputs.usr/c35.VON/_bulk_loop_outputs.gf)
 
 
 class temperatures:
@@ -907,16 +912,16 @@ class temperatures:
     :ivar t_n_rf: neutral temperature at reference height zrf (K)
     :type t_n_rf: ArrayLike
     """
-    def __init__(self, bulk_loop_inputs, bulk_loop_outputs, stability_functions):
-        self.lapse = bulk_loop_inputs.grav/c35.CPA
-        self.dt = bulk_loop_outputs.dt
-        self.dter = bulk_loop_outputs.dter
-        self.t_rf = (bulk_loop_inputs.t + bulk_loop_outputs.tsr/c35.VON
-                     * (np.log(bulk_loop_inputs.zrf/bulk_loop_inputs.zt)
+    def __init__(self, _bulk_loop_inputs, _bulk_loop_outputs, stability_functions):
+        self.lapse = _bulk_loop_inputs.grav/c35.CPA
+        self.dt = _bulk_loop_outputs.dt
+        self.dter = _bulk_loop_outputs.dter
+        self.t_rf = (_bulk_loop_inputs.t + _bulk_loop_outputs.tsr/c35.VON
+                     * (np.log(_bulk_loop_inputs.zrf/_bulk_loop_inputs.zt)
                         - stability_functions.psi_t_rf + stability_functions.psi_t)
-                     + self.lapse*(bulk_loop_inputs.zt - bulk_loop_inputs.zrf))
-        self.t_n = bulk_loop_inputs.t + stability_functions.psi_t*bulk_loop_outputs.tsr/c35.VON
-        self.t_n_rf = self.t_rf + stability_functions.psi_t_rf*bulk_loop_outputs.tsr/c35.VON
+                     + self.lapse*(_bulk_loop_inputs.zt - _bulk_loop_inputs.zrf))
+        self.t_n = _bulk_loop_inputs.t + stability_functions.psi_t*_bulk_loop_outputs.tsr/c35.VON
+        self.t_n_rf = self.t_rf + stability_functions.psi_t_rf*_bulk_loop_outputs.tsr/c35.VON
 
 
 class humidities:
@@ -941,16 +946,16 @@ class humidities:
     :ivar rh_rf: relative humidity at reference height zrf (%)
     :type rh_rf: ArrayLike
     """
-    def __init__(self, bulk_loop_inputs, bulk_loop_outputs, stability_functions, temperatures):
-        self.dq = bulk_loop_outputs.dq
-        self.dqer = bulk_loop_outputs.dqer
-        self.q_rf = (bulk_loop_inputs.q + bulk_loop_outputs.qsr/c35.VON
-                     * (np.log(bulk_loop_inputs.zrf/bulk_loop_inputs.zq)
+    def __init__(self, _bulk_loop_inputs, _bulk_loop_outputs, stability_functions, temperatures):
+        self.dq = _bulk_loop_outputs.dq
+        self.dqer = _bulk_loop_outputs.dqer
+        self.q_rf = (_bulk_loop_inputs.q + _bulk_loop_outputs.qsr/c35.VON
+                     * (np.log(_bulk_loop_inputs.zrf/_bulk_loop_inputs.zq)
                         - stability_functions.psi_q_rf + stability_functions.psi_t))
-        self.q_n = (bulk_loop_inputs.q + (stability_functions.psi_t
-                                          * bulk_loop_outputs.qsr/c35.VON/np.sqrt(bulk_loop_outputs.gf)))
-        self.q_n_rf = self.q_rf + stability_functions.psi_q_rf*bulk_loop_outputs.qsr/c35.VON
-        self.rh_rf = rhcalc(temperatures.t_rf, bulk_loop_inputs.p, self.q_rf)
+        self.q_n = (_bulk_loop_inputs.q + (stability_functions.psi_t
+                                           * _bulk_loop_outputs.qsr/c35.VON/np.sqrt(_bulk_loop_outputs.gf)))
+        self.q_n_rf = self.q_rf + stability_functions.psi_q_rf*_bulk_loop_outputs.qsr/c35.VON
+        self.rh_rf = rhcalc(temperatures.t_rf, _bulk_loop_inputs.p, self.q_rf)
         # convert to g/kg
         self.q_rf *= 1000
         self.q_n *= 1000
@@ -1022,24 +1027,24 @@ class transfer_coefficients:
     :ivar cen_rf: neutral latent heat transfer coefficient (Dalton number) at reference height zrf
     :type cen_rf: ArrayLike
     """
-    def __init__(self, bulk_loop_inputs, bulk_loop_outputs, fluxes):
+    def __init__(self, _bulk_loop_inputs, _bulk_loop_outputs, fluxes):
         # compute transfer coeffs relative to ut @ meas. ht
-        self.cd = (fluxes.tau/bulk_loop_inputs.rhoa/bulk_loop_outputs.ut
-                   / np.maximum(0.1, bulk_loop_outputs.du))
-        self.ch = (-bulk_loop_outputs.usr*bulk_loop_outputs.tsr/bulk_loop_outputs.ut
-                   / (bulk_loop_outputs.dt - bulk_loop_outputs.dter*bulk_loop_inputs.jcool))
-        self.ce = (-bulk_loop_outputs.usr*bulk_loop_outputs.qsr
-                   / (bulk_loop_outputs.dq - bulk_loop_outputs.dqer*bulk_loop_inputs.jcool)
-                   / bulk_loop_outputs.ut)
+        self.cd = (fluxes.tau/_bulk_loop_inputs.rhoa/_bulk_loop_outputs.ut
+                   / np.maximum(0.1, _bulk_loop_outputs.du))
+        self.ch = (-_bulk_loop_outputs.usr*_bulk_loop_outputs.tsr/_bulk_loop_outputs.ut
+                   / (_bulk_loop_outputs.dt - _bulk_loop_outputs.dter*_bulk_loop_inputs.jcool))
+        self.ce = (-_bulk_loop_outputs.usr*_bulk_loop_outputs.qsr
+                   / (_bulk_loop_outputs.dq - _bulk_loop_outputs.dqer*_bulk_loop_inputs.jcool)
+                   / _bulk_loop_outputs.ut)
         # compute at ref height zrf neutral coeff relative to ut
         self.cdn_rf = (1000*c35.VON**2
-                       / np.log(bulk_loop_inputs.zrf/bulk_loop_outputs.zo)**2)
+                       / np.log(_bulk_loop_inputs.zrf/_bulk_loop_outputs.zo)**2)
         self.chn_rf = (1000*c35.VON**2 * c35.FDG
-                       / np.log(bulk_loop_inputs.zrf/bulk_loop_outputs.zo)
-                       / np.log(bulk_loop_inputs.zrf/bulk_loop_outputs.zot))
+                       / np.log(_bulk_loop_inputs.zrf/_bulk_loop_outputs.zo)
+                       / np.log(_bulk_loop_inputs.zrf/_bulk_loop_outputs.zot))
         self.cen_rf = (1000*c35.VON**2 * c35.FDG
-                       / np.log(bulk_loop_inputs.zrf/bulk_loop_outputs.zo)
-                       / np.log(bulk_loop_inputs.zrf/bulk_loop_outputs.zoq))
+                       / np.log(_bulk_loop_inputs.zrf/_bulk_loop_outputs.zo)
+                       / np.log(_bulk_loop_inputs.zrf/_bulk_loop_outputs.zoq))
 
 
 class stability_functions:
@@ -1065,11 +1070,11 @@ class stability_functions:
     :type psi_q_rf: ArrayLike
 
     """
-    def __init__(self, bulk_loop_inputs, bulk_loop_outputs):
+    def __init__(self, _bulk_loop_inputs, _bulk_loop_outputs):
         # compute the stability functions
-        self.psi_u = psiu_26(bulk_loop_inputs.zu/bulk_loop_outputs.obukL)
-        self.psi_u_rf = psiu_26(bulk_loop_inputs.zrf/bulk_loop_outputs.obukL)
-        self.psi_t = psit_26(bulk_loop_inputs.zt/bulk_loop_outputs.obukL)
-        self.psi_t_rf = psit_26(bulk_loop_inputs.zrf/bulk_loop_outputs.obukL)
-        self.psi_q = psit_26(bulk_loop_inputs.zq/bulk_loop_outputs.obukL)
-        self.psi_q_rf = psit_26(bulk_loop_inputs.zrf/bulk_loop_outputs.obukL)
+        self.psi_u = psiu_26(_bulk_loop_inputs.zu/_bulk_loop_outputs.obukL)
+        self.psi_u_rf = psiu_26(_bulk_loop_inputs.zrf/_bulk_loop_outputs.obukL)
+        self.psi_t = psit_26(_bulk_loop_inputs.zt/_bulk_loop_outputs.obukL)
+        self.psi_t_rf = psit_26(_bulk_loop_inputs.zrf/_bulk_loop_outputs.obukL)
+        self.psi_q = psit_26(_bulk_loop_inputs.zq/_bulk_loop_outputs.obukL)
+        self.psi_q_rf = psit_26(_bulk_loop_inputs.zrf/_bulk_loop_outputs.obukL)
