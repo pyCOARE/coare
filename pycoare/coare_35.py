@@ -791,7 +791,8 @@ class coare_35:
 class fluxes:
     """Fluxes computed from COARE.
 
-    Should typically be accessed only through an instance of the :class:`coare_35` class::
+    An instance of this class is created whenever a :class:`coare_35` class is created.
+    Variables in this class should only be accessed through this instance of the :class:`coare_35` class::
 
         from pycoare import coare_35
         c = coare_35([1])
@@ -856,7 +857,8 @@ class fluxes:
 class velocities:
     """Velocities computed from COARE.
 
-    Should typically be accessed only through an instance of the :class:`coare_35` class::
+    An instance of this class is created whenever a :class:`coare_35` class is created.
+    Variables in this class should only be accessed through this instance of the :class:`coare_35` class::
 
         from pycoare import coare_35
         c = coare_35([1])
@@ -898,7 +900,8 @@ class velocities:
 class temperatures:
     """Temperatures computed from COARE.
 
-    Should typically be accessed only through an instance of the :class:`coare_35` class::
+    An instance of this class is created whenever a :class:`coare_35` class is created.
+    Variables in this class should only be accessed through this instance of the :class:`coare_35` class::
 
         from pycoare import coare_35
         c = coare_35([1])
@@ -933,7 +936,8 @@ class temperatures:
 class humidities:
     """Stability parameters computed from COARE.
 
-    Should typically be accessed only through an instance of the :class:`coare_35` class::
+    An instance of this class is created whenever a :class:`coare_35` class is created.
+    Variables in this class should only be accessed through this instance of the :class:`coare_35` class::
 
         from pycoare import coare_35
         c = coare_35([1])
@@ -973,7 +977,8 @@ class humidities:
 class stability_parameters:
     """Stability parameters computed from COARE.
 
-    Should typically be accessed only through an instance of the :class:`coare_35` class::
+    An instance of this class is created whenever a :class:`coare_35` class is created.
+    Variables in this class should only be accessed through this instance of the :class:`coare_35` class::
 
         from pycoare import coare_35
         c = coare_35([1])
@@ -1017,7 +1022,8 @@ class stability_parameters:
 class transfer_coefficients:
     """Transfer coefficients computed from COARE.
 
-    Should typically be accessed only through an instance of the :class:`coare_35` class::
+    An instance of this class is created whenever a :class:`coare_35` class is created.
+    Variables in this class should only be accessed through this instance of the :class:`coare_35` class::
 
         from pycoare import coare_35
         c = coare_35([1])
@@ -1060,7 +1066,8 @@ class transfer_coefficients:
 class stability_functions:
     """Stability functions computed from COARE.
 
-    Should typically be accessed only through an instance of the :class:`coare_35` class::
+    An instance of this class is created whenever a :class:`coare_35` class is created.
+    Variables in this class should only be accessed through this instance of the :class:`coare_35` class::
 
         from pycoare import coare_35
         c = coare_35([1])
