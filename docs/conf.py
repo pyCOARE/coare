@@ -28,6 +28,9 @@ extensions = [
 
 autodoc_typehints = "none"
 
+autodoc_member_order = "bysource"
+toc_object_entries_show_parents = "hide"
+
 source_suffix = {
     '.rst': 'restructuredtext'
 }

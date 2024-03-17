@@ -536,7 +536,7 @@ class c35:
         jcool: int = 1.,
         nits: int = 10,
     ) -> NDArray[np.float64]:
-        """Calculate the wind stress transfer (drag) coefficient at height zu. 
+        """Calculate the wind stress transfer (drag) coefficient at height zu.
 
         :param: see inputs to :class:`c35`
         :return: drag coefficient
