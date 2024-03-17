@@ -1,7 +1,7 @@
 .. currentmodule:: pycoare
 
-COARE v3.5 API Reference
-========================
+COARE v3.5
+==========
 
 .. autoclass:: coare_35
    :members:

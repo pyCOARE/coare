@@ -26,6 +26,7 @@ def rhcalc(t: ArrayLike,
            q: ArrayLike,
            ) -> NDArray[np.float64]:
     """Compute relative humidity from temperature, pressure, and specific humidity.
+
     :param t: temperature (degC)
     :type t: ArrayLike
     :param p: pressure (mb)

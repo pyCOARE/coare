@@ -212,7 +212,8 @@ class coare_35:
 
         def _get_cool_skin(self):
             al = 2.1e-5 * (self.ts + 3.2)**0.79
-            bigc = 16. * self.grav * coare_35.CPW * (coare_35.RHOW * coare_35.VISW)**3 / (coare_35.TCW**2 * self.rhoa**2)
+            bigc = (16. * self.grav * coare_35.CPW
+                    * (coare_35.RHOW * coare_35.VISW)**3 / (coare_35.TCW**2 * self.rhoa**2))
             wetc = 0.622 * self.lhvap * self.qs / (coare_35.RGAS * (self.ts + coare_35.TDK)**2)
             return al, bigc, wetc
 
@@ -958,8 +959,9 @@ class humidities:
         self.q_rf = (_bulk_loop_inputs.q + _bulk_loop_outputs.qsr/coare_35.VON
                      * (np.log(_bulk_loop_inputs.zrf/_bulk_loop_inputs.zq)
                         - stability_functions.psi_q_rf + stability_functions.psi_t))
-        self.q_n = (_bulk_loop_inputs.q + (stability_functions.psi_t
-                                           * _bulk_loop_outputs.qsr/coare_35.VON/np.sqrt(_bulk_loop_outputs.gf)))
+        self.q_n = (_bulk_loop_inputs.q
+                    + (stability_functions.psi_t
+                       * _bulk_loop_outputs.qsr/coare_35.VON/np.sqrt(_bulk_loop_outputs.gf)))
         self.q_n_rf = self.q_rf + stability_functions.psi_q_rf*_bulk_loop_outputs.qsr/coare_35.VON
         self.rh_rf = rhcalc(temperatures.t_rf, _bulk_loop_inputs.p, self.q_rf)
         # convert to g/kg

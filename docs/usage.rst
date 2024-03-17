@@ -33,7 +33,7 @@ However, all variables used in the bulk flux algorithm are accesible through the
     >>> c.fluxes.tau
     array([0.        , 0.00060093, 0.00165957, 0.00319516, 0.00520412, 0.00768739])
 
-See the `COARE v3.5 API documentation <_c35_api>`_ for a complete list of methods and variables.
+See the `COARE v3.5 API documentation <c35_api>`_ for a complete list of methods and variables.
 
 .. note::
 

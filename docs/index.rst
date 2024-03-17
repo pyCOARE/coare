@@ -22,14 +22,14 @@ This version of the Python implementation of the COARE algorithm was written by 
 For more information on the people and publications that developed the COARE algorithm, see the references below. 
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 5
 
     usage
     References <https://github.com/pyCOARE/coare/tree/main/docs/References>
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 5
     :caption: API Reference
-    
+
     c35_api
     util_api

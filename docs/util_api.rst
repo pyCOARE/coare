@@ -1,5 +1,5 @@
-Utility Function Reference
-==========================
+Utility Functions
+=================
 
 .. automodule:: pycoare.util
     :members:
