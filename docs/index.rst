@@ -24,14 +24,8 @@ For more information on the people and publications that developed the COARE alg
 Contents
 --------
 .. toctree::
-    :maxdepth: 1
 
     usage
-    References <https://github.com/pyCOARE/coare/tree/main/docs/References>
- 
- .. toctree::
-    :maxdepth: 1
-    :caption: API Reference
-
     c35_api
     util_api
+    References <https://github.com/pyCOARE/coare/tree/main/docs/References>
