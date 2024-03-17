@@ -61,8 +61,6 @@ class c35:
     :type jcool: int, optional
     :param nits: number of iterations of bulk flux loop
     :type nits: int, optional
-    :return: instance of c35
-    :rtype: c35
     """
 
     # set constants
@@ -992,17 +990,17 @@ class stability_parameters:
     :ivar zoq: moisture roughness length (m)
     :type zoq: ArrayLike
     """
-    def __init__(self, tsr, tvsr, tssr, qsr, tkt, obukL, zet, zo, zot, zoq):
-        self.tsr = tsr          #: sonic temperature scaling parameter (K)
-        self.tvsr = tvsr        #: virtual potential temperature scaling parameter (K)
-        self.tssr = tssr        #: sonic temperature scaling parameter (K)
-        self.qsr = qsr          #: humidity scaling parameter (g/kg)
-        self.tkt = tkt          #: cool skin thickness (m)
-        self.obukL = obukL      #: Obukhov length scale (m)
-        self.zet = zet          #: Monin-Obukhov stability parameter
-        self.zo = zo            #: roughness length (m)
-        self.zot = zot          #: thermal roughness length (m)
-        self.zoq = zoq          #: moisture roughness length (m)
+    def __init__(self, _bulk_loop_outputs):
+        self.tsr = _bulk_loop_outputs.tsr
+        self.tvsr = _bulk_loop_outputs.tvsr
+        self.tssr = _bulk_loop_outputs.tssr
+        self.qsr = _bulk_loop_outputs.qsr
+        self.tkt = _bulk_loop_outputs.tkt
+        self.obukL = _bulk_loop_outputs.obukL
+        self.zet = _bulk_loop_outputs.zet
+        self.zo = _bulk_loop_outputs.zo
+        self.zot = _bulk_loop_outputs.zot
+        self.zoq = _bulk_loop_outputs.zoq
 
 
 class transfer_coefficients:

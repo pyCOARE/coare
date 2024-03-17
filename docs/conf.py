@@ -69,4 +69,5 @@ html_theme_options = dict(
     use_issues_button=True,
     home_page_in_toc=False,
     icon_links=[],
+    show_toc_level=3,
 )
