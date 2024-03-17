@@ -1,5 +1,5 @@
-# TODO: Add tests for instantiated c35 class
-# TODO: Add tests for c35 class methods
+# TODO: Add tests for instantiated coare_35 class
+# TODO: Add tests for coare_35 class methods
 
 """
 Tests for the COARE functions in pycoare.util and pycoare.coare
@@ -9,7 +9,7 @@ import csv
 import numpy as np
 import os
 from pycoare.util import rhcalc, psit_26, psiu_26, psiu_40, qsat, qsea, qair
-from pycoare import c35
+from pycoare import coare_35
 import pytest
 
 # required or tests fail since numpy doesn't save enough precision
@@ -95,7 +95,7 @@ class TestUtil:
         np.testing.assert_allclose(actual, expected, atol=1e-10, rtol=0)
 
 
-class Testc35:
+class Testcoare_35:
     @pytest.fixture
     def load_input(self):
         path = os.path.join(
@@ -117,45 +117,45 @@ class Testc35:
 
     def test_tau(self, load_input, load_expected):
         expected = load_expected['tau']
-        actual = c35.tau(**load_input)
+        actual = coare_35.tau(**load_input)
         np.testing.assert_allclose(actual, expected, atol=1e-10, rtol=0)
 
     def test_ustar(self, load_input, load_expected):
         expected = load_expected['ustar']
-        actual = c35.ustar(**load_input)
+        actual = coare_35.ustar(**load_input)
         np.testing.assert_allclose(actual, expected, atol=1e-10, rtol=0)
 
     def test_tstar(self, load_input, load_expected):
         expected = load_expected['tstar']
-        actual = c35.tstar(**load_input)
+        actual = coare_35.tstar(**load_input)
         np.testing.assert_allclose(actual, expected, atol=1e-10, rtol=0)
 
     def test_qstar(self, load_input, load_expected):
         expected = load_expected['qstar']
-        actual = c35.qstar(**load_input)
+        actual = coare_35.qstar(**load_input)
         np.testing.assert_allclose(actual, expected, atol=1e-10, rtol=0)
 
     def test_sensible(self, load_input, load_expected):
         expected = load_expected['sensible']
-        actual = c35.sensible(**load_input)
+        actual = coare_35.sensible(**load_input)
         np.testing.assert_allclose(actual, expected, atol=1e-10, rtol=0)
 
     def test_latent(self, load_input, load_expected):
         expected = load_expected['latent']
-        actual = c35.latent(**load_input)
+        actual = coare_35.latent(**load_input)
         np.testing.assert_allclose(actual, expected, atol=1e-10, rtol=0)
 
     def test_buoyancy(self, load_input, load_expected):
         expected = load_expected['buoyancy']
-        actual = c35.buoyancy(**load_input)
+        actual = coare_35.buoyancy(**load_input)
         np.testing.assert_allclose(actual, expected, atol=1e-10, rtol=0)
 
     def test_webb(self, load_input, load_expected):
         expected = load_expected['webb']
-        actual = c35.webb(**load_input)
+        actual = coare_35.webb(**load_input)
         np.testing.assert_allclose(actual, expected, atol=1e-10, rtol=0)
 
     def test_cd(self, load_input, load_expected):
         expected = load_expected['cd']
-        actual = c35.cd(**load_input)
+        actual = coare_35.cd(**load_input)
         np.testing.assert_allclose(actual, expected, atol=1e-10, rtol=0)

@@ -21,11 +21,15 @@ Credits
 This version of the Python implementation of the COARE algorithm was written by Byron Blomquist and Ludovic Bariteau. 
 For more information on the people and publications that developed the COARE algorithm, see the references below. 
 
-Contents
---------
 .. toctree::
+    :maxdepth: 5
 
     usage
     References <https://github.com/pyCOARE/coare/tree/main/docs/References>
 
- 
+.. toctree::
+    :maxdepth: 5
+    :caption: API Reference
+
+    c35_api
+    util_api

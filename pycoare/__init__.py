@@ -5,4 +5,4 @@ PyCOARE
 ===============
 """
 
-from .coare import c35
+from .coare_35 import coare_35
