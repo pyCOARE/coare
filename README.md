@@ -1,7 +1,7 @@
 [![Tests](https://github.com/pyCOARE/coare/actions/workflows/tests.yml/badge.svg)](https://github.com/pyCOARE/coare/actions/workflows/tests.yml)
 [![License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](ttps://github.com/pyCOARE/coare/blob/master/LICENSE.txt)
 [![Code coverage](https://codecov.io/gh/pyCOARE/coare/branch/main/graph/badge.svg)](https://app.codecov.io/gh/pyCOARE/coare)
-[![Docs](https://readthedocs.org/projects/coare-live/badge/?version=latest)](https://coare-live.readthedocs.io/en/latest/?badge=latest)
+[![Docs](https://readthedocs.org/projects/pycoare/badge/?version=latest)](https://pycoare.readthedocs.io/en/latest/?badge=latest)
 [![PyPI version](https://img.shields.io/pypi/v/pycoare?style=plastic)](https://pypi.org/project/pycoare/)
 
 # pycoare
