@@ -1,5 +1,3 @@
-.. currentmodule:: pycoare
-
 COARE v3.5
 ==========
 
@@ -16,6 +14,8 @@ COARE v3.5
 
    Parameter jcool is used for interpretation of the ocean temperature.
    Set jcool=0 if ts is true surface skin temperature, otherwise use jcool=1 if ts is the bulk temperature (default case).
+
+.. currentmodule:: pycoare
 
 .. autoclass:: coare_35
    :members:
