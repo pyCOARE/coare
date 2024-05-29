@@ -46,7 +46,7 @@ templates_path = ['_templates']
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 html_theme = "sphinx_book_theme"
-html_title = "pyCOARE"
+html_title = "pycoare"
 
 html_context = {
     "github_user": "pycoare",
@@ -61,7 +61,7 @@ html_context = {
 html_theme_options = dict(
     repository_url="https://github.com/pyCOARE/coare",
     repository_branch="main",
-    html_title="pyCOARE",
+    html_title="pycoare",
     navigation_with_keys=False,
     path_to_docs="doc",
     use_edit_page_button=True,
