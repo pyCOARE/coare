@@ -18,7 +18,7 @@ You can install the most up-to-date version using::
 Credits
 -------
 
-This version of the Python implementation of the COARE algorithm was `initially translated from MATLAB by Byron Blomquist and Ludovic Bariteau<https://github.com/NOAA-PSL/COARE-algorithm>`_.
+This version of the Python implementation of the COARE algorithm was `initially translated from MATLAB by Byron Blomquist and Ludovic Bariteau <https://github.com/NOAA-PSL/COARE-algorithm>`_.
 For more information on the people and publications that developed the COARE algorithm, see the references at the link below. 
 
 .. toctree::

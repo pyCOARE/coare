@@ -3,11 +3,12 @@ Usage
 
 .. _Usage:
 
+.. |fairall2003| replace:: COARE 3.0 code
 .. _fairall2003: https://doi.org/10.1175/1520-0442(2003)016<0571:BPOASF>2.0.CO;2
+.. |edson2013| replace:: CLIMODE, MBL and CBLAST experiments
 .. _edson2013: https://doi.org/10.1175/JPO-D-12-0173.1
 
-The COARE v3.5 algorithm is based on the `COARE 3.0 code <_fairall2003>`_ 
-with modifications from the results of the `CLIMODE, MBL and CBLAST experiments <_edson2013>`_.
+The COARE v3.5 algorithm is based on the |fairall2003|_ with modifications from the results of the |edson2013|_.
 
 Functions within pycoare can be invoked to access specific variables such as wind stress or friction velocity,
 accessed via static functions:
