@@ -795,6 +795,7 @@ class fluxes:
     Variables in this class should only be accessed through this instance of the :class:`coare_35` class::
 
         from pycoare import coare_35
+        # creating a coare_35 instance
         c = coare_35([1])
         # accessing the Webb correction for latent heat flux
         c.fluxes.hlwebb
@@ -861,6 +862,7 @@ class velocities:
     Variables in this class should only be accessed through this instance of the :class:`coare_35` class::
 
         from pycoare import coare_35
+        # creating a coare_35 instance
         c = coare_35([1])
         # accessing the friction velocity
         c.velocities.usr
@@ -904,6 +906,7 @@ class temperatures:
     Variables in this class should only be accessed through this instance of the :class:`coare_35` class::
 
         from pycoare import coare_35
+        # creating a coare_35 instance
         c = coare_35([1])
         # accessing the adiabatic lapse rate
         c.temperatures.lapse
@@ -940,6 +943,7 @@ class humidities:
     Variables in this class should only be accessed through this instance of the :class:`coare_35` class::
 
         from pycoare import coare_35
+        # creating a coare_35 instance
         c = coare_35([1])
         # accessing the humidity at height zrf
         c.humidities.q_rf
@@ -981,6 +985,7 @@ class stability_parameters:
     Variables in this class should only be accessed through this instance of the :class:`coare_35` class::
 
         from pycoare import coare_35
+        # creating a coare_35 instance
         c = coare_35([1])
         # accessing the temperature scaling parameter
         c.stability_parameters.tsr
@@ -1026,6 +1031,7 @@ class transfer_coefficients:
     Variables in this class should only be accessed through this instance of the :class:`coare_35` class::
 
         from pycoare import coare_35
+        # creating a coare_35 instance
         c = coare_35([1])
         # accessing the wind stress transfer coefficient
         c.transfer_coefficients.cd
@@ -1070,9 +1076,10 @@ class stability_functions:
     Variables in this class should only be accessed through this instance of the :class:`coare_35` class::
 
         from pycoare import coare_35
+        # creating a coare_35 instance
         c = coare_35([1])
-        # accessing the wind stress transfer coefficient
-        c.stability_functions.cd
+        # accessing the velocity structure function
+        c.stability_functions.psi_u
 
     :ivar psi_u: velocity structure function
     :type psi_u: ArrayLike
