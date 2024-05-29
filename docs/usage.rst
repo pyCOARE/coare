@@ -16,11 +16,11 @@ The COARE v3.5 algorithm is based on the |fairall2003|_ with modifications from 
     If you must use a single measurement for any of the variables, try to use averages that are representative of the region of interest.
     `See the API for more details <c35_api.html>`_.
 
-.. attention::
+.. note::
 
-    The COARE v3.5 algorithm can accept NumPy `ArrayLike` objects (e.g., `float`, `list`, NumPy `ndarray`, etc.) as input. 
-    It is not yet designed to work with `xarray` objects (support coming soon). 
-    Please convert `DataArrays` to NumPy `ndarray` using the `.values` attribute before passing them to the COARE algorithm.
+    The COARE v3.5 algorithm can accept NumPy ``ArrayLike`` objects (e.g., ``float``, ``list``, ``numpy.ndarray``, etc.) as input. 
+    It is not yet designed to work with ``xarray`` objects (support coming soon). 
+    Please convert ``xarray.DataArray`` to ``numpy.ndarray`` using the ``.values`` attribute before passing them to the COARE algorithm.
 
 Functions within pycoare can be invoked to access specific variables such as wind stress or friction velocity,
 accessed via static functions:
