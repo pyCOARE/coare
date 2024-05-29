@@ -18,9 +18,9 @@ The COARE v3.5 algorithm is based on the |fairall2003|_ with modifications from 
 
 .. attention::
 
-    The COARE v3.5 algorithm can accept floats or NumPy arrays as input. 
-    It is not yet designed to work with xarray objects (support coming soon). 
-    Please convert DataArrays to NumPy array using the `.values` attribute before passing them to the COARE algorithm.
+    The COARE v3.5 algorithm can accept NumPy `ArrayLike` objects (e.g., `float`, `list`, NumPy `ndarray`, etc.) as input. 
+    It is not yet designed to work with `xarray` objects (support coming soon). 
+    Please convert `DataArrays` to NumPy `ndarray` using the `.values` attribute before passing them to the COARE algorithm.
 
 Functions within pycoare can be invoked to access specific variables such as wind stress or friction velocity,
 accessed via static functions:
