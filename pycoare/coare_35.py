@@ -569,6 +569,9 @@ class coare_35:
             self._bulk_loop_inputs,
             self._bulk_loop_outputs
         )
+        self.stability_parameters = stability_parameters(
+            self._bulk_loop_outputs
+        )
         self.velocities = velocities(
             self._bulk_loop_inputs,
             self._bulk_loop_outputs,
@@ -785,6 +788,7 @@ class coare_35:
         outputs.update({key: value for key, value in vars(self.temperatures).items()})
         outputs.update({key: value for key, value in vars(self.humidities).items()})
         outputs.update({key: value for key, value in vars(self.stability_functions).items()})
+        outputs.update({key: value for key, value in vars(self.stability_parameters).items()})
         return outputs[out]
 
 
