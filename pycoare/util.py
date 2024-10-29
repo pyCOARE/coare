@@ -16,15 +16,16 @@ def grv(lat: ArrayLike) -> NDArray[np.float64]:
     b = 6356752.314  # semi-minor Earth axis (m)
     gamma_p = 9.8321849379  # normal gravity at the pole (m/s^2)
     gamma_e = 9.7803253359  # normal gravity at the equator (m/s^2)
-    k = b*gamma_p/(a*gamma_e) - 1
-    gamma = gamma_e*(1 + k * np.sin(lat)**2)/np.sqrt(1 - e**2*np.sin(lat)**2)
+    k = b * gamma_p / (a * gamma_e) - 1
+    gamma = gamma_e * (1 + k * np.sin(lat) ** 2) / np.sqrt(1 - e**2 * np.sin(lat) ** 2)
     return gamma
 
 
-def rhcalc(t: ArrayLike,
-           p: ArrayLike,
-           q: ArrayLike,
-           ) -> NDArray[np.float64]:
+def rhcalc(
+    t: ArrayLike,
+    p: ArrayLike,
+    q: ArrayLike,
+) -> NDArray[np.float64]:
     """Compute relative humidity from temperature, pressure, and specific humidity.
 
     :param t: temperature (degC)
@@ -78,10 +79,7 @@ def qsea(t: ArrayLike, p: ArrayLike) -> NDArray[np.float64]:
     return qs
 
 
-def qair(t: ArrayLike,
-         p: ArrayLike,
-         rh: ArrayLike
-         ) -> NDArray[np.float64]:
+def qair(t: ArrayLike, p: ArrayLike, rh: ArrayLike) -> NDArray[np.float64]:
     """Returns specific humidity given temperature, pressure, and relative humidity.
 
     :param t: temperature (degC)
@@ -116,22 +114,29 @@ def psit_26(z_L: ArrayLike) -> NDArray[np.float64]:
     b = 0.6667
     c = 5
     d = 0.35
-    dzet = d*zet
-    dzet[dzet > 50] = 50.
-    psi = np.nan*np.empty(zet.shape, dtype=float)
+    dzet = d * zet
+    dzet[dzet > 50] = 50.0
+    psi = np.nan * np.empty(zet.shape, dtype=float)
     k = np.flatnonzero(zet >= 0)
-    psi[k] = -((1 + 2/3*a*zet[k])**(3/2) + b*(zet[k] - c/d)*np.exp(-dzet[k]) + b*c/d - 1)
+    psi[k] = -(
+        (1 + 2 / 3 * a * zet[k]) ** (3 / 2)
+        + b * (zet[k] - c / d) * np.exp(-dzet[k])
+        + b * c / d
+        - 1
+    )
     # compute convective psi_t for unstable conditions by Grachev et. al., 2000
     k = np.flatnonzero(zet < 0)
-    x = (1 - 15*zet[k])**(1/2)
-    psik = 2*np.log((1 + x)/2.)  # kansas psi
-    x = (1 - 34.15*zet[k])**(1/3)
-    psic = (3/2*np.log((x**2 + x + 1)/3)  # free convective psi
-            - np.sqrt(3)*np.arctan((2*x + 1)/np.sqrt(3))
-            + np.pi/np.sqrt(3))
+    x = (1 - 15 * zet[k]) ** (1 / 2)
+    psik = 2 * np.log((1 + x) / 2.0)  # kansas psi
+    x = (1 - 34.15 * zet[k]) ** (1 / 3)
+    psic = (
+        3 / 2 * np.log((x**2 + x + 1) / 3)  # free convective psi
+        - np.sqrt(3) * np.arctan((2 * x + 1) / np.sqrt(3))
+        + np.pi / np.sqrt(3)
+    )
     # combine free convective and kansas psi
-    f = zet[k]**2 / (1. + zet[k]**2.)
-    psi[k] = (1-f)*psik + f*psic
+    f = zet[k] ** 2 / (1.0 + zet[k] ** 2.0)
+    psi[k] = (1 - f) * psik + f * psic
     return psi
 
 
@@ -143,29 +148,35 @@ def psiu_26(z_L: ArrayLike) -> NDArray[np.float64]:
     :return: velocity structure function
     :rtype: NDArray[np.float64]
     """
-    zet = np.copy(np.asarray(z_L, dtype=float))   # conversion to ndarray float
+    zet = np.copy(np.asarray(z_L, dtype=float))  # conversion to ndarray float
     # compute psi_u for stable conditions by Beljaars & Holtslag 1991
     a = 0.7
-    b = 3./4.
-    c = 5.
+    b = 3.0 / 4.0
+    c = 5.0
     d = 0.35
-    dzet = d*zet
-    dzet[dzet > 50] = 50.
-    psi = np.nan*np.empty(zet.shape, dtype=float)
+    dzet = d * zet
+    dzet[dzet > 50] = 50.0
+    psi = np.nan * np.empty(zet.shape, dtype=float)
     k = np.flatnonzero(zet >= 0)
-    psi[k] = -(a*zet[k] + b*(zet[k] - c/d)*np.exp(-dzet[k]) + b*c/d)
+    psi[k] = -(a * zet[k] + b * (zet[k] - c / d) * np.exp(-dzet[k]) + b * c / d)
     # compute convective psi for unstable conditions by Grachev et. al., 2000
     k = np.flatnonzero(zet < 0)  # only compute where zet < 0
-    x = (1 - 15*zet[k])**(1/4)
-    psik = (2.*np.log((1.+x)/2.) + np.log((1.+x*x)/2.)  # kansas psi
-            - 2.*np.arctan(x) + np.pi/2)
-    x = (1 - 10.15*zet[k])**(1/3)
-    psic = (3/2*np.log((x**2 + x + 1)/3)  # free convective psi
-            - np.sqrt(3)*np.arctan((2*x + 1)/np.sqrt(3))
-            + np.pi/np.sqrt(3))
+    x = (1 - 15 * zet[k]) ** (1 / 4)
+    psik = (
+        2.0 * np.log((1.0 + x) / 2.0)
+        + np.log((1.0 + x * x) / 2.0)  # kansas psi
+        - 2.0 * np.arctan(x)
+        + np.pi / 2
+    )
+    x = (1 - 10.15 * zet[k]) ** (1 / 3)
+    psic = (
+        3 / 2 * np.log((x**2 + x + 1) / 3)  # free convective psi
+        - np.sqrt(3) * np.arctan((2 * x + 1) / np.sqrt(3))
+        + np.pi / np.sqrt(3)
+    )
     # combine free convective and kansas psi
-    f = zet[k]**2 / (1.+zet[k]**2)
-    psi[k] = (1-f)*psik + f*psic
+    f = zet[k] ** 2 / (1.0 + zet[k] ** 2)
+    psi[k] = (1 - f) * psik + f * psic
     return psi
 
 
@@ -179,41 +190,45 @@ def psiu_40(z_L: ArrayLike) -> NDArray[np.float64]:
     """
     zet = np.copy(np.asarray(z_L, dtype=float))
     # compute psi_u for stable conditions by Beljaars & Holtslag 1991
-    a = 1.
-    b = 3./4.
-    c = 5.
+    a = 1.0
+    b = 3.0 / 4.0
+    c = 5.0
     d = 0.35
-    dzet = d*zet
-    dzet[dzet > 50] = 50.
-    psi = np.nan*np.empty(zet.shape, dtype=float)
+    dzet = d * zet
+    dzet[dzet > 50] = 50.0
+    psi = np.nan * np.empty(zet.shape, dtype=float)
     k = np.flatnonzero(zet >= 0)
-    psi[k] = -(a*zet[k] + b*(zet[k] - c/d)*np.exp(-dzet[k]) + b*c/d)
+    psi[k] = -(a * zet[k] + b * (zet[k] - c / d) * np.exp(-dzet[k]) + b * c / d)
     # compute convective psi for unstable conditions by Grachev et. al., 2000
     k = np.flatnonzero(zet < 0)
-    x = (1. - 18.*zet[k])**(1/4)
-    psik = (2.*np.log((1.+x)/2.) + np.log((1.+x*x)/2.)  # kansas psi
-            - 2.*np.arctan(x) + np.pi/2)
-    x = (1. - 10*zet[k])**(1/3)
-    psic = (3/2*np.log((x**2 + x + 1)/3)  # free convective psi
-            - np.sqrt(3)*np.arctan((2*x + 1)/np.sqrt(3))
-            + np.pi/np.sqrt(3))
+    x = (1.0 - 18.0 * zet[k]) ** (1 / 4)
+    psik = (
+        2.0 * np.log((1.0 + x) / 2.0)
+        + np.log((1.0 + x * x) / 2.0)  # kansas psi
+        - 2.0 * np.arctan(x)
+        + np.pi / 2
+    )
+    x = (1.0 - 10 * zet[k]) ** (1 / 3)
+    psic = (
+        3 / 2 * np.log((x**2 + x + 1) / 3)  # free convective psi
+        - np.sqrt(3) * np.arctan((2 * x + 1) / np.sqrt(3))
+        + np.pi / np.sqrt(3)
+    )
     # combine free convective and kansas psi
-    f = zet[k]**2 / (1.+zet[k]**2)
-    psi[k] = (1-f)*psik + f*psic
+    f = zet[k] ** 2 / (1.0 + zet[k] ** 2)
+    psi[k] = (1 - f) * psik + f * psic
     return psi
 
 
-def _check_size(arr: ArrayLike, N: int, name: str = 'Input', warn=False) -> NDArray[np.float64]:
+def _check_size(
+    arr: ArrayLike, N: int, name: str = "Input", warn=False
+) -> NDArray[np.float64]:
     arr = np.asarray(arr, dtype=float)
     if arr.size != N and arr.size != 1:
-        raise ValueError(
-            f'pyCOARE: {name} array of different length than u'
-        )
+        raise ValueError(f"pyCOARE: {name} array of different length than u")
     elif arr.size == 1:
         if warn:
-            print(
-                f'pyCOARE: {name} array of length 1, broadcasting to length {N}'
-            )
+            print(f"pyCOARE: {name} array of length 1, broadcasting to length {N}")
         arr = arr * np.ones(N, dtype=np.float64)
         return arr
     else:

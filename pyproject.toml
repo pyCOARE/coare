@@ -29,6 +29,3 @@ dependencies = ['numpy']
 [project.urls]
 
 Source = 'https://github.com/pyCOARE/coare'
-
-
-
