@@ -10,6 +10,7 @@ Refactored, packaged, and documented by:
 
 - Andrew Scherer, Oregon State University
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -69,8 +70,8 @@ class coare_35:
 
     # set constants
     BETA = 1.2
-    VON = 0.4          # von Karman const
-    FDG = 1.00         # Turbulent Prandtl number
+    VON = 0.4  # von Karman const
+    FDG = 1.00  # Turbulent Prandtl number
     TDK = 273.16
 
     # air constants
@@ -79,9 +80,9 @@ class coare_35:
 
     # cool skin constants
     BE = 0.026
-    CPW = 4000.
-    RHOW = 1022.
-    VISW = 1.e-6
+    CPW = 4000.0
+    RHOW = 1022.0
+    VISW = 1.0e-6
     TCW = 0.6
 
     # wave-age dependent coefficients
@@ -100,26 +101,25 @@ class coare_35:
     def __init__(
         self,
         u: ArrayLike,
-        t: ArrayLike = [10.],
-        rh: ArrayLike = [75.],
-        zu: ArrayLike = [10.],
-        zt: ArrayLike = [10.],
-        zq: ArrayLike = [10.],
-        zrf: ArrayLike = [10.],
-        us: ArrayLike = [0.],
-        ts: ArrayLike = [10.],
-        p: ArrayLike = [1015.],
-        lat: ArrayLike = [45.],
-        zi: ArrayLike = [600.],
-        rs: ArrayLike = [150.],
-        rl: ArrayLike = [370.],
+        t: ArrayLike = [10.0],
+        rh: ArrayLike = [75.0],
+        zu: ArrayLike = [10.0],
+        zt: ArrayLike = [10.0],
+        zq: ArrayLike = [10.0],
+        zrf: ArrayLike = [10.0],
+        us: ArrayLike = [0.0],
+        ts: ArrayLike = [10.0],
+        p: ArrayLike = [1015.0],
+        lat: ArrayLike = [45.0],
+        zi: ArrayLike = [600.0],
+        rs: ArrayLike = [150.0],
+        rl: ArrayLike = [370.0],
         rain: ArrayLike = None,
         cp: ArrayLike = None,
         sigH: ArrayLike = None,
-        jcool: int = 1.,
-        nits: int = 10
+        jcool: int = 1.0,
+        nits: int = 10,
     ) -> None:
-
         self.tau = self._instance_tau
         self.ustar = self._instance_ustar
         self.tstar = self._instance_tstar
@@ -131,7 +131,25 @@ class coare_35:
         self.cd = self._instance_cd
 
         self._bulk_loop_inputs = self._Bulk_Loop_Inputs(
-            u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits
+            u,
+            t,
+            rh,
+            zu,
+            zt,
+            zq,
+            zrf,
+            us,
+            ts,
+            p,
+            lat,
+            zi,
+            rs,
+            rl,
+            rain,
+            cp,
+            sigH,
+            jcool,
+            nits,
         )
 
         self._run()
@@ -170,56 +188,74 @@ class coare_35:
         def _sanitize(self):
             self.u = np.asarray(self.u, dtype=np.float64)
             self.N = self.u.size
-            self.t = _check_size(self.t, self.N, 't')
-            self.rh = _check_size(self.rh, self.N, 'rh')
-            self.zu = _check_size(self.zu, self.N, 'zu')
-            self.zt = _check_size(self.zq, self.N, 'zq')
-            self.zq = _check_size(self.zt, self.N, 'zt')
-            self.zrf = _check_size(self.zrf, self.N, 'zrf')
-            self.us = _check_size(self.us, self.N, 'us')
-            self.ts = _check_size(self.ts, self.N, 'ts')
-            self.p = _check_size(self.p, self.N, 'p')
-            self.lat = _check_size(self.lat, self.N, 'Lat')
-            self.zi = _check_size(self.zi, self.N, 'zi')
-            self.rs = _check_size(self.rs, self.N, 'rs')
-            self.rl = _check_size(self.rl, self.N, 'rl')
-            self.rain = _check_size(self.rain, self.N, 'rain')
+            self.t = _check_size(self.t, self.N, "t")
+            self.rh = _check_size(self.rh, self.N, "rh")
+            self.zu = _check_size(self.zu, self.N, "zu")
+            self.zt = _check_size(self.zq, self.N, "zq")
+            self.zq = _check_size(self.zt, self.N, "zt")
+            self.zrf = _check_size(self.zrf, self.N, "zrf")
+            self.us = _check_size(self.us, self.N, "us")
+            self.ts = _check_size(self.ts, self.N, "ts")
+            self.p = _check_size(self.p, self.N, "p")
+            self.lat = _check_size(self.lat, self.N, "Lat")
+            self.zi = _check_size(self.zi, self.N, "zi")
+            self.rs = _check_size(self.rs, self.N, "rs")
+            self.rl = _check_size(self.rl, self.N, "rl")
+            self.rain = _check_size(self.rain, self.N, "rain")
             # set waveage and seastate flags
             if self.cp is not None:
                 self.waveage_flag = ~np.isnan(self.cp)
-                self.cp = _check_size(self.cp, self.N, 'cp')
+                self.cp = _check_size(self.cp, self.N, "cp")
             else:
                 self.waveage_flag = False
                 self.cp = np.nan * np.ones(self.N)
             if self.sigH is not None:
                 self.seastate_flag = ~np.isnan(self.sigH) & self.waveage_flag
-                self.sigH = _check_size(self.sigH, self.N, 'sigH')
+                self.sigH = _check_size(self.sigH, self.N, "sigH")
             else:
                 self.seastate_flag = False
                 self.sigH = np.nan * np.ones(self.N)
             # check jcool
             if self.jcool != 0:
-                self.jcool = 1   # all input other than 0 defaults to jcool=1
+                self.jcool = 1  # all input other than 0 defaults to jcool=1
 
         def _get_humidities(self):
-            return qsea(self.ts, self.p)/1000, qair(self.t, self.p, self.rh)/1000
+            return qsea(self.ts, self.p) / 1000, qair(self.t, self.p, self.rh) / 1000
 
         def _get_air_constants(self):
-            lhvap = (2.501 - 0.00237*self.ts) * 1e6
-            rhoa = self.p*100. / (coare_35.RGAS * (self.t + coare_35.TDK) * (1 + 0.61*self.q))
-            visa = 1.326e-5 * (1 + 6.542e-3*self.t + 8.301e-6*self.t**2 - 4.84e-9*self.t**3)
+            lhvap = (2.501 - 0.00237 * self.ts) * 1e6
+            rhoa = (
+                self.p
+                * 100.0
+                / (coare_35.RGAS * (self.t + coare_35.TDK) * (1 + 0.61 * self.q))
+            )
+            visa = 1.326e-5 * (
+                1 + 6.542e-3 * self.t + 8.301e-6 * self.t**2 - 4.84e-9 * self.t**3
+            )
             return lhvap, rhoa, visa
 
         def _get_cool_skin(self):
-            al = 2.1e-5 * (self.ts + 3.2)**0.79
-            bigc = (16. * self.grav * coare_35.CPW
-                    * (coare_35.RHOW * coare_35.VISW)**3 / (coare_35.TCW**2 * self.rhoa**2))
-            wetc = 0.622 * self.lhvap * self.qs / (coare_35.RGAS * (self.ts + coare_35.TDK)**2)
+            al = 2.1e-5 * (self.ts + 3.2) ** 0.79
+            bigc = (
+                16.0
+                * self.grav
+                * coare_35.CPW
+                * (coare_35.RHOW * coare_35.VISW) ** 3
+                / (coare_35.TCW**2 * self.rhoa**2)
+            )
+            wetc = (
+                0.622
+                * self.lhvap
+                * self.qs
+                / (coare_35.RGAS * (self.ts + coare_35.TDK) ** 2)
+            )
             return al, bigc, wetc
 
         def _get_radiation_fluxes(self):
             rns = 0.945 * self.rs
-            rnl = 0.97 * (5.67e-8 * (self.ts - 0.3*self.jcool + coare_35.TDK)**4 - self.rl)
+            rnl = 0.97 * (
+                5.67e-8 * (self.ts - 0.3 * self.jcool + coare_35.TDK) ** 4 - self.rl
+            )
             return (rns, rnl)
 
     @dataclass
@@ -248,24 +284,24 @@ class coare_35:
     @staticmethod
     def tau(
         u: ArrayLike,
-        t: ArrayLike = [10.],
-        rh: ArrayLike = [75.],
-        zu: ArrayLike = [10.],
-        zt: ArrayLike = [10.],
-        zq: ArrayLike = [10.],
-        zrf: ArrayLike = [10.],
-        us: ArrayLike = [0.],
-        ts: ArrayLike = [10.],
-        p: ArrayLike = [1015.],
-        lat: ArrayLike = [45.],
-        zi: ArrayLike = [600.],
-        rs: ArrayLike = [150.],
-        rl: ArrayLike = [370.],
+        t: ArrayLike = [10.0],
+        rh: ArrayLike = [75.0],
+        zu: ArrayLike = [10.0],
+        zt: ArrayLike = [10.0],
+        zq: ArrayLike = [10.0],
+        zrf: ArrayLike = [10.0],
+        us: ArrayLike = [0.0],
+        ts: ArrayLike = [10.0],
+        p: ArrayLike = [1015.0],
+        lat: ArrayLike = [45.0],
+        zi: ArrayLike = [600.0],
+        rs: ArrayLike = [150.0],
+        rl: ArrayLike = [370.0],
         rain: ArrayLike = None,
         cp: ArrayLike = None,
         sigH: ArrayLike = None,
-        jcool: int = 1.,
-        nits: int = 10
+        jcool: int = 1.0,
+        nits: int = 10,
     ) -> NDArray[np.float64]:
         """Calculate wind stress (N/m^2) with gustiness.
 
@@ -273,33 +309,53 @@ class coare_35:
         :return: wind stress (N/m^2)
         :rtype: NDArray[np.float64]
         """
-        coare = coare_35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
-        return coare._return_vars('tau')
+        coare = coare_35(
+            u,
+            t,
+            rh,
+            zu,
+            zt,
+            zq,
+            zrf,
+            us,
+            ts,
+            p,
+            lat,
+            zi,
+            rs,
+            rl,
+            rain,
+            cp,
+            sigH,
+            jcool,
+            nits,
+        )
+        return coare._return_vars("tau")
 
     def _instance_tau(self) -> NDArray[np.float64]:
-        return self._return_vars('tau')
+        return self._return_vars("tau")
 
     @staticmethod
     def ustar(
         u: ArrayLike,
-        t: ArrayLike = [10.],
-        rh: ArrayLike = [75.],
-        zu: ArrayLike = [10.],
-        zt: ArrayLike = [10.],
-        zq: ArrayLike = [10.],
-        zrf: ArrayLike = [10.],
-        us: ArrayLike = [0.],
-        ts: ArrayLike = [10.],
-        p: ArrayLike = [1015.],
-        lat: ArrayLike = [45.],
-        zi: ArrayLike = [600.],
-        rs: ArrayLike = [150.],
-        rl: ArrayLike = [370.],
+        t: ArrayLike = [10.0],
+        rh: ArrayLike = [75.0],
+        zu: ArrayLike = [10.0],
+        zt: ArrayLike = [10.0],
+        zq: ArrayLike = [10.0],
+        zrf: ArrayLike = [10.0],
+        us: ArrayLike = [0.0],
+        ts: ArrayLike = [10.0],
+        p: ArrayLike = [1015.0],
+        lat: ArrayLike = [45.0],
+        zi: ArrayLike = [600.0],
+        rs: ArrayLike = [150.0],
+        rl: ArrayLike = [370.0],
         rain: ArrayLike = None,
         cp: ArrayLike = None,
         sigH: ArrayLike = None,
-        jcool: int = 1.,
-        nits: int = 10
+        jcool: int = 1.0,
+        nits: int = 10,
     ) -> NDArray[np.float64]:
         """Calculate friction velocity (m/s) that includes gustiness.
 
@@ -307,32 +363,52 @@ class coare_35:
         :return: friction velocity (m/s)
         :rtype: NDArray[np.float64]
         """
-        coare = coare_35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
-        return coare._return_vars('usr')
+        coare = coare_35(
+            u,
+            t,
+            rh,
+            zu,
+            zt,
+            zq,
+            zrf,
+            us,
+            ts,
+            p,
+            lat,
+            zi,
+            rs,
+            rl,
+            rain,
+            cp,
+            sigH,
+            jcool,
+            nits,
+        )
+        return coare._return_vars("usr")
 
     def _instance_ustar(self) -> NDArray[np.float64]:
-        return self._return_vars('usr')
+        return self._return_vars("usr")
 
     @staticmethod
     def tstar(
         u: ArrayLike,
-        t: ArrayLike = [10.],
-        rh: ArrayLike = [75.],
-        zu: ArrayLike = [10.],
-        zt: ArrayLike = [10.],
-        zq: ArrayLike = [10.],
-        zrf: ArrayLike = [10.],
-        us: ArrayLike = [0.],
-        ts: ArrayLike = [10.],
-        p: ArrayLike = [1015.],
-        lat: ArrayLike = [45.],
-        zi: ArrayLike = [600.],
-        rs: ArrayLike = [150.],
-        rl: ArrayLike = [370.],
+        t: ArrayLike = [10.0],
+        rh: ArrayLike = [75.0],
+        zu: ArrayLike = [10.0],
+        zt: ArrayLike = [10.0],
+        zq: ArrayLike = [10.0],
+        zrf: ArrayLike = [10.0],
+        us: ArrayLike = [0.0],
+        ts: ArrayLike = [10.0],
+        p: ArrayLike = [1015.0],
+        lat: ArrayLike = [45.0],
+        zi: ArrayLike = [600.0],
+        rs: ArrayLike = [150.0],
+        rl: ArrayLike = [370.0],
         rain: ArrayLike = None,
         cp: ArrayLike = None,
         sigH: ArrayLike = None,
-        jcool: int = 1.,
+        jcool: int = 1.0,
         nits: int = 10,
     ) -> NDArray[np.float64]:
         """Calculate the temperature scaling parameter.
@@ -341,32 +417,52 @@ class coare_35:
         :return: temperature scaling parameter (K)
         :rtype: NDArray[np.float64]
         """
-        coare = coare_35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
-        return coare._return_vars('tsr')
+        coare = coare_35(
+            u,
+            t,
+            rh,
+            zu,
+            zt,
+            zq,
+            zrf,
+            us,
+            ts,
+            p,
+            lat,
+            zi,
+            rs,
+            rl,
+            rain,
+            cp,
+            sigH,
+            jcool,
+            nits,
+        )
+        return coare._return_vars("tsr")
 
     def _instance_tstar(self) -> NDArray[np.float64]:
-        return self._return_vars('tsr')
+        return self._return_vars("tsr")
 
     @staticmethod
     def qstar(
         u: ArrayLike,
-        t: ArrayLike = [10.],
-        rh: ArrayLike = [75.],
-        zu: ArrayLike = [10.],
-        zt: ArrayLike = [10.],
-        zq: ArrayLike = [10.],
-        zrf: ArrayLike = [10.],
-        us: ArrayLike = [0.],
-        ts: ArrayLike = [10.],
-        p: ArrayLike = [1015.],
-        lat: ArrayLike = [45.],
-        zi: ArrayLike = [600.],
-        rs: ArrayLike = [150.],
-        rl: ArrayLike = [370.],
+        t: ArrayLike = [10.0],
+        rh: ArrayLike = [75.0],
+        zu: ArrayLike = [10.0],
+        zt: ArrayLike = [10.0],
+        zq: ArrayLike = [10.0],
+        zrf: ArrayLike = [10.0],
+        us: ArrayLike = [0.0],
+        ts: ArrayLike = [10.0],
+        p: ArrayLike = [1015.0],
+        lat: ArrayLike = [45.0],
+        zi: ArrayLike = [600.0],
+        rs: ArrayLike = [150.0],
+        rl: ArrayLike = [370.0],
         rain: ArrayLike = None,
         cp: ArrayLike = None,
         sigH: ArrayLike = None,
-        jcool: int = 1.,
+        jcool: int = 1.0,
         nits: int = 10,
     ) -> NDArray[np.float64]:
         """Calculate the humiditiy scaling parameter.
@@ -375,33 +471,53 @@ class coare_35:
         :return: humidity scaling parameter (g/kg)
         :rtype: NDArray[np.float64]
         """
-        coare = coare_35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
-        return coare._return_vars('qsr')
+        coare = coare_35(
+            u,
+            t,
+            rh,
+            zu,
+            zt,
+            zq,
+            zrf,
+            us,
+            ts,
+            p,
+            lat,
+            zi,
+            rs,
+            rl,
+            rain,
+            cp,
+            sigH,
+            jcool,
+            nits,
+        )
+        return coare._return_vars("qsr")
 
     def _instance_qstar(self) -> NDArray[np.float64]:
-        return self._return_vars('qsr')
+        return self._return_vars("qsr")
 
     @staticmethod
     def sensible(
         u: ArrayLike,
-        t: ArrayLike = [10.],
-        rh: ArrayLike = [75.],
-        zu: ArrayLike = [10.],
-        zt: ArrayLike = [10.],
-        zq: ArrayLike = [10.],
-        zrf: ArrayLike = [10.],
-        us: ArrayLike = [0.],
-        ts: ArrayLike = [10.],
-        p: ArrayLike = [1015.],
-        lat: ArrayLike = [45.],
-        zi: ArrayLike = [600.],
-        rs: ArrayLike = [150.],
-        rl: ArrayLike = [370.],
+        t: ArrayLike = [10.0],
+        rh: ArrayLike = [75.0],
+        zu: ArrayLike = [10.0],
+        zt: ArrayLike = [10.0],
+        zq: ArrayLike = [10.0],
+        zrf: ArrayLike = [10.0],
+        us: ArrayLike = [0.0],
+        ts: ArrayLike = [10.0],
+        p: ArrayLike = [1015.0],
+        lat: ArrayLike = [45.0],
+        zi: ArrayLike = [600.0],
+        rs: ArrayLike = [150.0],
+        rl: ArrayLike = [370.0],
         rain: ArrayLike = None,
         cp: ArrayLike = None,
         sigH: ArrayLike = None,
-        jcool: int = 1.,
-        nits: int = 10
+        jcool: int = 1.0,
+        nits: int = 10,
     ) -> NDArray[np.float64]:
         """Calculate sensible heat flux (W/m^2) into the ocean.
 
@@ -409,33 +525,53 @@ class coare_35:
         :return: sensible heat flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
-        coare = coare_35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
-        return coare._return_vars('hsb')
+        coare = coare_35(
+            u,
+            t,
+            rh,
+            zu,
+            zt,
+            zq,
+            zrf,
+            us,
+            ts,
+            p,
+            lat,
+            zi,
+            rs,
+            rl,
+            rain,
+            cp,
+            sigH,
+            jcool,
+            nits,
+        )
+        return coare._return_vars("hsb")
 
     def _instance_sensible(self) -> NDArray[np.float64]:
-        return self._return_vars('hsb')
+        return self._return_vars("hsb")
 
     @staticmethod
     def latent(
         u: ArrayLike,
-        t: ArrayLike = [10.],
-        rh: ArrayLike = [75.],
-        zu: ArrayLike = [10.],
-        zt: ArrayLike = [10.],
-        zq: ArrayLike = [10.],
-        zrf: ArrayLike = [10.],
-        us: ArrayLike = [0.],
-        ts: ArrayLike = [10.],
-        p: ArrayLike = [1015.],
-        lat: ArrayLike = [45.],
-        zi: ArrayLike = [600.],
-        rs: ArrayLike = [150.],
-        rl: ArrayLike = [370.],
+        t: ArrayLike = [10.0],
+        rh: ArrayLike = [75.0],
+        zu: ArrayLike = [10.0],
+        zt: ArrayLike = [10.0],
+        zq: ArrayLike = [10.0],
+        zrf: ArrayLike = [10.0],
+        us: ArrayLike = [0.0],
+        ts: ArrayLike = [10.0],
+        p: ArrayLike = [1015.0],
+        lat: ArrayLike = [45.0],
+        zi: ArrayLike = [600.0],
+        rs: ArrayLike = [150.0],
+        rl: ArrayLike = [370.0],
         rain: ArrayLike = None,
         cp: ArrayLike = None,
         sigH: ArrayLike = None,
-        jcool: int = 1.,
-        nits: int = 10
+        jcool: int = 1.0,
+        nits: int = 10,
     ) -> NDArray[np.float64]:
         """Calculate latent heat flux (W/m^2) into the ocean.
 
@@ -443,32 +579,52 @@ class coare_35:
         :return: latent heat flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
-        coare = coare_35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
-        return coare._return_vars('hlb')
+        coare = coare_35(
+            u,
+            t,
+            rh,
+            zu,
+            zt,
+            zq,
+            zrf,
+            us,
+            ts,
+            p,
+            lat,
+            zi,
+            rs,
+            rl,
+            rain,
+            cp,
+            sigH,
+            jcool,
+            nits,
+        )
+        return coare._return_vars("hlb")
 
     def _instance_latent(self) -> NDArray[np.float64]:
-        return self._return_vars('hlb')
+        return self._return_vars("hlb")
 
     @staticmethod
     def buoyancy(
         u: ArrayLike,
-        t: ArrayLike = [10.],
-        rh: ArrayLike = [75.],
-        zu: ArrayLike = [10.],
-        zt: ArrayLike = [10.],
-        zq: ArrayLike = [10.],
-        zrf: ArrayLike = [10.],
-        us: ArrayLike = [0.],
-        ts: ArrayLike = [10.],
-        p: ArrayLike = [1015.],
-        lat: ArrayLike = [45.],
-        zi: ArrayLike = [600.],
-        rs: ArrayLike = [150.],
-        rl: ArrayLike = [370.],
+        t: ArrayLike = [10.0],
+        rh: ArrayLike = [75.0],
+        zu: ArrayLike = [10.0],
+        zt: ArrayLike = [10.0],
+        zq: ArrayLike = [10.0],
+        zrf: ArrayLike = [10.0],
+        us: ArrayLike = [0.0],
+        ts: ArrayLike = [10.0],
+        p: ArrayLike = [1015.0],
+        lat: ArrayLike = [45.0],
+        zi: ArrayLike = [600.0],
+        rs: ArrayLike = [150.0],
+        rl: ArrayLike = [370.0],
         rain: ArrayLike = None,
         cp: ArrayLike = None,
         sigH: ArrayLike = None,
-        jcool: int = 1.,
+        jcool: int = 1.0,
         nits: int = 10,
     ) -> NDArray[np.float64]:
         """Calculate buoyancy flux (W/m^2) into the ocean.
@@ -477,32 +633,52 @@ class coare_35:
         :return: buoyancy flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
-        coare = coare_35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
-        return coare._return_vars('hbb')
+        coare = coare_35(
+            u,
+            t,
+            rh,
+            zu,
+            zt,
+            zq,
+            zrf,
+            us,
+            ts,
+            p,
+            lat,
+            zi,
+            rs,
+            rl,
+            rain,
+            cp,
+            sigH,
+            jcool,
+            nits,
+        )
+        return coare._return_vars("hbb")
 
     def _instance_buoyancy(self) -> NDArray[np.float64]:
-        return self._return_vars('hbb')
+        return self._return_vars("hbb")
 
     @staticmethod
     def webb(
         u: ArrayLike,
-        t: ArrayLike = [10.],
-        rh: ArrayLike = [75.],
-        zu: ArrayLike = [10.],
-        zt: ArrayLike = [10.],
-        zq: ArrayLike = [10.],
-        zrf: ArrayLike = [10.],
-        us: ArrayLike = [0.],
-        ts: ArrayLike = [10.],
-        p: ArrayLike = [1015.],
-        lat: ArrayLike = [45.],
-        zi: ArrayLike = [600.],
-        rs: ArrayLike = [150.],
-        rl: ArrayLike = [370.],
+        t: ArrayLike = [10.0],
+        rh: ArrayLike = [75.0],
+        zu: ArrayLike = [10.0],
+        zt: ArrayLike = [10.0],
+        zq: ArrayLike = [10.0],
+        zrf: ArrayLike = [10.0],
+        us: ArrayLike = [0.0],
+        ts: ArrayLike = [10.0],
+        p: ArrayLike = [1015.0],
+        lat: ArrayLike = [45.0],
+        zi: ArrayLike = [600.0],
+        rs: ArrayLike = [150.0],
+        rl: ArrayLike = [370.0],
         rain: ArrayLike = None,
         cp: ArrayLike = None,
         sigH: ArrayLike = None,
-        jcool: int = 1.,
+        jcool: int = 1.0,
         nits: int = 10,
     ) -> NDArray[np.float64]:
         """Calculate the Webb correction for latent heat flux (W/m^2).
@@ -511,32 +687,52 @@ class coare_35:
         :return: Webb correction for latent heat flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
-        coare = coare_35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
-        return coare._return_vars('hlwebb')
+        coare = coare_35(
+            u,
+            t,
+            rh,
+            zu,
+            zt,
+            zq,
+            zrf,
+            us,
+            ts,
+            p,
+            lat,
+            zi,
+            rs,
+            rl,
+            rain,
+            cp,
+            sigH,
+            jcool,
+            nits,
+        )
+        return coare._return_vars("hlwebb")
 
     def _instance_webb(self) -> NDArray[np.float64]:
-        return self._return_vars('hlwebb')
+        return self._return_vars("hlwebb")
 
     @staticmethod
     def cd(
         u: ArrayLike,
-        t: ArrayLike = [10.],
-        rh: ArrayLike = [75.],
-        zu: ArrayLike = [10.],
-        zt: ArrayLike = [10.],
-        zq: ArrayLike = [10.],
-        zrf: ArrayLike = [10.],
-        us: ArrayLike = [0.],
-        ts: ArrayLike = [10.],
-        p: ArrayLike = [1015.],
-        lat: ArrayLike = [45.],
-        zi: ArrayLike = [600.],
-        rs: ArrayLike = [150.],
-        rl: ArrayLike = [370.],
+        t: ArrayLike = [10.0],
+        rh: ArrayLike = [75.0],
+        zu: ArrayLike = [10.0],
+        zt: ArrayLike = [10.0],
+        zq: ArrayLike = [10.0],
+        zrf: ArrayLike = [10.0],
+        us: ArrayLike = [0.0],
+        ts: ArrayLike = [10.0],
+        p: ArrayLike = [1015.0],
+        lat: ArrayLike = [45.0],
+        zi: ArrayLike = [600.0],
+        rs: ArrayLike = [150.0],
+        rl: ArrayLike = [370.0],
         rain: ArrayLike = None,
         cp: ArrayLike = None,
         sigH: ArrayLike = None,
-        jcool: int = 1.,
+        jcool: int = 1.0,
         nits: int = 10,
     ) -> NDArray[np.float64]:
         """Calculate the wind stress transfer (drag) coefficient at height zu.
@@ -545,52 +741,58 @@ class coare_35:
         :return: drag coefficient
         :rtype: NDArray[np.float64]
         """
-        coare = coare_35(u, t, rh, zu, zt, zq, zrf, us, ts, p, lat, zi, rs, rl, rain, cp, sigH, jcool, nits)
-        return coare._return_vars('cd')
+        coare = coare_35(
+            u,
+            t,
+            rh,
+            zu,
+            zt,
+            zq,
+            zrf,
+            us,
+            ts,
+            p,
+            lat,
+            zi,
+            rs,
+            rl,
+            rain,
+            cp,
+            sigH,
+            jcool,
+            nits,
+        )
+        return coare._return_vars("cd")
 
     def _instance_cd(self) -> NDArray[np.float64]:
-        return self._return_vars('cd')
+        return self._return_vars("cd")
 
     def _run(self) -> NDArray[np.float64]:
-        """Run the COARE bulk flux calculations.
-        """
+        """Run the COARE bulk flux calculations."""
         self._bulk_loop_outputs = self._bulk_loop()
 
-        self.fluxes = fluxes(
-            self._bulk_loop_inputs,
-            self._bulk_loop_outputs
-        )
+        self.fluxes = fluxes(self._bulk_loop_inputs, self._bulk_loop_outputs)
         self.transfer_coefficients = transfer_coefficients(
-            self._bulk_loop_inputs,
-            self._bulk_loop_outputs,
-            self.fluxes
+            self._bulk_loop_inputs, self._bulk_loop_outputs, self.fluxes
         )
         self.stability_functions = stability_functions(
-            self._bulk_loop_inputs,
-            self._bulk_loop_outputs
+            self._bulk_loop_inputs, self._bulk_loop_outputs
         )
-        self.stability_parameters = stability_parameters(
-            self._bulk_loop_outputs
-        )
+        self.stability_parameters = stability_parameters(self._bulk_loop_outputs)
         self.velocities = velocities(
-            self._bulk_loop_inputs,
-            self._bulk_loop_outputs,
-            self.stability_functions
+            self._bulk_loop_inputs, self._bulk_loop_outputs, self.stability_functions
         )
         self.temperatures = temperatures(
-            self._bulk_loop_inputs,
-            self._bulk_loop_outputs,
-            self.stability_functions
+            self._bulk_loop_inputs, self._bulk_loop_outputs, self.stability_functions
         )
         self.humidities = humidities(
             self._bulk_loop_inputs,
             self._bulk_loop_outputs,
             self.stability_functions,
-            self.temperatures
+            self.temperatures,
         )
 
     def _bulk_loop(self):
-
         _bulk_loop_inputs = self._bulk_loop_inputs
         rnl = _bulk_loop_inputs.rnl
 
@@ -607,18 +809,29 @@ class coare_35:
         zo10, _, zot10 = self._get_roughness(np.nan, usr, setup=True)
         zetu, k50 = self._get_mo_stability_setup(ta, ut, zo10, dt, dq, dter)
         obukL10 = self._get_obukhov_length(zetu)
-        usr, tsr, qsr = self._get_star(ut, dt, dq, dter, zo10, zot10, np.nan, obukL10, setup=True)
+        usr, tsr, qsr = self._get_star(
+            ut, dt, dq, dter, zo10, zot10, np.nan, obukL10, setup=True
+        )
         tkt = 0.001 * np.ones(_bulk_loop_inputs.N)
         charnC, charnW, charnS = self._get_charn(u10, usr, setup=True)
 
         for i in range(_bulk_loop_inputs.nits):
-            zet = (self.VON * _bulk_loop_inputs.grav * _bulk_loop_inputs.zu
-                   / ta * (tsr + 0.61 * ta * qsr)
-                   / (usr**2))
+            zet = (
+                self.VON
+                * _bulk_loop_inputs.grav
+                * _bulk_loop_inputs.zu
+                / ta
+                * (tsr + 0.61 * ta * qsr)
+                / (usr**2)
+            )
 
             charn = charnC
-            charn[_bulk_loop_inputs.waveage_flag] = charnW[_bulk_loop_inputs.waveage_flag]
-            charn[_bulk_loop_inputs.seastate_flag] = charnS[_bulk_loop_inputs.seastate_flag]
+            charn[_bulk_loop_inputs.waveage_flag] = charnW[
+                _bulk_loop_inputs.waveage_flag
+            ]
+            charn[_bulk_loop_inputs.seastate_flag] = charnS[
+                _bulk_loop_inputs.seastate_flag
+            ]
 
             obukL = self._get_obukhov_length(zet)
             zo, zoq, zot = self._get_roughness(charn, usr)
@@ -634,8 +847,12 @@ class coare_35:
             gf[k] = ut[k] / du[k]
 
             tkt, dter, dqer = self._get_cool_skin(usr, tsr, qsr, tkt, rnl)
-            rnl = 0.97*(5.67e-8 * (_bulk_loop_inputs.ts - dter * _bulk_loop_inputs.jcool + self.TDK)**4
-                        - _bulk_loop_inputs.rl)
+            rnl = 0.97 * (
+                5.67e-8
+                * (_bulk_loop_inputs.ts - dter * _bulk_loop_inputs.jcool + self.TDK)
+                ** 4
+                - _bulk_loop_inputs.rl
+            )
 
             # save first iteration solution for case of zetu>50
             if i == 0:
@@ -660,7 +877,26 @@ class coare_35:
         dqer[k50] = dqer50
         tkt[k50] = tkt50
         _bulk_loop_outputs = self._Bulk_Loop_Outputs(
-            ut, usr, tsr, qsr, du, dt, dq, dter, dqer, tvsr, tssr, tkt, obukL, rnl, zet, gf, zo, zot, zoq, ta
+            ut,
+            usr,
+            tsr,
+            qsr,
+            du,
+            dt,
+            dq,
+            dter,
+            dqer,
+            tvsr,
+            tssr,
+            tkt,
+            obukL,
+            rnl,
+            zet,
+            gf,
+            zo,
+            zot,
+            zoq,
+            ta,
         )
         return _bulk_loop_outputs
 
@@ -677,25 +913,30 @@ class coare_35:
         ug = 0.2 * np.ones(_bulk_loop_inputs.N)
         k = np.flatnonzero(Bf > 0)
         if _bulk_loop_inputs.zrf.size == 1:
-            ug[k] = self.BETA * (Bf[k] * _bulk_loop_inputs.zi)**(1/3)
+            ug[k] = self.BETA * (Bf[k] * _bulk_loop_inputs.zi) ** (1 / 3)
         else:
-            ug[k] = self.BETA * (Bf[k] * _bulk_loop_inputs.zi[k])**(1/3)
+            ug[k] = self.BETA * (Bf[k] * _bulk_loop_inputs.zi[k]) ** (1 / 3)
         return ug
 
     def _get_mo_stability_setup(self, ta, ut, zo, dt, dq, dter):
         _bulk_loop_inputs = self._bulk_loop_inputs
-        cd10 = (self.VON / np.log(10/zo))**2
+        cd10 = (self.VON / np.log(10 / zo)) ** 2
         ch10 = 0.00115
         ct10 = ch10 / np.sqrt(cd10)
-        zot10 = 10 / np.exp(self.VON/ct10)
-        cd = (self.VON / np.log(_bulk_loop_inputs.zu / zo))**2
+        zot10 = 10 / np.exp(self.VON / ct10)
+        cd = (self.VON / np.log(_bulk_loop_inputs.zu / zo)) ** 2
         ct = self.VON / np.log(_bulk_loop_inputs.zt / zot10)
-        cc = self.VON * ct/cd
+        cc = self.VON * ct / cd
         ribcu = -_bulk_loop_inputs.zu / _bulk_loop_inputs.zi / 0.004 / self.BETA**3
-        ribu = (-_bulk_loop_inputs.grav * _bulk_loop_inputs.zu/ta
-                * ((dt - dter*_bulk_loop_inputs.jcool) + 0.61*ta*dq) / ut**2)
-        zetu = cc * ribu * (1 + 27/9 * ribu/cc)
-        k50 = np.flatnonzero(zetu > 50)   # stable with thin M-O length relative to zu
+        ribu = (
+            -_bulk_loop_inputs.grav
+            * _bulk_loop_inputs.zu
+            / ta
+            * ((dt - dter * _bulk_loop_inputs.jcool) + 0.61 * ta * dq)
+            / ut**2
+        )
+        zetu = cc * ribu * (1 + 27 / 9 * ribu / cc)
+        k50 = np.flatnonzero(zetu > 50)  # stable with thin M-O length relative to zu
 
         k = np.flatnonzero(ribu < 0)
         if ribcu.size == 1:
@@ -710,29 +951,43 @@ class coare_35:
         charnC = self.A1 * u + self.A2
         k = np.flatnonzero(u > self.UMAX)
         charnC[k] = self.A1 * self.UMAX + self.A2
-        charnW = self.A * (usr/_bulk_loop_inputs.cp)**self.B
+        charnW = self.A * (usr / _bulk_loop_inputs.cp) ** self.B
         if setup:
-            zoS = _bulk_loop_inputs.sigH * self.AD * (usr/_bulk_loop_inputs.cp)**self.BD
+            zoS = (
+                _bulk_loop_inputs.sigH
+                * self.AD
+                * (usr / _bulk_loop_inputs.cp) ** self.BD
+            )
         else:
-            zoS = (_bulk_loop_inputs.sigH * self.AD * (usr/_bulk_loop_inputs.cp)**self.BD
-                   - 0.11 * _bulk_loop_inputs.visa/usr)
+            zoS = (
+                _bulk_loop_inputs.sigH
+                * self.AD
+                * (usr / _bulk_loop_inputs.cp) ** self.BD
+                - 0.11 * _bulk_loop_inputs.visa / usr
+            )
         charnS = zoS * _bulk_loop_inputs.grav / usr**2
         return charnC, charnW, charnS
 
     def _get_roughness(self, charn, usr, setup=False):
         _bulk_loop_inputs = self._bulk_loop_inputs
         if setup:
-            zo = 0.011 * usr**2 / _bulk_loop_inputs.grav + 0.11 * _bulk_loop_inputs.visa / usr
-            cd = (self.VON / np.log(10/zo))**2
+            zo = (
+                0.011 * usr**2 / _bulk_loop_inputs.grav
+                + 0.11 * _bulk_loop_inputs.visa / usr
+            )
+            cd = (self.VON / np.log(10 / zo)) ** 2
             ch = 0.00115
             ct = ch / np.sqrt(cd)
-            zot = 10 / np.exp(self.VON/ct)
+            zot = 10 / np.exp(self.VON / ct)
             zoq = zot
         else:
             # thermal roughness lengths give Stanton and Dalton numbers that
             # closely approximate COARE 3.0
-            zo = charn*usr**2 / _bulk_loop_inputs.grav + 0.11*_bulk_loop_inputs.visa / usr
-            rr = zo*usr / _bulk_loop_inputs.visa
+            zo = (
+                charn * usr**2 / _bulk_loop_inputs.grav
+                + 0.11 * _bulk_loop_inputs.visa / usr
+            )
+            rr = zo * usr / _bulk_loop_inputs.visa
             zoq = np.minimum(1.6e-4, 5.8e-5 / rr**0.72)
             zot = zoq
         return zo, zoq, zot
@@ -744,51 +999,111 @@ class coare_35:
         _bulk_loop_inputs = self._bulk_loop_inputs
         if setup:
             # unclear why psiu_40 is used here rather than psiu_26 - only place psiu_40 is used
-            usr = ut * self.VON / (np.log(_bulk_loop_inputs.zu / zo) - psiu_40(_bulk_loop_inputs.zu / obukL))
-            tsr = (-(dt - dter*_bulk_loop_inputs.jcool) * self.VON * self.FDG
-                   / (np.log(_bulk_loop_inputs.zt / zot) - psit_26(_bulk_loop_inputs.zt / obukL)))
-            qsr = (-(dq - _bulk_loop_inputs.wetc * dter * _bulk_loop_inputs.jcool) * self.VON * self.FDG
-                   / (np.log(_bulk_loop_inputs.zq / zot) - psit_26(_bulk_loop_inputs.zq / obukL)))
+            usr = (
+                ut
+                * self.VON
+                / (
+                    np.log(_bulk_loop_inputs.zu / zo)
+                    - psiu_40(_bulk_loop_inputs.zu / obukL)
+                )
+            )
+            tsr = (
+                -(dt - dter * _bulk_loop_inputs.jcool)
+                * self.VON
+                * self.FDG
+                / (
+                    np.log(_bulk_loop_inputs.zt / zot)
+                    - psit_26(_bulk_loop_inputs.zt / obukL)
+                )
+            )
+            qsr = (
+                -(dq - _bulk_loop_inputs.wetc * dter * _bulk_loop_inputs.jcool)
+                * self.VON
+                * self.FDG
+                / (
+                    np.log(_bulk_loop_inputs.zq / zot)
+                    - psit_26(_bulk_loop_inputs.zq / obukL)
+                )
+            )
         else:
-            cdhf = (self.VON / (np.log(_bulk_loop_inputs.zu / zo)
-                                - psiu_26(_bulk_loop_inputs.zu / obukL)))
-            cqhf = (self.VON*self.FDG / (np.log(_bulk_loop_inputs.zq / zoq)
-                                         - psit_26(_bulk_loop_inputs.zq / obukL)))
-            cthf = (self.VON*self.FDG / (np.log(_bulk_loop_inputs.zt / zot)
-                                         - psit_26(_bulk_loop_inputs.zt / obukL)))
-            usr = ut*cdhf
+            cdhf = self.VON / (
+                np.log(_bulk_loop_inputs.zu / zo)
+                - psiu_26(_bulk_loop_inputs.zu / obukL)
+            )
+            cqhf = (
+                self.VON
+                * self.FDG
+                / (
+                    np.log(_bulk_loop_inputs.zq / zoq)
+                    - psit_26(_bulk_loop_inputs.zq / obukL)
+                )
+            )
+            cthf = (
+                self.VON
+                * self.FDG
+                / (
+                    np.log(_bulk_loop_inputs.zt / zot)
+                    - psit_26(_bulk_loop_inputs.zt / obukL)
+                )
+            )
+            usr = ut * cdhf
             qsr = -(dq - _bulk_loop_inputs.wetc * dter * _bulk_loop_inputs.jcool) * cqhf
-            tsr = -(dt - dter * _bulk_loop_inputs.jcool)*cthf
+            tsr = -(dt - dter * _bulk_loop_inputs.jcool) * cthf
         return usr, tsr, qsr
 
     def _get_cool_skin(self, usr, tsr, qsr, tkt, rnl):
         _bulk_loop_inputs = self._bulk_loop_inputs
-        hsb = -_bulk_loop_inputs.rhoa*self.CPA*usr*tsr
-        hlb = -_bulk_loop_inputs.rhoa*_bulk_loop_inputs.lhvap*usr*qsr
+        hsb = -_bulk_loop_inputs.rhoa * self.CPA * usr * tsr
+        hlb = -_bulk_loop_inputs.rhoa * _bulk_loop_inputs.lhvap * usr * qsr
         qout = rnl + hsb + hlb
-        dels = _bulk_loop_inputs.rns * (0.065 + 11 * tkt - 6.6e-5 / tkt * (1 - np.exp(-tkt / 8.0e-4)))
+        dels = _bulk_loop_inputs.rns * (
+            0.065 + 11 * tkt - 6.6e-5 / tkt * (1 - np.exp(-tkt / 8.0e-4))
+        )
         qcol = qout - dels
-        alq = _bulk_loop_inputs.al * qcol + self.BE * hlb * self.CPW / _bulk_loop_inputs.lhvap
+        alq = (
+            _bulk_loop_inputs.al * qcol
+            + self.BE * hlb * self.CPW / _bulk_loop_inputs.lhvap
+        )
         xlamx = 6.0 * np.ones(_bulk_loop_inputs.N)
-        tkt = np.minimum(0.01, xlamx * self.VISW / (np.sqrt(_bulk_loop_inputs.rhoa / self.RHOW) * usr))
+        tkt = np.minimum(
+            0.01,
+            xlamx * self.VISW / (np.sqrt(_bulk_loop_inputs.rhoa / self.RHOW) * usr),
+        )
         k = np.flatnonzero(alq > 0)
-        xlamx[k] = 6 / (1 + (_bulk_loop_inputs.bigc[k] * alq[k] / usr[k]**4)**0.75)**0.333
-        tkt[k] = xlamx[k] * self.VISW / (np.sqrt(_bulk_loop_inputs.rhoa[k] / self.RHOW) * usr[k])
+        xlamx[k] = (
+            6
+            / (1 + (_bulk_loop_inputs.bigc[k] * alq[k] / usr[k] ** 4) ** 0.75) ** 0.333
+        )
+        tkt[k] = (
+            xlamx[k]
+            * self.VISW
+            / (np.sqrt(_bulk_loop_inputs.rhoa[k] / self.RHOW) * usr[k])
+        )
         dter = qcol * tkt / self.TCW
         dqer = _bulk_loop_inputs.wetc * dter
         return tkt, dter, dqer
 
     def _return_vars(self, out):
         outputs = {}
-        outputs.update({key: value for key, value in vars(self._bulk_loop_inputs).items()})
-        outputs.update({key: value for key, value in vars(self._bulk_loop_outputs).items()})
+        outputs.update(
+            {key: value for key, value in vars(self._bulk_loop_inputs).items()}
+        )
+        outputs.update(
+            {key: value for key, value in vars(self._bulk_loop_outputs).items()}
+        )
         outputs.update({key: value for key, value in vars(self.fluxes).items()})
-        outputs.update({key: value for key, value in vars(self.transfer_coefficients).items()})
+        outputs.update(
+            {key: value for key, value in vars(self.transfer_coefficients).items()}
+        )
         outputs.update({key: value for key, value in vars(self.velocities).items()})
         outputs.update({key: value for key, value in vars(self.temperatures).items()})
         outputs.update({key: value for key, value in vars(self.humidities).items()})
-        outputs.update({key: value for key, value in vars(self.stability_functions).items()})
-        outputs.update({key: value for key, value in vars(self.stability_parameters).items()})
+        outputs.update(
+            {key: value for key, value in vars(self.stability_functions).items()}
+        )
+        outputs.update(
+            {key: value for key, value in vars(self.stability_parameters).items()}
+        )
         return outputs[out]
 
 
@@ -823,40 +1138,99 @@ class fluxes:
     :ivar rf: rain heat flux (W/m^2)
     :type rf: ArrayLike
     """
+
     def __init__(self, _bulk_loop_inputs, _bulk_loop_outputs):
         # compute fluxes
-        self.rnl = _bulk_loop_outputs.rnl    #: upwelling IR radiation (W/m^2)
-        self.tau = _bulk_loop_inputs.rhoa*_bulk_loop_outputs.usr**2/_bulk_loop_outputs.gf
-        self.hsb = -_bulk_loop_inputs.rhoa*coare_35.CPA*_bulk_loop_outputs.usr*_bulk_loop_outputs.tsr
-        self.hlb = (-_bulk_loop_inputs.rhoa*_bulk_loop_inputs.lhvap
-                    * _bulk_loop_outputs.usr*_bulk_loop_outputs.qsr)
-        self.hbb = -_bulk_loop_inputs.rhoa*coare_35.CPA*_bulk_loop_outputs.usr*_bulk_loop_outputs.tvsr
-        self.hsbb = -_bulk_loop_inputs.rhoa*coare_35.CPA*_bulk_loop_outputs.usr*_bulk_loop_outputs.tssr
-        self.wbar = (1.61*self.hlb/_bulk_loop_inputs.lhvap
-                     / (1+1.61*_bulk_loop_inputs.q) / _bulk_loop_inputs.rhoa
-                     + self.hsb/_bulk_loop_inputs.rhoa/coare_35.CPA/_bulk_loop_outputs.ta)
-        self.hlwebb = _bulk_loop_inputs.rhoa*self.wbar*_bulk_loop_inputs.q*_bulk_loop_inputs.lhvap
-        self.evap = 1000*self.hlb/_bulk_loop_inputs.lhvap/1000*3600
+        self.rnl = _bulk_loop_outputs.rnl  #: upwelling IR radiation (W/m^2)
+        self.tau = (
+            _bulk_loop_inputs.rhoa * _bulk_loop_outputs.usr**2 / _bulk_loop_outputs.gf
+        )
+        self.hsb = (
+            -_bulk_loop_inputs.rhoa
+            * coare_35.CPA
+            * _bulk_loop_outputs.usr
+            * _bulk_loop_outputs.tsr
+        )
+        self.hlb = (
+            -_bulk_loop_inputs.rhoa
+            * _bulk_loop_inputs.lhvap
+            * _bulk_loop_outputs.usr
+            * _bulk_loop_outputs.qsr
+        )
+        self.hbb = (
+            -_bulk_loop_inputs.rhoa
+            * coare_35.CPA
+            * _bulk_loop_outputs.usr
+            * _bulk_loop_outputs.tvsr
+        )
+        self.hsbb = (
+            -_bulk_loop_inputs.rhoa
+            * coare_35.CPA
+            * _bulk_loop_outputs.usr
+            * _bulk_loop_outputs.tssr
+        )
+        self.wbar = (
+            1.61
+            * self.hlb
+            / _bulk_loop_inputs.lhvap
+            / (1 + 1.61 * _bulk_loop_inputs.q)
+            / _bulk_loop_inputs.rhoa
+            + self.hsb / _bulk_loop_inputs.rhoa / coare_35.CPA / _bulk_loop_outputs.ta
+        )
+        self.hlwebb = (
+            _bulk_loop_inputs.rhoa
+            * self.wbar
+            * _bulk_loop_inputs.q
+            * _bulk_loop_inputs.lhvap
+        )
+        self.evap = 1000 * self.hlb / _bulk_loop_inputs.lhvap / 1000 * 3600
         # rain heat flux after Gosnell et al., JGR, 1995
         if _bulk_loop_inputs.rain is None:
-            self.rf = np.nan*np.zeros(_bulk_loop_outputs.usr.size)
+            self.rf = np.nan * np.zeros(_bulk_loop_outputs.usr.size)
         else:
             # water vapour diffusivity
-            dwat = 2.11e-5*((_bulk_loop_inputs.t + coare_35.TDK)/coare_35.TDK)**1.94
+            dwat = (
+                2.11e-5 * ((_bulk_loop_inputs.t + coare_35.TDK) / coare_35.TDK) ** 1.94
+            )
             # heat diffusivity
-            dtmp = ((1 + 3.309e-3*_bulk_loop_inputs.t - 1.44e-6*_bulk_loop_inputs.t**2)
-                    * 0.02411/(_bulk_loop_inputs.rhoa*coare_35.CPA))
+            dtmp = (
+                (1 + 3.309e-3 * _bulk_loop_inputs.t - 1.44e-6 * _bulk_loop_inputs.t**2)
+                * 0.02411
+                / (_bulk_loop_inputs.rhoa * coare_35.CPA)
+            )
             # Clausius-Clapeyron
-            dqs_dt = (_bulk_loop_inputs.q*_bulk_loop_inputs.lhvap
-                      / (coare_35.RGAS*(_bulk_loop_inputs.t + coare_35.TDK)**2))
+            dqs_dt = (
+                _bulk_loop_inputs.q
+                * _bulk_loop_inputs.lhvap
+                / (coare_35.RGAS * (_bulk_loop_inputs.t + coare_35.TDK) ** 2)
+            )
             # wet bulb factor
-            alfac = 1/(1 + 0.622*(dqs_dt*_bulk_loop_inputs.lhvap*dwat)/(coare_35.CPA*dtmp))
-            self.rf = (_bulk_loop_inputs.rain*alfac*coare_35.CPW
-                       * ((_bulk_loop_inputs.ts - _bulk_loop_inputs.t
-                           - _bulk_loop_outputs.dter*_bulk_loop_inputs.jcool)
-                          + (_bulk_loop_inputs.qs - _bulk_loop_inputs.q
-                             - _bulk_loop_outputs.dqer*_bulk_loop_inputs.jcool)
-                          * _bulk_loop_inputs.lhvap/coare_35.CPA)/3600)
+            alfac = 1 / (
+                1
+                + 0.622
+                * (dqs_dt * _bulk_loop_inputs.lhvap * dwat)
+                / (coare_35.CPA * dtmp)
+            )
+            self.rf = (
+                _bulk_loop_inputs.rain
+                * alfac
+                * coare_35.CPW
+                * (
+                    (
+                        _bulk_loop_inputs.ts
+                        - _bulk_loop_inputs.t
+                        - _bulk_loop_outputs.dter * _bulk_loop_inputs.jcool
+                    )
+                    + (
+                        _bulk_loop_inputs.qs
+                        - _bulk_loop_inputs.q
+                        - _bulk_loop_outputs.dqer * _bulk_loop_inputs.jcool
+                    )
+                    * _bulk_loop_inputs.lhvap
+                    / coare_35.CPA
+                )
+                / 3600
+            )
 
 
 class velocities:
@@ -888,19 +1262,37 @@ class velocities:
     :ivar u_n_rf: neutral wind speed at reference height zrf (m/s)
     :type u_n_rf: ArrayLike
     """
+
     def __init__(self, _bulk_loop_inputs, _bulk_loop_outputs, stability_functions):
         self.ut = _bulk_loop_outputs.ut
         self.usr = _bulk_loop_outputs.usr
         self.du = _bulk_loop_outputs.du
         self.gf = _bulk_loop_outputs.gf
         self.u = _bulk_loop_outputs.du + _bulk_loop_inputs.us
-        self.u_rf = (self.u + (_bulk_loop_outputs.usr/coare_35.VON/_bulk_loop_outputs.gf
-                               * (np.log(_bulk_loop_inputs.zrf / _bulk_loop_inputs.zu)
-                                  - stability_functions.psi_u_rf + stability_functions.psi_u)))
-        self.u_n = (self.u + stability_functions.psi_u
-                    * _bulk_loop_outputs.usr/coare_35.VON/_bulk_loop_outputs.gf)
-        self.u_n_rf = (self.u_rf + stability_functions.psi_u_rf
-                       * _bulk_loop_outputs.usr/coare_35.VON/_bulk_loop_outputs.gf)
+        self.u_rf = self.u + (
+            _bulk_loop_outputs.usr
+            / coare_35.VON
+            / _bulk_loop_outputs.gf
+            * (
+                np.log(_bulk_loop_inputs.zrf / _bulk_loop_inputs.zu)
+                - stability_functions.psi_u_rf
+                + stability_functions.psi_u
+            )
+        )
+        self.u_n = (
+            self.u
+            + stability_functions.psi_u
+            * _bulk_loop_outputs.usr
+            / coare_35.VON
+            / _bulk_loop_outputs.gf
+        )
+        self.u_n_rf = (
+            self.u_rf
+            + stability_functions.psi_u_rf
+            * _bulk_loop_outputs.usr
+            / coare_35.VON
+            / _bulk_loop_outputs.gf
+        )
 
 
 class temperatures:
@@ -928,16 +1320,30 @@ class temperatures:
     :ivar t_n_rf: neutral temperature at reference height zrf (K)
     :type t_n_rf: ArrayLike
     """
+
     def __init__(self, _bulk_loop_inputs, _bulk_loop_outputs, stability_functions):
-        self.lapse = _bulk_loop_inputs.grav/coare_35.CPA
+        self.lapse = _bulk_loop_inputs.grav / coare_35.CPA
         self.dt = _bulk_loop_outputs.dt
         self.dter = _bulk_loop_outputs.dter
-        self.t_rf = (_bulk_loop_inputs.t + _bulk_loop_outputs.tsr/coare_35.VON
-                     * (np.log(_bulk_loop_inputs.zrf/_bulk_loop_inputs.zt)
-                        - stability_functions.psi_t_rf + stability_functions.psi_t)
-                     + self.lapse*(_bulk_loop_inputs.zt - _bulk_loop_inputs.zrf))
-        self.t_n = _bulk_loop_inputs.t + stability_functions.psi_t*_bulk_loop_outputs.tsr/coare_35.VON
-        self.t_n_rf = self.t_rf + stability_functions.psi_t_rf*_bulk_loop_outputs.tsr/coare_35.VON
+        self.t_rf = (
+            _bulk_loop_inputs.t
+            + _bulk_loop_outputs.tsr
+            / coare_35.VON
+            * (
+                np.log(_bulk_loop_inputs.zrf / _bulk_loop_inputs.zt)
+                - stability_functions.psi_t_rf
+                + stability_functions.psi_t
+            )
+            + self.lapse * (_bulk_loop_inputs.zt - _bulk_loop_inputs.zrf)
+        )
+        self.t_n = (
+            _bulk_loop_inputs.t
+            + stability_functions.psi_t * _bulk_loop_outputs.tsr / coare_35.VON
+        )
+        self.t_n_rf = (
+            self.t_rf
+            + stability_functions.psi_t_rf * _bulk_loop_outputs.tsr / coare_35.VON
+        )
 
 
 class humidities:
@@ -965,16 +1371,27 @@ class humidities:
     :ivar rh_rf: relative humidity at reference height zrf (%)
     :type rh_rf: ArrayLike
     """
-    def __init__(self, _bulk_loop_inputs, _bulk_loop_outputs, stability_functions, temperatures):
+
+    def __init__(
+        self, _bulk_loop_inputs, _bulk_loop_outputs, stability_functions, temperatures
+    ):
         self.dq = _bulk_loop_outputs.dq
         self.dqer = _bulk_loop_outputs.dqer
-        self.q_rf = (_bulk_loop_inputs.q + _bulk_loop_outputs.qsr/coare_35.VON
-                     * (np.log(_bulk_loop_inputs.zrf/_bulk_loop_inputs.zq)
-                        - stability_functions.psi_q_rf + stability_functions.psi_t))
-        self.q_n = (_bulk_loop_inputs.q
-                    + (stability_functions.psi_t
-                       * _bulk_loop_outputs.qsr/coare_35.VON/np.sqrt(_bulk_loop_outputs.gf)))
-        self.q_n_rf = self.q_rf + stability_functions.psi_q_rf*_bulk_loop_outputs.qsr/coare_35.VON
+        self.q_rf = _bulk_loop_inputs.q + _bulk_loop_outputs.qsr / coare_35.VON * (
+            np.log(_bulk_loop_inputs.zrf / _bulk_loop_inputs.zq)
+            - stability_functions.psi_q_rf
+            + stability_functions.psi_t
+        )
+        self.q_n = _bulk_loop_inputs.q + (
+            stability_functions.psi_t
+            * _bulk_loop_outputs.qsr
+            / coare_35.VON
+            / np.sqrt(_bulk_loop_outputs.gf)
+        )
+        self.q_n_rf = (
+            self.q_rf
+            + stability_functions.psi_q_rf * _bulk_loop_outputs.qsr / coare_35.VON
+        )
         self.rh_rf = rhcalc(temperatures.t_rf, _bulk_loop_inputs.p, self.q_rf)
         # convert to g/kg
         self.q_rf *= 1000
@@ -1015,6 +1432,7 @@ class stability_parameters:
     :ivar zoq: moisture roughness length (m)
     :type zoq: ArrayLike
     """
+
     def __init__(self, _bulk_loop_outputs):
         self.tsr = _bulk_loop_outputs.tsr
         self.tvsr = _bulk_loop_outputs.tvsr
@@ -1053,24 +1471,53 @@ class transfer_coefficients:
     :ivar cen_rf: neutral latent heat transfer coefficient (Dalton number) at reference height zrf
     :type cen_rf: ArrayLike
     """
+
     def __init__(self, _bulk_loop_inputs, _bulk_loop_outputs, fluxes):
         # compute transfer coeffs relative to ut @ meas. ht
-        self.cd = (fluxes.tau/_bulk_loop_inputs.rhoa/_bulk_loop_outputs.ut
-                   / np.maximum(0.1, _bulk_loop_outputs.du))
-        self.ch = (-_bulk_loop_outputs.usr*_bulk_loop_outputs.tsr/_bulk_loop_outputs.ut
-                   / (_bulk_loop_outputs.dt - _bulk_loop_outputs.dter*_bulk_loop_inputs.jcool))
-        self.ce = (-_bulk_loop_outputs.usr*_bulk_loop_outputs.qsr
-                   / (_bulk_loop_outputs.dq - _bulk_loop_outputs.dqer*_bulk_loop_inputs.jcool)
-                   / _bulk_loop_outputs.ut)
+        self.cd = (
+            fluxes.tau
+            / _bulk_loop_inputs.rhoa
+            / _bulk_loop_outputs.ut
+            / np.maximum(0.1, _bulk_loop_outputs.du)
+        )
+        self.ch = (
+            -_bulk_loop_outputs.usr
+            * _bulk_loop_outputs.tsr
+            / _bulk_loop_outputs.ut
+            / (
+                _bulk_loop_outputs.dt
+                - _bulk_loop_outputs.dter * _bulk_loop_inputs.jcool
+            )
+        )
+        self.ce = (
+            -_bulk_loop_outputs.usr
+            * _bulk_loop_outputs.qsr
+            / (
+                _bulk_loop_outputs.dq
+                - _bulk_loop_outputs.dqer * _bulk_loop_inputs.jcool
+            )
+            / _bulk_loop_outputs.ut
+        )
         # compute at ref height zrf neutral coeff relative to ut
-        self.cdn_rf = (1000*coare_35.VON**2
-                       / np.log(_bulk_loop_inputs.zrf/_bulk_loop_outputs.zo)**2)
-        self.chn_rf = (1000*coare_35.VON**2 * coare_35.FDG
-                       / np.log(_bulk_loop_inputs.zrf/_bulk_loop_outputs.zo)
-                       / np.log(_bulk_loop_inputs.zrf/_bulk_loop_outputs.zot))
-        self.cen_rf = (1000*coare_35.VON**2 * coare_35.FDG
-                       / np.log(_bulk_loop_inputs.zrf/_bulk_loop_outputs.zo)
-                       / np.log(_bulk_loop_inputs.zrf/_bulk_loop_outputs.zoq))
+        self.cdn_rf = (
+            1000
+            * coare_35.VON**2
+            / np.log(_bulk_loop_inputs.zrf / _bulk_loop_outputs.zo) ** 2
+        )
+        self.chn_rf = (
+            1000
+            * coare_35.VON**2
+            * coare_35.FDG
+            / np.log(_bulk_loop_inputs.zrf / _bulk_loop_outputs.zo)
+            / np.log(_bulk_loop_inputs.zrf / _bulk_loop_outputs.zot)
+        )
+        self.cen_rf = (
+            1000
+            * coare_35.VON**2
+            * coare_35.FDG
+            / np.log(_bulk_loop_inputs.zrf / _bulk_loop_outputs.zo)
+            / np.log(_bulk_loop_inputs.zrf / _bulk_loop_outputs.zoq)
+        )
 
 
 class stability_functions:
@@ -1099,11 +1546,12 @@ class stability_functions:
     :type psi_q_rf: ArrayLike
 
     """
+
     def __init__(self, _bulk_loop_inputs, _bulk_loop_outputs):
         # compute the stability functions
-        self.psi_u = psiu_26(_bulk_loop_inputs.zu/_bulk_loop_outputs.obukL)
-        self.psi_u_rf = psiu_26(_bulk_loop_inputs.zrf/_bulk_loop_outputs.obukL)
-        self.psi_t = psit_26(_bulk_loop_inputs.zt/_bulk_loop_outputs.obukL)
-        self.psi_t_rf = psit_26(_bulk_loop_inputs.zrf/_bulk_loop_outputs.obukL)
-        self.psi_q = psit_26(_bulk_loop_inputs.zq/_bulk_loop_outputs.obukL)
-        self.psi_q_rf = psit_26(_bulk_loop_inputs.zrf/_bulk_loop_outputs.obukL)
+        self.psi_u = psiu_26(_bulk_loop_inputs.zu / _bulk_loop_outputs.obukL)
+        self.psi_u_rf = psiu_26(_bulk_loop_inputs.zrf / _bulk_loop_outputs.obukL)
+        self.psi_t = psit_26(_bulk_loop_inputs.zt / _bulk_loop_outputs.obukL)
+        self.psi_t_rf = psit_26(_bulk_loop_inputs.zrf / _bulk_loop_outputs.obukL)
+        self.psi_q = psit_26(_bulk_loop_inputs.zq / _bulk_loop_outputs.obukL)
+        self.psi_q_rf = psit_26(_bulk_loop_inputs.zrf / _bulk_loop_outputs.obukL)

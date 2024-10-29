@@ -3,25 +3,25 @@
 import sys
 import os
 
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath(".."))
 
 # -- Project information
 
-project = 'pyCOARE'
-author = 'Andrew Scherer'
+project = "pyCOARE"
+author = "Andrew Scherer"
 
-release = '1'
-version = '0.2.0'
+release = "1"
+version = "0.2.0"
 
 # -- General configuration
 
 extensions = [
-    'sphinx.ext.duration',
-    'sphinx.ext.doctest',
-    'sphinx.ext.autodoc',
-    'sphinx.ext.autosummary',
-    'sphinx.ext.intersphinx',
-    'sphinx_search.extension',
+    "sphinx.ext.duration",
+    "sphinx.ext.doctest",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.intersphinx",
+    "sphinx_search.extension",
 ]
 
 autodoc_typehints = "none"
@@ -29,18 +29,16 @@ autodoc_typehints = "none"
 autodoc_member_order = "alphabetical"
 toc_object_entries_show_parents = "hide"
 
-source_suffix = {
-    '.rst': 'restructuredtext'
-}
+source_suffix = {".rst": "restructuredtext"}
 
 intersphinx_mapping = {
-    'python': ('https://docs.python.org/3/', None),
-    'sphinx': ('https://www.sphinx-doc.org/en/master/', None),
+    "python": ("https://docs.python.org/3/", None),
+    "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
 }
 
-intersphinx_disabled_domains = ['std']
+intersphinx_disabled_domains = ["std"]
 
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # -- Options for HTML output ----------------------------------------------
 # The theme to use for HTML and HTML Help pages.  See the documentation for
