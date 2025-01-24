@@ -28,7 +28,7 @@ class coare_35:
 
     The COARE v3.5 algorithm is based on the |fairall2003|_ with modifications from the results of the |edson2013|_.
 
-    Usage example using only wind speed as an input (see note above):
+    Usage example using only wind speed as an input (see note above)::
 
         from pycoare import coare_35
         # creating a coare_35 instance

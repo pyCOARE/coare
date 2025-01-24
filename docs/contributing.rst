@@ -25,13 +25,13 @@ Please follow these guidelines for contributing to this project:
 
     .. code-block:: bash
 
-        git checkout -b my-new-feature``
+        git checkout -b my-new-feature
 
 * Install the pre-commit hooks for code formatting
 
     .. code-block:: bash
 
-        pre-commit install``
+        pre-commit install
 
 * Make your changes and commit them
 
