@@ -9,7 +9,7 @@ Therefore, the first step in using the COARE algorithm is to create an instance 
 
 Note that this (and other examples in this documentation) uses *only* wind speed as input.
 This is bad practice, and ideally you should use as many input variables as possible.
-See :class:`c35_api.coare_35` for a complete list of input variables.
+See :class:`pycoare.coare_35` for a complete list of input variables.
 
 .. note::
 
