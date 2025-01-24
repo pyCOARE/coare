@@ -20,30 +20,37 @@ The COARE v3.5 algorithm is based on the |fairall2003|_ with modifications from 
 
     The COARE v3.5 algorithm can accept NumPy ``ArrayLike`` objects (e.g., ``float``, ``list``, ``numpy.ndarray``, etc.) as input.
     It is not yet designed to work with ``xarray`` objects (support coming soon).
-    Please convert ``xarray.DataArray`` to ``numpy.ndarray`` using the ``.values`` attribute before passing them to the COARE algorithm.
+    Please convert any ``xarray.DataArray`` to ``numpy.ndarray`` using the ``.values`` attribute before passing them to the COARE algorithm.
 
-Functions within pycoare can be invoked to access specific variables such as wind stress or friction velocity,
-accessed via static functions:
+This package is designed around an object oriented approach, since the number of parameters that the COARE algorithm outputs can be quite unwieldy otherwise.
+Therefore, the first step in using the COARE algorithm is to create an instance of the ``coare_35`` class.
+This instance takes wind speed as the primary argument, but can (and likely should) also take a myriad of additional parameters as keyword arguments.
+Here we show an example of how to use the COARE algorithm with only wind speed as input:
 
-    >>> from pycoare import c35
-    >>> c35.tau([0.0, 0.5, 1.0, 1.5, 2.0, 2.5])  # algorithm is run and prints wind stress
+    >>> from pycoare import coare_35  # import the coare_35 class
+    >>> c = coare_35([0.0, 0.5, 1.0, 1.5, 2.0, 2.5])  # create instance of coare_35 class
+
+Once the ``coare_35`` object is created, the algorithm will automatically be ran.
+The output of the algorithm is stored in several subclasses, which can be accessed as attributes from the ``coare_35`` class.
+These subclasses should only ever be accessed from within a ``coare_35`` instance (as shown in the examples below).
+These classes contain "subattributes" that store the output of the algorithm, neatly divided into categories.
+
+For example, the ``fluxes`` attribute contains the output of the algorithm related to air-sea fluxes.
+To access the wind stress (i.e. the air-sea momentum flux), the you can use the ``tau`` subattribute of the ``fluxes`` attribute of the ``coare_35`` object:
+
+    >>> from pycoare import coare_35
+    >>> c = coare_35([0.0, 0.5, 1.0, 1.5, 2.0, 2.5])  # same as above example, algorithm is run only once
+    >>> c.fluxes.tau  # access the wind stress
     array([0.        , 0.00060093, 0.00165957, 0.00319516, 0.00520412, 0.00768739])
 
-This is intended to be useful when users need only a single variable. If many variables are desired, or the function needs to be called
-repeatedly (in a loop for example), the object oriented approach is preferred since it runs the COARE algorithm only upon instantiation
-which improves performance. After instantiation, desired variables can be accessed using either object functions (which share names with the static functions):
+As another example, the ``transfer_coefficients`` attribute contains the output of the algorithm related, unsurprisingly, to transfer coefficients.
+To access the neutral wind stress transfer coefficient (i.e., neutral drag coefficient), you can use the ``cdn_rf`` subattribute of the ``transfer_coffiencient`` attribute of the ``coare_35`` object:
 
-    >>> from pycoare import c35
-    >>> c = c35([0.0, 0.5, 1.0, 1.5, 2.0, 2.5])  # algorithm is run only once, at this step
-    >>> c.tau()  # prints wind stress, does not re-run algorithm
-    array([0.        , 0.00060093, 0.00165957, 0.00319516, 0.00520412, 0.00768739])
+    >>> from pycoare import coare_35
+    >>> c = coare_35([0.0, 0.5, 1.0, 1.5, 2.0, 2.5])  # same as above example, algorithm is run only once
+    >>> c.transfer_coefficients.cdn_rf  # access the wind stress
+    array([1.2360058 , 1.12526078, 1.04170881, 0.98860156, 0.95127555, 0.92438611])
 
-Only a handful of variables are currently accessible by functions, which are all included in this page (if you want a dedicated function added, consider `contributing on GitHub <https://github.com/pyCOARE/coare/issues>`_).
-However, all variables used in the bulk flux algorithm are accesible through the object oriented API as instance variables accessible through an instance of the c35 class:
-
-    >>> from pycoare import c35
-    >>> c = c35([0.0, 0.5, 1.0, 1.5, 2.0, 2.5])  # same as above example, algorithm is run only once
-    >>> c.fluxes.tau  # prints wind stress, does not re-run algorithm
-    array([0.        , 0.00060093, 0.00165957, 0.00319516, 0.00520412, 0.00768739])
-
-See the `COARE v3.5 API documentation <c35_api.html>`_ for a complete list of methods and variables.
+The available attribute classes accesseible from a ``coare_35`` instance are:
+:class:`fluxes`, :class:`transfer_coefficients`, :class:`stability_functions`, :class:`velocities`, :class:`temperatures`, and :class:`humidities`.
+A full list of the available subattributes and a brief description of them can be found in the complete `COARE v3.5 API documentation <c35_api.html>`_.
