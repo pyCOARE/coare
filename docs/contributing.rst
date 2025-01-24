@@ -1,7 +1,7 @@
-Contributing to pycoare
+Contribution Guide
 =======================
 
-Contributions of all forms are welcome!
+Contributions to ``pycoare`` of all forms are welcome!
 
 Please follow these guidelines for contributing to this project:
 
