@@ -21,6 +21,19 @@ from .util import _check_size, grv, qsea, qair, psit_26, psiu_26, psiu_40, rhcal
 
 class coare_35:
     """
+    .. |fairall2003| replace:: COARE 3.0 code
+    .. _fairall2003: https://doi.org/10.1175/1520-0442(2003)016<0571:BPOASF>2.0.CO;2
+    .. |edson2013| replace:: CLIMODE, MBL and CBLAST experiments
+    .. _edson2013: https://doi.org/10.1175/JPO-D-12-0173.1
+
+    The COARE v3.5 algorithm is based on the |fairall2003|_ with modifications from the results of the |edson2013|_.
+
+    Usage example using only wind speed as an input (see note above)::
+
+        from pycoare import coare_35
+        # creating a coare_35 instance
+        c = coare_35([1])
+
     :param u: ocean surface wind speed (m/s) at height zu
     :type u: ArrayLike
     :param t: bulk air temperature (degC) at height zt

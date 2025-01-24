@@ -34,3 +34,7 @@ For more information on the people and publications that developed the COARE alg
 
     c35_api
     util_api
+
+.. toctree::
+
+    contributing
