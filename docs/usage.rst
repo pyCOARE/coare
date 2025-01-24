@@ -1,15 +1,6 @@
 Usage
 =====
 
-.. _Usage:
-
-.. |fairall2003| replace:: COARE 3.0 code
-.. _fairall2003: https://doi.org/10.1175/1520-0442(2003)016<0571:BPOASF>2.0.CO;2
-.. |edson2013| replace:: CLIMODE, MBL and CBLAST experiments
-.. _edson2013: https://doi.org/10.1175/JPO-D-12-0173.1
-
-The COARE v3.5 algorithm is based on the |fairall2003|_ with modifications from the results of the |edson2013|_.
-
 This package is designed around an object oriented approach, since the number of parameters that the COARE algorithm outputs can be quite unwieldy otherwise.
 Therefore, the first step in using the COARE algorithm is to create an instance of the ``coare_35`` class:
 
@@ -50,14 +41,14 @@ To access the neutral wind stress transfer coefficient (i.e., neutral drag coeff
     >>> c.transfer_coefficients.cdn_rf  # access the wind stress
     array([1.2360058 , 1.12526078, 1.04170881, 0.98860156, 0.95127555, 0.92438611])
 
-The available output classes accessible from a :class:`c35_api.coare_35` instance are:
+The available output classes accessible from a :class:`~pycoare.coare_35` instance are:
 
-* :class:`c35_api.fluxes`
-* :class:`c35_api.transfer_coefficients`
-* :class:`c35_api.stability_functions`
-* :class:`c35_api.velocities`
-* :class:`c35_api.temperatures`
-* :class:`c35_api.humidities`
+* :class:`~pycoare.fluxes`
+* :class:`~pycoare.transfer_coefficients`
+* :class:`~pycoare.stability_functions`
+* :class:`~pycoare.velocities`
+* :class:`~pycoare.temperatures`
+* :class:`~pycoare.humidities`
 
 The links above will take you to the documentation for each of these output classes.
 This contains information on the subattributes that are available in each output class.
