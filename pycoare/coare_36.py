@@ -12,12 +12,13 @@ Refactored, packaged, and documented by:
 """
 
 from __future__ import annotations
+
 from dataclasses import dataclass
-from importlib.resources import files
 
 import numpy as np
 from numpy.typing import ArrayLike, NDArray
-from .util import _check_size, grv, qsea, qair, psit_26, psiu_26, psiu_40, rhcalc
+
+from .util import _check_size, grv, psit_26, psiu_26, psiu_40, qair, qsea, rhcalc
 
 
 class coare_36:
@@ -99,10 +100,6 @@ class coare_36:
     VISW = 1.0e-6
     TCW = 0.6
 
-    # wave-age dependent coefficients
-    A = 0.15
-    B = 2.2
-
     # Sea-state/wave-age dependent coefficients
     AD = 0.2
     BD = 2.2
@@ -126,8 +123,6 @@ class coare_36:
         ss: ArrayLike = [35.0],
         p: ArrayLike = [1015.0],
         lat: ArrayLike = [45.0],
-        lon: ArrayLike = [-150.0],
-        time: ArrayLike = [0.0],
         zi: ArrayLike = [600.0],
         rs: ArrayLike = [150.0],
         rl: ArrayLike = [370.0],
@@ -150,8 +145,6 @@ class coare_36:
             ss,
             p,
             lat,
-            lon,
-            time,
             zi,
             rs,
             rl,
@@ -178,8 +171,6 @@ class coare_36:
         ss: ArrayLike
         p: ArrayLike
         lat: ArrayLike
-        lon: ArrayLike
-        time: ArrayLike
         zi: ArrayLike
         rs: ArrayLike
         rl: ArrayLike
@@ -212,8 +203,6 @@ class coare_36:
             self.ss = _check_size(self.ss, self.N, "ss")
             self.p = _check_size(self.p, self.N, "p")
             self.lat = _check_size(self.lat, self.N, "lat")
-            self.lon = _check_size(self.lon, self.N, "lon")
-            self.time = _check_size(self.time, self.N, "time")
             self.zi = _check_size(self.zi, self.N, "zi")
             self.rs = _check_size(self.rs, self.N, "rs")
             self.rl = _check_size(self.rl, self.N, "rl")
@@ -236,7 +225,9 @@ class coare_36:
                 self.jcool = 1  # all input other than 0 defaults to jcool=1
 
         def _get_humidities(self):
-            return qsea(self.ts, self.p) / 1000, qair(self.t, self.p, self.rh) / 1000
+            return qsea(self.ts, self.p, self.ss) / 1000, qair(
+                self.t, self.p, self.rh
+            ) / 1000
 
         def _get_air_constants(self):
             lhvap = (2.501 - 0.00237 * self.ts) * 1e6
@@ -270,45 +261,23 @@ class coare_36:
             return al, bigc, wetc
 
         def _get_radiation_fluxes(self):
+            # upwelling shortwave radiation based on shortwave albedo
             rns = (1 - self._get_albedo()) * self.rs
+            # upwelling longwave radiation by Stefan-Boltzmann law
             rnl = 0.97 * (
                 5.67e-8 * (self.ts - 0.3 * self.jcool + coare_36.TDK) ** 4 - self.rl
             )
             return (rns, rnl)
 
         def _get_albedo(self):
-            lon = np.radians(self.lon)
-            lat = np.radians(self.lat)
-            sol_constant = 1380
-            hours = (self.time - np.fix(self.time)) * 24
-            h = np.pi * hours / 12 - lon
-            decl = 23.45 * np.cos(2 * np.pi * (self.time - 173) / 365.25)
-            decl = np.radians(decl)
-            gamma = 1
-
-            sinpsi = np.sin(lat) * np.sin(decl) - np.cos(lat) * np.cos(decl) * np.cos(h)
-            psi = np.degrees(np.arcsin(sinpsi))
-            sol_max = sol_constant * sinpsi / gamma**2
-            T = np.minimum(2, self.rs / sol_max)
-
-            Ts = np.arange(0, 1.05, 0.05)
-            As = np.arange(0, 92, 2)
-            # Look up table from Payne (1972)  Only adjustment is to T=0.95 Alt=10 value
-
-            file = files("pycoare.data").joinpath("albedo_lookup.npz")
-            with np.load(file) as data:
-                albedo_lookup = data["a"]
-
-            alb = np.full(self.N, np.nan)
-            alb[psi < 0] = 0
-            for p, t in zip(psi, T):
-                Tchk = np.abs(Ts - t)
-                Achk = np.abs(As - p)
-                i = np.argmin(Tchk)
-                j = np.argmin(Achk)
-                alb = albedo_lookup[j, i]
-
-            return alb
+            h = 0  # hour angle, set to noon unless someone wants to implement time of day into this package
+            decl = 0  # declination angle, set to equinox value (0) for same reason as above
+            solar_zenith_angle = np.arccos(
+                np.sin(self.lat) * np.sin(h)
+                + np.cos(self.lat) * np.cos(decl) * np.cos(h)
+            )
+            # eqn 2.77 from https://www.ecmwf.int/en/elibrary/81189-ifs-documentation-cy47r1-part-iv-physical-processes
+            return 0.037 / (1.1 * solar_zenith_angle**1.4 + 0.15)
 
     @dataclass
     class _Bulk_Loop_Outputs:
@@ -325,6 +294,7 @@ class coare_36:
         tssr: NDArray[np.float64]
         tkt: NDArray[np.float64]
         obukL: NDArray[np.float64]
+        rns: NDArray[np.float64]
         rnl: NDArray[np.float64]
         zet: NDArray[np.float64]
         gf: NDArray[np.float64]
@@ -361,6 +331,7 @@ class coare_36:
     def _bulk_loop(self):
         _bulk_loop_inputs = self._bulk_loop_inputs
         rnl = _bulk_loop_inputs.rnl
+        rns = _bulk_loop_inputs.rns
 
         # first guess
         du, dt, dq = self._get_dudtdq()
@@ -379,7 +350,7 @@ class coare_36:
             ut, dt, dq, dter, zo10, zot10, np.nan, obukL10, setup=True
         )
         tkt = 0.001 * np.ones(_bulk_loop_inputs.N)
-        charnC, charnW, charnS = self._get_charn(u10, usr, setup=True)
+        charnC, charnS = self._get_charn(u10, usr, setup=True)
 
         for i in range(_bulk_loop_inputs.nits):
             zet = (
@@ -392,7 +363,8 @@ class coare_36:
             )
 
             charn = charnC
-            charn[_bulk_loop_inputs.waveage_flag] = charnW[
+            # using parameterized significant wave height for this
+            charn[_bulk_loop_inputs.waveage_flag] = charnS[
                 _bulk_loop_inputs.waveage_flag
             ]
             charn[_bulk_loop_inputs.seastate_flag] = charnS[
@@ -432,7 +404,7 @@ class coare_36:
                 tkt50 = tkt[k50]
 
             u10N = usr / self.VON / gf * np.log(10 / zo)
-            charnC, charnW, charnS = self._get_charn(u10N, usr, _bulk_loop_inputs)
+            charnC, charnS = self._get_charn(u10N, usr, _bulk_loop_inputs)
 
         # insert first iteration solution for case with zetau>50
         usr[k50] = usr50
@@ -457,6 +429,7 @@ class coare_36:
             tssr,
             tkt,
             obukL,
+            rns,
             rnl,
             zet,
             gf,
@@ -520,13 +493,13 @@ class coare_36:
         _bulk_loop_inputs = self._bulk_loop_inputs
         # The following gives the new formulation for the Charnock variable
         charnC = self.A1 * u + self.A2
-        k = np.flatnonzero(u > self.UMAX)
-        charnC[k] = self.A1 * self.UMAX + self.A2
-        charnW = self.A * (usr / _bulk_loop_inputs.cp) ** self.B
-        k = (np.isnan(_bulk_loop_inputs.sigH)) & (~np.isnan(_bulk_loop_inputs.cp))
+        charnC[np.flatnonzero(u > self.UMAX)] = self.A1 * self.UMAX + self.A2
         # if wave age is given but not wave height, use parameterized wave height based on wind speed
-        _bulk_loop_inputs.sigH[k] = np.maximum(
-            (0.02 * (_bulk_loop_inputs.cp[k] / u) ** 1.1 - 0.0025) * u**2, 0.25
+        mask = np.isnan(_bulk_loop_inputs.sigH) & _bulk_loop_inputs.waveage_flag
+        _bulk_loop_inputs.sigH[mask] = np.maximum(
+            (0.02 * (_bulk_loop_inputs.cp[mask] / u[mask]) ** 1.1 - 0.0025)
+            * u[mask] ** 2,
+            0.25,
         )
         if setup:
             zoS = (
@@ -542,7 +515,7 @@ class coare_36:
                 * (usr / _bulk_loop_inputs.cp) ** self.BD
             )
         charnS = zoS * _bulk_loop_inputs.grav / usr**2
-        return charnC, charnW, charnS
+        return charnC, charnS
 
     def _get_roughness(self, charn, usr, setup=False):
         _bulk_loop_inputs = self._bulk_loop_inputs
@@ -695,6 +668,8 @@ class fluxes:
         # accessing the Webb correction for latent heat flux
         c.fluxes.hlwebb
 
+    :ivar rns: net shortwave radiation (W/m^2)
+    :type rns: ArrayLike
     :ivar rnl: upwelling IR radiataion (W/m^2)
     :type rnl: ArrayLike
     :ivar tau: wind stress (N/m^2)
@@ -717,6 +692,7 @@ class fluxes:
 
     def __init__(self, _bulk_loop_inputs, _bulk_loop_outputs):
         # compute fluxes
+        self.rns = _bulk_loop_inputs.rns  #: net shortwave radiation (W/m^2)
         self.rnl = _bulk_loop_outputs.rnl  #: upwelling IR radiation (W/m^2)
         self.tau = (
             _bulk_loop_inputs.rhoa * _bulk_loop_outputs.usr**2 / _bulk_loop_outputs.gf
