@@ -14,9 +14,11 @@ Refactored, packaged, and documented by:
 from __future__ import annotations
 
 from dataclasses import dataclass
+
 import numpy as np
 from numpy.typing import ArrayLike, NDArray
-from .util import _check_size, grv, qsea, qair, psit_26, psiu_26, psiu_40, rhcalc
+
+from .util import _check_size, grv, psit_26, psiu_26, psiu_40, qair, qsea, rhcalc
 
 
 class coare_35:
