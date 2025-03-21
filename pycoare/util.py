@@ -1,5 +1,5 @@
 import numpy as np
-from numpy.typing import NDArray, ArrayLike
+from numpy.typing import ArrayLike, NDArray
 
 
 def grv(lat: ArrayLike) -> NDArray[np.float64]:
@@ -63,7 +63,7 @@ def qsat(t: ArrayLike, p: ArrayLike) -> NDArray[np.float64]:
     return es
 
 
-def qsea(t: ArrayLike, p: ArrayLike) -> NDArray[np.float64]:
+def qsea(t: ArrayLike, p: ArrayLike, s: ArrayLike = 35) -> NDArray[np.float64]:
     """Returns saturation specific humidity at sea surface from temperature and pressure.
 
     :param t: temperature (degC)
@@ -74,7 +74,7 @@ def qsea(t: ArrayLike, p: ArrayLike) -> NDArray[np.float64]:
     :rtype: NDArray[np.float64]
     """
     ex = qsat(t, p)  # returns ex as ndarray float
-    es = 0.98 * ex
+    es = (1 - 0.02 * s / 35) * ex
     qs = 622 * es / (p - 0.378 * es)
     return qs
 
