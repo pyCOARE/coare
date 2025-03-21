@@ -1,2 +1,3 @@
 - Changed exponents in structure functions psit_26, psiu_26, and psiu_40 and in u_g calculation from 0.3333 to 1/3, since the former results in inaccuracies past the fourth significant figure and the literature supports using exact fractions in exponents ([Grachev et. al., 2000](https://doi.org/10.1023/A:1002452529672) and [Grachev and Fairall, 1997](https://doi.org/10.1175/1520-0450(1997)036%3C0406:DOTMOS%3E2.0.CO;2)).
 - Changed gravity function (util.grv) to use (WGS84 normal gravity model)[https://nsgreg.nga.mil/doc/view?i=4085].
+- Changed albedo function in v3.6 to use only latitude as an input, assuming solar noon and equinox, and calculating shortwave albedo according to https://www.ecmwf.int/en/elibrary/81189-ifs-documentation-cy47r1-part-iv-physical-processes
