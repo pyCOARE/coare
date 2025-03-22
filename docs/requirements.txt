@@ -2,4 +2,5 @@ numpy
 pytest
 sphinx
 sphinx-book-theme
+sphinxcontrib-bibtex
 readthedocs-sphinx-search

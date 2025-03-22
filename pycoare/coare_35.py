@@ -23,12 +23,7 @@ from .util import _check_size, grv, psit_26, psiu_26, psiu_40, qair, qsea, rhcal
 
 class coare_35:
     """
-    .. |fairall2003| replace:: COARE 3.0 code
-    .. _fairall2003: https://doi.org/10.1175/1520-0442(2003)016<0571:BPOASF>2.0.CO;2
-    .. |edson2013| replace:: CLIMODE, MBL and CBLAST experiments
-    .. _edson2013: https://doi.org/10.1175/JPO-D-12-0173.1
-
-    The COARE v3.5 algorithm is based on the |fairall2003|_ with modifications from the results of the |edson2013|_.
+    Primary class used for running the COARE v3.5 bulk flux algorithm.
 
     Usage example using only wind speed as an input (see note above)::
 
@@ -1123,7 +1118,8 @@ class coare_35:
 
 
 class fluxes:
-    """Fluxes computed from COARE.
+    """
+    Class containing the flux outputs computed from the COARE v3.5 algorithm.
 
     An instance of this class is created whenever a :class:`coare_35` class is created.
     Variables in this class should only be accessed through this instance of the :class:`coare_35` class::
@@ -1249,7 +1245,8 @@ class fluxes:
 
 
 class velocities:
-    """Velocities computed from COARE.
+    """
+    Class containing the velocity outputs computed from the COARE v3.5 algorithm.
 
     An instance of this class is created whenever a :class:`coare_35` class is created.
     Variables in this class should only be accessed through this instance of the :class:`coare_35` class::
@@ -1311,7 +1308,8 @@ class velocities:
 
 
 class temperatures:
-    """Temperatures computed from COARE.
+    """
+    Class containing temperature outputs computed from the COARE v3.5 algorithm.
 
     An instance of this class is created whenever a :class:`coare_35` class is created.
     Variables in this class should only be accessed through this instance of the :class:`coare_35` class::
@@ -1362,7 +1360,8 @@ class temperatures:
 
 
 class humidities:
-    """Stability parameters computed from COARE.
+    """
+    Class containing the humidity outputs computed from the COARE v3.5 algorithm.
 
     An instance of this class is created whenever a :class:`coare_35` class is created.
     Variables in this class should only be accessed through this instance of the :class:`coare_35` class::
@@ -1415,7 +1414,8 @@ class humidities:
 
 
 class stability_parameters:
-    """Stability parameters computed from COARE.
+    """
+    Class containing the stability parameters computed from the COARE v3.5 algorithm.
 
     An instance of this class is created whenever a :class:`coare_35` class is created.
     Variables in this class should only be accessed through this instance of the :class:`coare_35` class::
@@ -1462,7 +1462,8 @@ class stability_parameters:
 
 
 class transfer_coefficients:
-    """Transfer coefficients computed from COARE.
+    """
+    Class containing the transfer coefficients computed from the COARE v3.5 algorithm.
 
     An instance of this class is created whenever a :class:`coare_35` class is created.
     Variables in this class should only be accessed through this instance of the :class:`coare_35` class::
@@ -1536,7 +1537,8 @@ class transfer_coefficients:
 
 
 class stability_functions:
-    """Stability functions computed from COARE.
+    """
+    Class containing stability functions calculated from the COARE v3.5 algorithm.
 
     An instance of this class is created whenever a :class:`coare_35` class is created.
     Variables in this class should only be accessed through this instance of the :class:`coare_35` class::

@@ -1,53 +1,52 @@
-[![Tests](https://github.com/pyCOARE/coare/actions/workflows/tests.yml/badge.svg)](https://github.com/pyCOARE/coare/actions/workflows/tests.yml)
-[![License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](ttps://github.com/pyCOARE/coare/blob/master/LICENSE.txt)
-[![Code coverage](https://codecov.io/gh/pyCOARE/coare/branch/main/graph/badge.svg)](https://app.codecov.io/gh/pyCOARE/coare)
+[![Tests](https://github.com/pycoare/coare/actions/workflows/tests.yml/badge.svg)](https://github.com/pycoare/coare/actions/workflows/tests.yml)
+[![License](http://img.shields.io/badge/license-MIT-blue.svg?style=flat)](ttps://github.com/pycoare/coare/blob/master/LICENSE.txt)
+[![Code coverage](https://codecov.io/gh/pycoare/coare/branch/main/graph/badge.svg)](https://app.codecov.io/gh/pycoare/coare)
 [![Docs](https://readthedocs.org/projects/pycoare/badge/?version=latest)](https://pycoare.readthedocs.io/en/latest/?badge=latest)
 [![PyPI version](https://img.shields.io/pypi/v/pycoare?style=plastic)](https://pypi.org/project/pycoare/)
 
 # pycoare
 
-This is a beta version of an implementation of the [COARE algorithm](https://doi.org/10.1175/1520-0442(2003)016%3C0571:BPOASF%3E2.0.CO;2) that builds on the [original NOAA-PSL pycoare code](https://github.com/NOAA-PSL/COARE-algorithm). Currently only COARE v3.5 is implemented - hopefully v3.6 will come soon!
+**pycoare** is a Python package for calculating various **air-sea fluxes** from **bulk variables** (e.g., wind speed, temperature, humidity),
+using the COARE algorithms developed through the TOGA-COARE project ([Fairall et al., 1996a](https://agupubs.onlinelibrary.wiley.com/doi/10.1029/95JC03190), [Fairall et al., 1996b](https://agupubs.onlinelibrary.wiley.com/doi/10.1029/95JC03205), [Fairall et al., 1997](http://journals.ametsoc.org/doi/10.1175/1520-0426(1997)014%3C0338:ISMOTM%3E2.0.CO;2)).
 
-This version makes minor updates to the code itself, refactors code to improve readability, maintability, and distribution, and creates a standardized API for calling functions. [See the changelog](https://github.com/pyCOARE/coare/blob/main/docs/changelog.md) for all mathematically relevant changes made to the original code.
+Included in this package are implementations of the **COARE v3.5 and v3.6 algorithms** that builds on the [original NOAA-PSL pycoare code](https://github.com/NOAA-PSL/COARE-algorithm). This package makes very minor updates to the algorithm itself, instead focusing on improved code structure, packaging, documentation, and distribution by implementing an object oriented approach and utilizing modern Python tooling. The goal of this new version is to improve usability and reproducibility, encourage collaboration, and ease maintenance.
+
+[See the changelog](https://github.com/pycoare/coare/blob/main/docs/changelog.md) for all mathematically relevant changes made to the algorithm itself.
+
+**Find more details on the usage and api [in the documentation](https://pycoare.readthedocs.io).**
 
 ## Installation
 
-The latest stable version (currently a beta) can be downloaded using Pip
+The latest stable version (currently a beta) can be downloaded using pip:
 ```
 pip install pycoare
 ```
+The package can also be added to projects via [uv](https://docs.astral.sh/uv/):
+```
+uv add pycoare
+```
+You can install the most up-to-date version using:
+```
+pip install git+https://github.com/pycoare/coare
+```
 
-You can install the most up-to-date version using
-```
-pip install git+https://github.com/pyCOARE/coare
-```
+## Versions
+
+pycoare contains two versions of the COARE algorithm: **COARE v3.5** and **COARE v3.6**.
+
+Version 3.5 was released in 2013, which made adjustments to the wind speed dependence of the Charnock parameter based on a large database of direct covariance stress observations (principally from a buoy) ([Edson et al., 2013](https://doi.org/10.1175/JPO-D-12-0173.1)).
+This led to an increase in stress for wind speeds greater than about 18 m/s. The roughness Reynolds number formulation of the scalar roughness length was tuned slightly to give the same values of `Ch` and `Ce` as Version 3.0. The diurnal warm layer model was structured as a separate routine instead of embedded in a driver program. COARE v3.5 was based on buoy data ([Edson et al., 2013](https://doi.org/10.1175/JPO-D-12-0173.1)) and was compared to a large database (a total of 16,000 hours of observations) combining observations from NOAA, WHOI, and U. Miami ([Fairall et al., 2011](http://doi.wiley.com/10.1029/2010JC006884)).
+
+Version 3.6 is slightly restructured and built around improvements in the representation of the effects of waves on fluxes. This includes improved relationships of surface roughness and whitecap fraction on wave parameters ([Fairall et al., 2022](https://doi.org/10.3389/fmars.2022.826606)).
 
 ## Contribution
 
-I welcome any contributions. Please feel free to [raise an issue](https://github.com/pyCOARE/coare/issues) or submit a [pull request](https://github.com/pyCOARE/coare/pulls).
+I welcome any contributions - feel free to [raise an issue](https://github.com/pycoare/coare/issues) or submit a [pull request](https://github.com/pycoare/coare/pulls). Take a look at the [contribution guide](https://pycoare.readthedocs.io/en/latest/contributing.html) to get started!
 
-## Origins and Credits
-The international TOGA-COARE field program which took place in the western Pacific warm pool over 4 months from November 1992 to February 1993 ([Fairall et al. 1996a](https://github.com/noaa-psd/COARE-algorithm/blob/master/References/Fairall%20et%20al.%201996a%20-%20cool%20skin%20warm%20layer.pdf), [1996b](https://github.com/noaa-psd/COARE-algorithm/blob/master/References/Fairall%20et%20al.%201996b%20-%20bulk%20fluxes%20of%20variables.pdf) and [1997](https://github.com/noaa-psd/COARE-algorithm/blob/master/References/Fairall%20et%20al.%201997%20-%20ship%20measurements%20MABL.pdf)) spurred the development of the COARE model. The algorithm is intended to provide estimates of `momentum, sensible heat`, and `latent heat fluxes` using inputs of bulk atmospheric variables (`wind speed, SST, air temperature, air humidity`). The algorithm contains subroutines/functions to handle near-surface gradients of temperature in the ocean.
+## Credits
 
-This Python implementation of the COARE algorithm was initially translated from MATLAB by Byron Blomquist and Ludovic Bariteau. For more information on the people and publications that developed the COARE algorithm, see the references below.
+This Python implementation of the COARE algorithm was initially translated from MATLAB by
+Byron Blomquist, Ludovic Bariteau, with support from the NOAA Physical Sciences Laboratory ([Ludovic et al., 2021](https://zenodo.org/records/5110991)).
 
-## Versions
-- **Version 2.5** was published in 1996.
-- **Version 3.0** was published in 2003; it was a major update from Version 2.5. This update was based on new observations at higher wind speeds (10 to 20 m/s). Available in MATLAB and FORTRAN only.
-- **Version 3.5** was released in 2013 following the publication of [Edson et al. 2013](https://github.com/noaa-psd/COARE-algorithm/blob/master/References/Edson%20et%20al.%202013%20-%20momentum%20flux.pdf), which made adjustments to the wind speed dependence of the Charnock parameter based on a large database of direct covariance stress observations (principally from a buoy). This led to an increase in stress for wind speeds greater than about 18 m/s. The roughness Reynolds number formulation of the scalar roughness length was tuned slightly to give the same values of `Ch` and `Ce` as Version 3.0. The diurnal warm layer model was structured as a separate routine instead of embedded in a driver program. COARE 3.5 was based on Edson’s buoy data ([Edson et al. 2013](https://github.com/noaa-psd/COARE-algorithm/blob/master/References/Edson%20et%20al.%202013%20-%20momentum%20flux.pdf)) and was compared to a large database (a total of 16,000 hours of observations) combining observations from NOAA, WHOI, and U. Miami ([Fairall et al. 2011](https://github.com/noaa-psd/COARE-algorithm/blob/master/References/Fairall%20et%20al.%202011%20-%20COAREG.pdf)). It is available in Python and MATLAB.
-- **Version 3.6** is slightly restructured and built around improvements in the representation of the effects of waves on fluxes. This includes improved relationships of `surface roughness`, $z_o$, and `whitecap fraction`, $W_f$, on wave parameters.  More details can be found in [coare3.6\_readme\_1.pdf](https://github.com/noaa-psd/COARE-algorithm/blob/master/References/coare36_readme_1.pdf). This version is available in Python, MATLAB and FORTRAN.
-
-
-## References:
-
-*    Edson, J.B., J. V. S. Raju, R.A. Weller, S. Bigorre, A. Plueddemann, C.W. Fairall, S. Miller, L. Mahrt, Dean Vickers, and Hans Hersbach, 2013: On the Exchange of momentum over the open ocean. J. Phys. Oceanogr., 43, 1589–1610. doi: http://dx.doi.org/10.1175/JPO-D-12-0173.1
-
-*    Fairall, C.W., E.F. Bradley, J.S. Godfrey, G.A. Wick, J.B. Edson, and G.S. Young, 1996a: The cool skin and the warm layer in bulk flux calculations. J. Geophys. Res. 101, 1295-1308. https://doi.org/10.1029/95JC03190
-
-*    Fairall, C.W., E.F. Bradley, D.P. Rogers, J.B. Edson, G.S. Young, 1996b: Bulk parameterization of air-sea fluxes for TOGA COARE. J. Geophys. Res. 101, 3747-3764. https://doi.org/10.1029/95JC03205
-
-*    Fairall, C. W., White, A. B., Edson, J. B., and Hare, J. E.: Integrated Shipboard Measurements of the Marine Boundary Layer, J. Atmos. Ocean. Tech., 14, 338–359, 1997. https://doi.org/10.1175/1520-0426(1997)014<0338:ISMOTM>2.0.CO;2
-
-*    Fairall, C.W., E.F. Bradley, J.E. Hare, A.A. Grachev, and J.B. Edson, 2003: Bulk parameterization of air-sea fluxes: Updates and verification for the COARE algorithm. J. Climate 16, 571-591. https://doi.org/10.1175/1520-0442(2003)016<0571:BPOASF>2.0.CO;2
-
-*    Fairall, C.W., Mingxi Yang, Ludovic Bariteau, J.B. Edson, D. Helmig, W. McGillis, S. Pezoa, J.E. Hare, B. Huebert, and B. Blomquist, 2011: Implementation of the COARE flux algorithm with CO2, DMS, and O3. J. Geophys. Res., 116, C00F09, https://doi.org/10.1029/2010JC006884
+The development of the COARE algorithm builds upon decades of research, for which I am extremely appreciative.
+The history of the COARE algorithm and its development [can be found here](https://github.com/pyCOARE/coare/tree/main/docs/References) ([Fairall et al., 2022](https://doi.org/10.3389/fmars.2022.826606)).
