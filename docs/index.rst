@@ -4,7 +4,7 @@ pycoare
 **pycoare** is a Python package for calculating various **air-sea fluxes** from **bulk variables** (e.g., wind speed, temperature, humidity),
 using code developed through the TOGA-COARE project :cite:`fairall_bulk_1996,fairall_coolskin_1996,fairall_integrated_1997`.
 
-Included in this package are implementations of the **COARE v3.5 and v3.6 algorithms** that builds on the [original NOAA-PSL pycoare code](https://github.com/NOAA-PSL/COARE-algorithm).
+Included in this package are implementations of the **COARE v3.5 and v3.6 algorithms** that builds on the `original NOAA-PSL pycoare code <https://github.com/NOAA-PSL/COARE-algorithm>`_.
 This package makes very minor updates to the algorithm itself, instead focusing on improved code structure, packaging, documentation, and distribution by implementing an object oriented approach and utilizing modern Python tooling.
 The goal of this new version is to improve usability and reproducibility, encourage collaboration, and ease maintenance.
 
