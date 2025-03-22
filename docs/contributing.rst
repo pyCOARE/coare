@@ -13,13 +13,12 @@ Please follow these guidelines for contributing to this project:
     $ git clone <url_to_your_forked_repository>
     $ cd coare
 
-* Install the development requirements in a new environment
+* Install the development requirements using `uv <https://docs.astral.sh/uv/>` and activate the virtual environment
 
 .. code-block:: bash
 
-    $ conda create -n pycoare
-    $ conda activate pycoare
-    $ pip install -r requirements-dev.txt
+    $ uv sync --dev
+    $ .venv/bin/activate
 
 * Create a new branch for your feature
 
