@@ -25,7 +25,7 @@ extensions = [
     "sphinxcontrib.bibtex",
 ]
 
-bibtex_bibfiles = ["refs.bib"]
+bibtex_bibfiles = ["references.bib"]
 
 autodoc_typehints = "none"
 
