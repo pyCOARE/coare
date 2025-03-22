@@ -14,9 +14,9 @@ Dependencies
 
 pycoare requires Python 3.9 or later.
 
-Currently, the only dependency is `numpy <https://numpy.org/>` (v2.0 or later).
+Currently, the only dependency is `numpy <https://numpy.org/>`_ (v2.0 or later).
 
-Future versions may implement support for and require `xarray <https://xarray.pydata.org/en/stable/>`.
+Future versions may implement support for and require `xarray <https://xarray.pydata.org/en/stable/>`_.
 
 Development Installation
 ------------------------
