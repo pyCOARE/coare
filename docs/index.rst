@@ -69,5 +69,6 @@ The history of the COARE algorithm and its development can be found by downloadi
 .. toctree::
     :maxdepth: 2
     :caption: Resources
+
     contributing
     references
