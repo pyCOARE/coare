@@ -50,6 +50,7 @@ Byron Blomquist, Ludovic Bariteau, with support from the NOAA Physical Sciences 
 
 The development of the COARE algorithm builds upon decades of research, for which I am extremely appreciative.
 The history of the COARE algorithm and its development can be found by downloading :download:`this supplementary material <References/Fairall-2022-COARE-development.pdf>` :cite:`fairall_air-sea_2022`.
+See the `references <references>`_ for more information.
 
 .. toctree::
     :maxdepth: 2
