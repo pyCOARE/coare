@@ -1,17 +1,17 @@
 # Configuration file for the Sphinx documentation builder.
 
-import sys
 import os
+import sys
 
 sys.path.insert(0, os.path.abspath(".."))
 
 # -- Project information
 
-project = "pyCOARE"
+project = "pycoare"
 author = "Andrew Scherer"
 
 release = "1"
-version = "0.2.0"
+version = "0.3.0"
 
 # -- General configuration
 
@@ -22,7 +22,10 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.intersphinx",
     "sphinx_search.extension",
+    "sphinxcontrib.bibtex",
 ]
+
+bibtex_bibfiles = ["refs.bib"]
 
 autodoc_typehints = "none"
 
