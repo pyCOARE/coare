@@ -13,7 +13,7 @@ Please follow these guidelines for contributing to this project:
     $ git clone <url_to_your_forked_repository>
     $ cd coare
 
-* Install the development requirements using `uv <https://docs.astral.sh/uv/>` and activate the virtual environment
+* Install the development requirements using `uv <https://docs.astral.sh/uv/>`_ and activate the virtual environment
 
 .. code-block:: bash
 
