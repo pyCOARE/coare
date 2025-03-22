@@ -39,8 +39,8 @@ Version 3.6 is slightly restructured and built around improvements in the repres
 Contribution
 ------------
 
-I welcome any contributions - feel free to `raise an issue<https://github.com/pycoare/coare/issues>`_ or submit a `pull request<https://github.com/pycoare/coare/pulls>`_.
-Take a look at the `contribution guide<contributing>`_ to get started!
+I welcome any contributions - feel free to `raise an issue <https://github.com/pycoare/coare/issues>`_ or submit a `pull request <https://github.com/pycoare/coare/pulls>`_.
+Take a look at the `contribution guide <contributing>`_ to get started!
 
 Credits
 -------
@@ -63,6 +63,7 @@ The history of the COARE algorithm and its development can be found by downloadi
     :caption: API Reference
 
     c35_api
+    c36_api
     util_api
 
 .. toctree::
