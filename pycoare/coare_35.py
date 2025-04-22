@@ -1516,20 +1516,16 @@ class transfer_coefficients:
         )
         # compute at ref height zrf neutral coeff relative to ut
         self.cdn_rf = (
-            1000
-            * coare_35.VON**2
-            / np.log(_bulk_loop_inputs.zrf / _bulk_loop_outputs.zo) ** 2
+            coare_35.VON**2 / np.log(_bulk_loop_inputs.zrf / _bulk_loop_outputs.zo) ** 2
         )
         self.chn_rf = (
-            1000
-            * coare_35.VON**2
+            coare_35.VON**2
             * coare_35.FDG
             / np.log(_bulk_loop_inputs.zrf / _bulk_loop_outputs.zo)
             / np.log(_bulk_loop_inputs.zrf / _bulk_loop_outputs.zot)
         )
         self.cen_rf = (
-            1000
-            * coare_35.VON**2
+            coare_35.VON**2
             * coare_35.FDG
             / np.log(_bulk_loop_inputs.zrf / _bulk_loop_outputs.zo)
             / np.log(_bulk_loop_inputs.zrf / _bulk_loop_outputs.zoq)
