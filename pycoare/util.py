@@ -108,7 +108,7 @@ def psit_26(z_L: ArrayLike) -> NDArray[np.float64]:
     :return: temperature structure function
     :rtype: NDArray[np.float64]
     """
-    zet = np.copy(np.asarray(z_L, dtype=float))  # conversion to ndarray float
+    zet = np.asarray(z_L, dtype=float)
     # compute psi_t for stable conditions by Beljaars & Holtslag 1991
     a = 1
     b = 0.6667
@@ -117,7 +117,7 @@ def psit_26(z_L: ArrayLike) -> NDArray[np.float64]:
     dzet = d * zet
     dzet[dzet > 50] = 50.0
     psi = np.nan * np.empty(zet.shape, dtype=float)
-    k = np.flatnonzero(zet >= 0)
+    k = zet >= 0
     psi[k] = -(
         (1 + 2 / 3 * a * zet[k]) ** (3 / 2)
         + b * (zet[k] - c / d) * np.exp(-dzet[k])
@@ -125,7 +125,7 @@ def psit_26(z_L: ArrayLike) -> NDArray[np.float64]:
         - 1
     )
     # compute convective psi_t for unstable conditions by Grachev et. al., 2000
-    k = np.flatnonzero(zet < 0)
+    k = zet < 0
     x = (1 - 15 * zet[k]) ** (1 / 2)
     psik = 2 * np.log((1 + x) / 2.0)  # kansas psi
     x = (1 - 34.15 * zet[k]) ** (1 / 3)
@@ -148,7 +148,7 @@ def psiu_26(z_L: ArrayLike) -> NDArray[np.float64]:
     :return: velocity structure function
     :rtype: NDArray[np.float64]
     """
-    zet = np.copy(np.asarray(z_L, dtype=float))  # conversion to ndarray float
+    zet = np.asarray(z_L, dtype=float)
     # compute psi_u for stable conditions by Beljaars & Holtslag 1991
     a = 0.7
     b = 3.0 / 4.0
@@ -157,10 +157,10 @@ def psiu_26(z_L: ArrayLike) -> NDArray[np.float64]:
     dzet = d * zet
     dzet[dzet > 50] = 50.0
     psi = np.nan * np.empty(zet.shape, dtype=float)
-    k = np.flatnonzero(zet >= 0)
+    k = zet >= 0
     psi[k] = -(a * zet[k] + b * (zet[k] - c / d) * np.exp(-dzet[k]) + b * c / d)
     # compute convective psi for unstable conditions by Grachev et. al., 2000
-    k = np.flatnonzero(zet < 0)  # only compute where zet < 0
+    k = zet < 0  # only compute where zet < 0
     x = (1 - 15 * zet[k]) ** (1 / 4)
     psik = (
         2.0 * np.log((1.0 + x) / 2.0)
@@ -188,7 +188,7 @@ def psiu_40(z_L: ArrayLike) -> NDArray[np.float64]:
     :return: velocity structure function
     :rtype: NDArray[np.float64]
     """
-    zet = np.copy(np.asarray(z_L, dtype=float))
+    zet = np.asarray(z_L, dtype=float)
     # compute psi_u for stable conditions by Beljaars & Holtslag 1991
     a = 1.0
     b = 3.0 / 4.0
@@ -197,7 +197,7 @@ def psiu_40(z_L: ArrayLike) -> NDArray[np.float64]:
     dzet = d * zet
     dzet[dzet > 50] = 50.0
     psi = np.nan * np.empty(zet.shape, dtype=float)
-    k = np.flatnonzero(zet >= 0)
+    k = zet >= 0
     psi[k] = -(a * zet[k] + b * (zet[k] - c / d) * np.exp(-dzet[k]) + b * c / d)
     # compute convective psi for unstable conditions by Grachev et. al., 2000
     k = np.flatnonzero(zet < 0)
@@ -224,8 +224,10 @@ def _check_size(
     arr: ArrayLike, N: int, name: str = "Input", warn=False
 ) -> NDArray[np.float64]:
     arr = np.asarray(arr, dtype=float)
-    if arr.size != N and arr.size != 1:
-        raise ValueError(f"pyCOARE: {name} array of different length than u")
+    if arr.shape != N and arr.size != 1:
+        raise ValueError(
+            f"pyCOARE: {name} array of shape {arr.shape} different shape than u array of shape {N}"
+        )
     elif arr.size == 1:
         if warn:
             print(f"pyCOARE: {name} array of length 1, broadcasting to length {N}")
