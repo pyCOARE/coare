@@ -186,35 +186,35 @@ class coare_36:
 
         def _sanitize(self):
             self.u = np.asarray(self.u, dtype=np.float64)
-            self.N = self.u.size
-            self.t = _check_size(self.t, self.N, "t")
-            self.rh = _check_size(self.rh, self.N, "rh")
-            self.zu = _check_size(self.zu, self.N, "zu")
-            self.zt = _check_size(self.zq, self.N, "zq")
-            self.zq = _check_size(self.zt, self.N, "zt")
-            self.zrf = _check_size(self.zrf, self.N, "zrf")
-            self.us = _check_size(self.us, self.N, "us")
-            self.ts = _check_size(self.ts, self.N, "ts")
-            self.ss = _check_size(self.ss, self.N, "ss")
-            self.p = _check_size(self.p, self.N, "p")
-            self.lat = _check_size(self.lat, self.N, "lat")
-            self.zi = _check_size(self.zi, self.N, "zi")
-            self.rs = _check_size(self.rs, self.N, "rs")
-            self.rl = _check_size(self.rl, self.N, "rl")
-            self.rain = _check_size(self.rain, self.N, "rain")
+            self.shape = self.u.shape
+            self.t = _check_size(self.t, self.shape, "t")
+            self.rh = _check_size(self.rh, self.shape, "rh")
+            self.zu = _check_size(self.zu, self.shape, "zu")
+            self.zt = _check_size(self.zq, self.shape, "zq")
+            self.zq = _check_size(self.zt, self.shape, "zt")
+            self.zrf = _check_size(self.zrf, self.shape, "zrf")
+            self.us = _check_size(self.us, self.shape, "us")
+            self.ts = _check_size(self.ts, self.shape, "ts")
+            self.ss = _check_size(self.ss, self.shape, "ss")
+            self.p = _check_size(self.p, self.shape, "p")
+            self.lat = _check_size(self.lat, self.shape, "lat")
+            self.zi = _check_size(self.zi, self.shape, "zi")
+            self.rs = _check_size(self.rs, self.shape, "rs")
+            self.rl = _check_size(self.rl, self.shape, "rl")
+            self.rain = _check_size(self.rain, self.shape, "rain")
             # set waveage and seastate flags
             if self.cp is not None:
                 self.waveage_flag = ~np.isnan(self.cp)
-                self.cp = _check_size(self.cp, self.N, "cp")
+                self.cp = _check_size(self.cp, self.shape, "cp")
             else:
                 self.waveage_flag = False
-                self.cp = np.nan * np.ones(self.N)
+                self.cp = np.nan * np.ones(self.shape)
             if self.sigH is not None:
                 self.seastate_flag = ~np.isnan(self.sigH) & self.waveage_flag
-                self.sigH = _check_size(self.sigH, self.N, "sigH")
+                self.sigH = _check_size(self.sigH, self.shape, "sigH")
             else:
                 self.seastate_flag = False
-                self.sigH = np.nan * np.ones(self.N)
+                self.sigH = np.nan * np.ones(self.shape)
             # check jcool
             if self.jcool != 0:
                 self.jcool = 1  # all input other than 0 defaults to jcool=1
@@ -344,7 +344,7 @@ class coare_36:
         usr, tsr, qsr = self._get_star(
             ut, dt, dq, dter, zo10, zot10, np.nan, obukL10, setup=True
         )
-        tkt = 0.001 * np.ones(_bulk_loop_inputs.N)
+        tkt = 0.001 * np.ones(_bulk_loop_inputs.shape)
         charnC, charnS = self._get_charn(u10, usr, setup=True)
 
         for i in range(_bulk_loop_inputs.nits):
@@ -375,8 +375,8 @@ class coare_36:
             ug = self._get_ug(ta, usr, tvsr)
             ut = np.sqrt(du**2 + ug**2)
             # probably a better way to do this, but this avoids a divide by zero runtime warning
-            gf = np.full(_bulk_loop_inputs.N, np.inf)
-            k = np.flatnonzero(du != 0)
+            gf = np.full(_bulk_loop_inputs.shape, np.inf)
+            k = du != 0
             gf[k] = ut[k] / du[k]
 
             tkt, dter, dqer = self._get_cool_skin(usr, tsr, qsr, tkt, rnl)
@@ -449,8 +449,8 @@ class coare_36:
     def _get_ug(self, ta, usr, tvsr):
         _bulk_loop_inputs = self._bulk_loop_inputs
         Bf = -_bulk_loop_inputs.grav / ta * usr * tvsr
-        ug = 0.2 * np.ones(_bulk_loop_inputs.N)
-        k = np.flatnonzero(Bf > 0)
+        ug = 0.2 * np.ones(_bulk_loop_inputs.shape)
+        k = Bf > 0
         if _bulk_loop_inputs.zrf.size == 1:
             ug[k] = self.BETA * (Bf[k] * _bulk_loop_inputs.zi) ** (1 / 3)
         else:
@@ -475,9 +475,9 @@ class coare_36:
             / ut**2
         )
         zetu = cc * ribu * (1 + 27 / 9 * ribu / cc)
-        k50 = np.flatnonzero(zetu > 50)  # stable with thin M-O length relative to zu
+        k50 = zetu > 50  # stable with thin M-O length relative to zu
 
-        k = np.flatnonzero(ribu < 0)
+        k = ribu < 0
         if ribcu.size == 1:
             zetu[k] = cc[k] * ribu[k] / (1 + ribu[k] / ribcu)
         else:
@@ -488,7 +488,7 @@ class coare_36:
         _bulk_loop_inputs = self._bulk_loop_inputs
         # The following gives the new formulation for the Charnock variable
         charnC = self.A1 * u + self.A2
-        charnC[np.flatnonzero(u > self.UMAX)] = self.A1 * self.UMAX + self.A2
+        charnC[u > self.UMAX] = self.A1 * self.UMAX + self.A2
         # if wave age is given but not wave height, use parameterized wave height based on wind speed
         mask = np.isnan(_bulk_loop_inputs.sigH) & _bulk_loop_inputs.waveage_flag
         _bulk_loop_inputs.sigH[mask] = np.maximum(
@@ -608,12 +608,12 @@ class coare_36:
             _bulk_loop_inputs.al * qcol
             + self.BE * hlb * self.CPW / _bulk_loop_inputs.lhvap
         )
-        xlamx = 6.0 * np.ones(_bulk_loop_inputs.N)
+        xlamx = 6.0 * np.ones(_bulk_loop_inputs.shape)
         tkt = np.minimum(
             0.01,
             xlamx * self.VISW / (np.sqrt(_bulk_loop_inputs.rhoa / self.RHOW) * usr),
         )
-        k = np.flatnonzero(alq > 0)
+        k = alq > 0
         xlamx[k] = (
             6
             / (1 + (_bulk_loop_inputs.bigc[k] * alq[k] / usr[k] ** 4) ** 0.75) ** 0.333
