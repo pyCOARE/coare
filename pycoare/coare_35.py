@@ -12,6 +12,7 @@ Refactored, packaged, and documented by:
 
 from __future__ import annotations
 
+import warnings
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -317,10 +318,18 @@ class coare_35:
     ) -> NDArray[np.float64]:
         """Calculate wind stress (N/m^2) with gustiness.
 
+        .. WARNING::
+        The method :func:`coare_35.tau` is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., :attr:`coare_35_instance.fluxes.tau`.
+
         :param: see inputs to :class:`coare_35`
         :return: wind stress (N/m^2)
         :rtype: NDArray[np.float64]
         """
+        warnings.warn(
+            "The method coare_35.tau is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., coare_35_instance.fluxes.tau.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         coare = coare_35(
             u,
             t,
@@ -345,6 +354,11 @@ class coare_35:
         return coare._return_vars("tau")
 
     def _instance_tau(self) -> NDArray[np.float64]:
+        warnings.warn(
+            "The method coare_35.tau is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., coare_35_instance.fluxes.tau.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self._return_vars("tau")
 
     @staticmethod
@@ -371,10 +385,18 @@ class coare_35:
     ) -> NDArray[np.float64]:
         """Calculate friction velocity (m/s) that includes gustiness.
 
+        .. WARNING::
+        The method :func:`coare_35.ustar` is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., :attr:`coare_35_instance.velocities.ustar`.
+
         :param: see inputs to :class:`coare_35`
         :return: friction velocity (m/s)
         :rtype: NDArray[np.float64]
         """
+        warnings.warn(
+            "The method coare_35.ustar is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., coare_35_instance.velocities.ustar.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         coare = coare_35(
             u,
             t,
@@ -399,6 +421,11 @@ class coare_35:
         return coare._return_vars("usr")
 
     def _instance_ustar(self) -> NDArray[np.float64]:
+        warnings.warn(
+            "The method coare_35.ustar is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., coare_35_instance.velocities.ustar.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self._return_vars("usr")
 
     @staticmethod
@@ -425,10 +452,18 @@ class coare_35:
     ) -> NDArray[np.float64]:
         """Calculate the temperature scaling parameter.
 
+        .. WARNING::
+        The method :func:`coare_35.tstar` is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., :attr:`coare_35_instance.temperatures.tstar`.
+
         :param: see inputs to :class:`coare_35`
         :return: temperature scaling parameter (K)
         :rtype: NDArray[np.float64]
         """
+        warnings.warn(
+            "The method coare_35.tstar is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., coare_35_instance.temperatures.tstar.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         coare = coare_35(
             u,
             t,
@@ -453,6 +488,11 @@ class coare_35:
         return coare._return_vars("tsr")
 
     def _instance_tstar(self) -> NDArray[np.float64]:
+        warnings.warn(
+            "The method coare_35.tstar is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., coare_35_instance.temperatures.tstar.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self._return_vars("tsr")
 
     @staticmethod
@@ -479,10 +519,18 @@ class coare_35:
     ) -> NDArray[np.float64]:
         """Calculate the humiditiy scaling parameter.
 
+        .. WARNING::
+        The method :func:`coare_35.qstar` is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., :attr:`coare_35_instance.humidities.qstar`.
+
         :param: see inputs to :class:`coare_35`
         :return: humidity scaling parameter (g/kg)
         :rtype: NDArray[np.float64]
         """
+        warnings.warn(
+            "The method coare_35.qstar is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., coare_35_instance.humidities.qstar.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         coare = coare_35(
             u,
             t,
@@ -507,6 +555,11 @@ class coare_35:
         return coare._return_vars("qsr")
 
     def _instance_qstar(self) -> NDArray[np.float64]:
+        warnings.warn(
+            "The method coare_35.qstar is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., coare_35_instance.humidities.qstar.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self._return_vars("qsr")
 
     @staticmethod
@@ -533,10 +586,18 @@ class coare_35:
     ) -> NDArray[np.float64]:
         """Calculate sensible heat flux (W/m^2) into the ocean.
 
+        .. WARNING::
+        The method :func:`coare_35.sensible` is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., :attr:`coare_35_instance.fluxes.sensible`.
+
         :param: see inputs to :class:`coare_35`
         :return: sensible heat flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
+        warnings.warn(
+            "The method coare_35.sensible is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., coare_35_instance.fluxes.sensible.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         coare = coare_35(
             u,
             t,
@@ -561,6 +622,11 @@ class coare_35:
         return coare._return_vars("hsb")
 
     def _instance_sensible(self) -> NDArray[np.float64]:
+        warnings.warn(
+            "The method coare_35.sensible is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., coare_35_instance.fluxes.sensible.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self._return_vars("hsb")
 
     @staticmethod
@@ -587,10 +653,18 @@ class coare_35:
     ) -> NDArray[np.float64]:
         """Calculate latent heat flux (W/m^2) into the ocean.
 
+        .. WARNING::
+        The method :func:`coare_35.latent` is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., :attr:`coare_35_instance.fluxes.latent`.
+
         :param: see inputs to :class:`coare_35`
         :return: latent heat flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
+        warnings.warn(
+            "The method coare_35.latent is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., coare_35_instance.fluxes.latent.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         coare = coare_35(
             u,
             t,
@@ -615,6 +689,11 @@ class coare_35:
         return coare._return_vars("hlb")
 
     def _instance_latent(self) -> NDArray[np.float64]:
+        warnings.warn(
+            "The method coare_35.latent is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., coare_35_instance.fluxes.latent.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self._return_vars("hlb")
 
     @staticmethod
@@ -641,10 +720,18 @@ class coare_35:
     ) -> NDArray[np.float64]:
         """Calculate buoyancy flux (W/m^2) into the ocean.
 
+        .. WARNING::
+        The method :func:`coare_35.buoyancy` is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., :attr:`coare_35_instance.fluxes.buoyancy`.
+
         :param: see inputs to :class:`coare_35`
         :return: buoyancy flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
+        warnings.warn(
+            "The method coare_35.buoyancy is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., coare_35_instance.fluxes.buoyancy.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         coare = coare_35(
             u,
             t,
@@ -669,6 +756,11 @@ class coare_35:
         return coare._return_vars("hbb")
 
     def _instance_buoyancy(self) -> NDArray[np.float64]:
+        warnings.warn(
+            "The method coare_35.buoyancy is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., coare_35_instance.fluxes.buoyancy.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self._return_vars("hbb")
 
     @staticmethod
@@ -695,10 +787,18 @@ class coare_35:
     ) -> NDArray[np.float64]:
         """Calculate the Webb correction for latent heat flux (W/m^2).
 
+        .. WARNING::
+        The method :func:`coare_35.webb` is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., :attr:`coare_35_instance.fluxes.webb`.
+
         :param: see inputs to :class:`coare_35`
         :return: Webb correction for latent heat flux (W/m^2)
         :rtype: NDArray[np.float64]
         """
+        warnings.warn(
+            "The method coare_35.webb is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., coare_35_instance.fluxes.webb.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         coare = coare_35(
             u,
             t,
@@ -723,6 +823,11 @@ class coare_35:
         return coare._return_vars("hlwebb")
 
     def _instance_webb(self) -> NDArray[np.float64]:
+        warnings.warn(
+            "The method coare_35.webb is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., coare_35_instance.fluxes.webb.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self._return_vars("hlwebb")
 
     @staticmethod
@@ -749,10 +854,18 @@ class coare_35:
     ) -> NDArray[np.float64]:
         """Calculate the wind stress transfer (drag) coefficient at height zu.
 
+        .. WARNING::
+        The method :func:`coare_35.cd` is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., :attr:`coare_35_instance.transfer_coefficients.cd`.
+
         :param: see inputs to :class:`coare_35`
         :return: drag coefficient
         :rtype: NDArray[np.float64]
         """
+        warnings.warn(
+            "The method coare_35.cd is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., coare_35_instance.transfer_coefficients.cd.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         coare = coare_35(
             u,
             t,
@@ -777,6 +890,11 @@ class coare_35:
         return coare._return_vars("cd")
 
     def _instance_cd(self) -> NDArray[np.float64]:
+        warnings.warn(
+            "The method coare_35.cd is deprecated and will be removed in version 1.0. Use instance attributes instead, e.g., coare_35_instance.transfer_coefficients.cd.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         return self._return_vars("cd")
 
     def _run(self) -> NDArray[np.float64]:

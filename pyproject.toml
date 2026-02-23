@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "pycoare"
 authors = [{ name = 'Andrew Scherer', email = 'scherand@oregonstate.edu' }]
 maintainers = [{ name = 'Andrew Scherer', email = 'scherand@oregonstate.edu' }]
-version = "0.3.0"
+version = "0.4.0"
 description = 'A Python implementation of the COARE bulk air-sea flux algorithm.'
 readme = { file = 'README.md', content-type = 'text/markdown' }
 requires-python = ">=3.9"
