@@ -221,17 +221,19 @@ def psiu_40(z_L: ArrayLike) -> NDArray[np.float64]:
 
 
 def _check_size(
-    arr: ArrayLike, N: int, name: str = "Input", warn=False
+    arr: ArrayLike,
+    N: int,
+    name: str = "Input",
+    warn=False,
 ) -> NDArray[np.float64]:
     arr = np.asarray(arr, dtype=float)
     if arr.shape != N and arr.size != 1:
         raise ValueError(
-            f"pyCOARE: {name} array of shape {arr.shape} different shape than u array of shape {N}"
+            f"pyCOARE: {name} array of shape {arr.shape} different shape than u array of shape {N}",
         )
-    elif arr.size == 1:
+    if arr.size == 1:
         if warn:
             print(f"pyCOARE: {name} array of length 1, broadcasting to length {N}")
         arr = arr * np.ones(N, dtype=np.float64)
         return arr
-    else:
-        return arr
+    return arr

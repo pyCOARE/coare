@@ -1,6 +1,4 @@
-"""
-Tests for the COARE functions in pycoare.coare_36
-"""
+"""Tests for the COARE functions in pycoare.coare_36"""
 
 import csv
 import os
@@ -42,7 +40,10 @@ class TestOutputC35:
         np.testing.assert_allclose(actual.hbb, expected["hbb"], atol=1e-10, rtol=0)
         np.testing.assert_allclose(actual.hsbb, expected["hsbb"], atol=1e-10, rtol=0)
         np.testing.assert_allclose(
-            actual.hlwebb, expected["hlwebb"], atol=1e-10, rtol=0
+            actual.hlwebb,
+            expected["hlwebb"],
+            atol=1e-10,
+            rtol=0,
         )
         np.testing.assert_allclose(actual.evap, expected["evap"], atol=1e-10, rtol=0)
         np.testing.assert_allclose(actual.rf, expected["rf"], atol=1e-10, rtol=0)
@@ -58,7 +59,10 @@ class TestOutputC35:
         np.testing.assert_allclose(actual.u_rf, expected["u_rf"], atol=1e-10, rtol=0)
         np.testing.assert_allclose(actual.u_n, expected["u_n"], atol=1e-10, rtol=0)
         np.testing.assert_allclose(
-            actual.u_n_rf, expected["u_n_rf"], atol=1e-10, rtol=0
+            actual.u_n_rf,
+            expected["u_n_rf"],
+            atol=1e-10,
+            rtol=0,
         )
 
     def test_temperatures(self, load_input, load_expected):
@@ -70,7 +74,10 @@ class TestOutputC35:
         np.testing.assert_allclose(actual.t_rf, expected["t_rf"], atol=1e-10, rtol=0)
         np.testing.assert_allclose(actual.t_n, expected["t_n"], atol=1e-10, rtol=0)
         np.testing.assert_allclose(
-            actual.t_n_rf, expected["t_n_rf"], atol=1e-10, rtol=0
+            actual.t_n_rf,
+            expected["t_n_rf"],
+            atol=1e-10,
+            rtol=0,
         )
 
     def test_humidities(self, load_input, load_expected):
@@ -81,7 +88,10 @@ class TestOutputC35:
         np.testing.assert_allclose(actual.q_rf, expected["q_rf"], atol=1e-10, rtol=0)
         np.testing.assert_allclose(actual.q_n, expected["q_n"], atol=1e-10, rtol=0)
         np.testing.assert_allclose(
-            actual.q_n_rf, expected["q_n_rf"], atol=1e-10, rtol=0
+            actual.q_n_rf,
+            expected["q_n_rf"],
+            atol=1e-10,
+            rtol=0,
         )
         np.testing.assert_allclose(actual.rh_rf, expected["rh_rf"], atol=1e-10, rtol=0)
 
@@ -106,13 +116,22 @@ class TestOutputC35:
         np.testing.assert_allclose(actual.ch, expected["ch"], atol=1e-10, rtol=0)
         np.testing.assert_allclose(actual.ce, expected["ce"], atol=1e-10, rtol=0)
         np.testing.assert_allclose(
-            actual.cdn_rf, expected["cdn_rf"], atol=1e-10, rtol=0
+            actual.cdn_rf,
+            expected["cdn_rf"],
+            atol=1e-10,
+            rtol=0,
         )
         np.testing.assert_allclose(
-            actual.chn_rf, expected["chn_rf"], atol=1e-10, rtol=0
+            actual.chn_rf,
+            expected["chn_rf"],
+            atol=1e-10,
+            rtol=0,
         )
         np.testing.assert_allclose(
-            actual.cen_rf, expected["cen_rf"], atol=1e-10, rtol=0
+            actual.cen_rf,
+            expected["cen_rf"],
+            atol=1e-10,
+            rtol=0,
         )
 
     def test_stability_functions(self, load_input, load_expected):
@@ -120,15 +139,24 @@ class TestOutputC35:
         actual = coare_36(**load_input).stability_functions
         np.testing.assert_allclose(actual.psi_u, expected["psi_u"], atol=1e-10, rtol=0)
         np.testing.assert_allclose(
-            actual.psi_u_rf, expected["psi_u_rf"], atol=1e-10, rtol=0
+            actual.psi_u_rf,
+            expected["psi_u_rf"],
+            atol=1e-10,
+            rtol=0,
         )
         np.testing.assert_allclose(actual.psi_t, expected["psi_t"], atol=1e-10, rtol=0)
         np.testing.assert_allclose(
-            actual.psi_t_rf, expected["psi_t_rf"], atol=1e-10, rtol=0
+            actual.psi_t_rf,
+            expected["psi_t_rf"],
+            atol=1e-10,
+            rtol=0,
         )
         np.testing.assert_allclose(actual.psi_q, expected["psi_q"], atol=1e-10, rtol=0)
         np.testing.assert_allclose(
-            actual.psi_q_rf, expected["psi_q_rf"], atol=1e-10, rtol=0
+            actual.psi_q_rf,
+            expected["psi_q_rf"],
+            atol=1e-10,
+            rtol=0,
         )
 
 

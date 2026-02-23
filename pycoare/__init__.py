@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
-
-"""
-PyCOARE
+"""PyCOARE
 ===============
 """
 
