@@ -28,7 +28,7 @@ Source = 'https://github.com/pyCOARE/coare'
 [dependency-groups]
 dev = ["pytest>=8.3.5"]
 
-[tool.ruff]
+[tool.ruff.lint]
 select = ["ALL"]
 ignore = [
     "E501",    # Line too long
@@ -47,4 +47,7 @@ ignore = [
     "ANN204",  # missing return type annotation for special methods, just haven't gotten to it yet
     "ANN202",  # same as above for private functions
     "RET504",  # unnecessary assign statement before return, I just don't like this rule very much for clarity
+    "D203",    # favor D211 (no blank line before class docstring)
+    "D213",    # favor D212 (summary line on first line of docstring)
+    "PLR2004", # we use magic values (specifically 50) in a few places to match the original MATLAB code
 ]
