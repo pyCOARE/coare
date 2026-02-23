@@ -1,9 +1,16 @@
+"""Utility functions for pyCOARE.
+
+Includes functions for calculating normal gravity, relative humidity, saturation vapor pressure, saturation specific humidity at the sea surface, specific humidity from relative humidity, and stability functions for the COARE algorithm.
+"""
+
+import warnings
+
 import numpy as np
 from numpy.typing import ArrayLike, NDArray
 
 
 def grv(lat: ArrayLike) -> NDArray[np.float64]:
-    """Normal gravity at latitude lat (degrees) using the WGS84 ellipsoid.
+    """Compute normal gravity at latitude lat (degrees) using the WGS84 ellipsoid.
 
     :param lat: latitude (degrees)
     :type lat: ArrayLike
@@ -47,7 +54,7 @@ def rhcalc(
 
 
 def qsat(t: ArrayLike, p: ArrayLike) -> NDArray[np.float64]:
-    """Returns saturation vapor pressure from temperature and pressure.
+    """Compute saturation vapor pressure from temperature and pressure.
 
     :param t: temperature (degC)
     :type t: ArrayLike
@@ -59,12 +66,12 @@ def qsat(t: ArrayLike, p: ArrayLike) -> NDArray[np.float64]:
     t = np.asarray(t, dtype=float)
     p = np.asarray(p, dtype=float)
     es = 6.1121 * np.exp(17.502 * t / (240.97 + t))
-    es = es * (1.0007 + p * 3.46e-6)
+    es *= 1.0007 + p * 3.46e-6
     return es
 
 
 def qsea(t: ArrayLike, p: ArrayLike, s: ArrayLike = 35) -> NDArray[np.float64]:
-    """Returns saturation specific humidity at sea surface from temperature and pressure.
+    """Compute saturation specific humidity at sea surface from temperature and pressure.
 
     :param t: temperature (degC)
     :type t: ArrayLike
@@ -80,7 +87,7 @@ def qsea(t: ArrayLike, p: ArrayLike, s: ArrayLike = 35) -> NDArray[np.float64]:
 
 
 def qair(t: ArrayLike, p: ArrayLike, rh: ArrayLike) -> NDArray[np.float64]:
-    """Returns specific humidity given temperature, pressure, and relative humidity.
+    """Compute specific humidity given temperature, pressure, and relative humidity.
 
     :param t: temperature (degC)
     :type t: ArrayLike
@@ -101,7 +108,7 @@ def qair(t: ArrayLike, p: ArrayLike, rh: ArrayLike) -> NDArray[np.float64]:
 
 
 def psit_26(z_L: ArrayLike) -> NDArray[np.float64]:
-    """Computes the temperature structure function given z/L
+    """Compute the temperature structure function given z/L.
 
     :param z_L: stability parameter
     :type z_L: ArrayLike
@@ -141,7 +148,7 @@ def psit_26(z_L: ArrayLike) -> NDArray[np.float64]:
 
 
 def psiu_26(z_L: ArrayLike) -> NDArray[np.float64]:
-    """Computes the velocity structure function given z/L
+    """Compute the velocity structure function given z/L.
 
     :param z_L: stability parameter
     :type z_L: ArrayLike
@@ -181,7 +188,7 @@ def psiu_26(z_L: ArrayLike) -> NDArray[np.float64]:
 
 
 def psiu_40(z_L: ArrayLike) -> NDArray[np.float64]:
-    """Computes velocity structure function given z/L
+    """Compute velocity structure function given z/L.
 
     :param z_L: stability parameter
     :type z_L: ArrayLike
@@ -221,17 +228,22 @@ def psiu_40(z_L: ArrayLike) -> NDArray[np.float64]:
 
 
 def _check_size(
-    arr: ArrayLike, N: int, name: str = "Input", warn=False
+    arr: ArrayLike,
+    N: int,
+    name: str = "Input",
+    warn=False,  # noqa: FBT002
 ) -> NDArray[np.float64]:
     arr = np.asarray(arr, dtype=float)
     if arr.shape != N and arr.size != 1:
-        raise ValueError(
-            f"pyCOARE: {name} array of shape {arr.shape} different shape than u array of shape {N}"
-        )
-    elif arr.size == 1:
+        msg = f"pyCOARE: {name} array of shape {arr.shape} different shape than u array of shape {N}"
+        raise ValueError(msg)
+    if arr.size == 1:
         if warn:
-            print(f"pyCOARE: {name} array of length 1, broadcasting to length {N}")
-        arr = arr * np.ones(N, dtype=np.float64)
+            warnings.warn(
+                f"pyCOARE: {name} array of length 1, broadcasting to length {N}",
+                UserWarning,
+                stacklevel=2,
+            )
+        arr *= np.ones(N, dtype=np.float64)
         return arr
-    else:
-        return arr
+    return arr
