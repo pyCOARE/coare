@@ -1,6 +1,4 @@
-"""
-Tests for the COARE functions in pycoare.utils
-"""
+"""Tests for the COARE functions in pycoare.utils"""
 
 import numpy as np
 import pytest
@@ -30,7 +28,7 @@ class TestUtil:
                 -11.0874415242,
                 -13.8543826804,
                 -16.469041132,
-            ]
+            ],
         )
         actual = psit_26(**input_zet)
         np.testing.assert_allclose(actual, expected, atol=1e-10, rtol=0)
@@ -49,7 +47,7 @@ class TestUtil:
                 -9.85231262359,
                 -11.6119662782,
                 -13.0040743224,
-            ]
+            ],
         )
         actual = psiu_26(**input_zet)
         np.testing.assert_allclose(actual, expected, atol=1e-10, rtol=0)
@@ -68,12 +66,12 @@ class TestUtil:
                 -10.7523126236,
                 -12.8119662782,
                 -14.5040743224,
-            ]
+            ],
         )
         actual = psiu_40(**input_zet)
         np.testing.assert_allclose(actual, expected, atol=1e-10, rtol=0)
 
-    @pytest.fixture()
+    @pytest.fixture
     def input_rhcalc(self):
         return dict(
             t=[0, 1, 2, 3, 4],
@@ -83,12 +81,12 @@ class TestUtil:
 
     def test_rhcalc(self, input_rhcalc):
         expected = np.array(
-            [26.335489852, 49.0630103047, 68.5938644747, 85.2938428107, 99.4883206669]
+            [26.335489852, 49.0630103047, 68.5938644747, 85.2938428107, 99.4883206669],
         )
         actual = rhcalc(**input_rhcalc)
         np.testing.assert_allclose(actual, expected, atol=1e-10, rtol=0)
 
-    @pytest.fixture()
+    @pytest.fixture
     def input_qsea(self):
         return dict(
             t=[0, 1, 2, 3, 4],
@@ -97,19 +95,19 @@ class TestUtil:
 
     def test_qsat(self, input_qsea):
         expected = np.array(
-            [6.1376532232, 6.59809274866, 7.08885199804, 7.61163590591, 8.1682276771]
+            [6.1376532232, 6.59809274866, 7.08885199804, 7.61163590591, 8.1682276771],
         )
         actual = qsat(**input_qsea)
         np.testing.assert_allclose(actual, expected, atol=1e-10, rtol=0)
 
     def test_qsea(self, input_qsea):
         expected = np.array(
-            [3.72737831642, 3.99971180693, 4.28945019389, 4.59754176056, 4.92497736469]
+            [3.72737831642, 3.99971180693, 4.28945019389, 4.59754176056, 4.92497736469],
         )
         actual = qsea(**input_qsea)
         np.testing.assert_allclose(actual, expected, atol=1e-10, rtol=0)
 
-    @pytest.fixture()
+    @pytest.fixture
     def input_qair(self):
         return dict(
             t=[0, 1, 2, 3, 4],
@@ -119,7 +117,7 @@ class TestUtil:
 
     def test_qair(self, input_qair):
         expected = np.array(
-            [2.47023726098, 2.85481658691, 3.28057712818, 3.7509893477, 4.26976278961]
+            [2.47023726098, 2.85481658691, 3.28057712818, 3.7509893477, 4.26976278961],
         )
         actual = qair(**input_qair)
         np.testing.assert_allclose(actual, expected, atol=1e-10, rtol=0)
