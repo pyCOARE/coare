@@ -1,9 +1,9 @@
-# Configuration file for the Sphinx documentation builder.
+"""Configuration file for the Sphinx documentation builder."""  # noqa: INP001
 
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath(".."))
+sys.path.insert(0, os.path.abspath(".."))  # noqa: PTH100
 
 # -- Project information
 
@@ -59,17 +59,17 @@ html_context = {
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-html_theme_options = dict(
-    repository_url="https://github.com/pyCOARE/coare",
-    repository_branch="main",
-    html_title="pycoare",
-    navigation_with_keys=False,
-    path_to_docs="doc",
-    use_edit_page_button=True,
-    use_repository_button=True,
-    use_issues_button=True,
-    icon_links=[],
-    show_toc_level=3,
-    max_navbar_depth=5,
-    home_page_in_toc=False,
-)
+html_theme_options = {
+    "repository_url": "https://github.com/pyCOARE/coare",
+    "repository_branch": "main",
+    "html_title": "pycoare",
+    "navigation_with_keys": False,
+    "path_to_docs": "doc",
+    "use_edit_page_button": True,
+    "use_repository_button": True,
+    "use_issues_button": True,
+    "icon_links": [],
+    "show_toc_level": 3,
+    "max_navbar_depth": 5,
+    "home_page_in_toc": False,
+}

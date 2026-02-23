@@ -1,5 +1,4 @@
-"""
-Functions for COARE model bulk flux calculations.
+"""Functions for COARE model bulk flux calculations.
 
 Translated and vectorized from J Edson/C Fairall MATLAB scripts by:
 
@@ -14,16 +13,18 @@ Refactored, packaged, and documented by:
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 import numpy as np
-from numpy.typing import ArrayLike, NDArray
+
+if TYPE_CHECKING:
+    from numpy.typing import ArrayLike, NDArray
 
 from .util import _check_size, grv, psit_26, psiu_26, psiu_40, qair, qsea, rhcalc
 
 
 class coare_36:
-    """
-    Primary class used for running the COARE v3.6 bulk flux algorithm.
+    """Primary class used for running the COARE v3.6 bulk flux algorithm.
 
     Usage example using only wind speed as an input (see note)::
 
@@ -107,27 +108,27 @@ class coare_36:
     def __init__(
         self,
         u: ArrayLike,
-        t: ArrayLike = [10.0],
-        rh: ArrayLike = [75.0],
-        zu: ArrayLike = [10.0],
-        zt: ArrayLike = [10.0],
-        zq: ArrayLike = [10.0],
-        zrf: ArrayLike = [10.0],
-        us: ArrayLike = [0.0],
-        ts: ArrayLike = [10.0],
-        ss: ArrayLike = [35.0],
-        p: ArrayLike = [1015.0],
-        lat: ArrayLike = [45.0],
-        zi: ArrayLike = [600.0],
-        rs: ArrayLike = [150.0],
-        rl: ArrayLike = [370.0],
+        t: ArrayLike = (10.0,),
+        rh: ArrayLike = (75.0,),
+        zu: ArrayLike = (10.0,),
+        zt: ArrayLike = (10.0,),
+        zq: ArrayLike = (10.0,),
+        zrf: ArrayLike = (10.0,),
+        us: ArrayLike = (0.0,),
+        ts: ArrayLike = (10.0,),
+        ss: ArrayLike = (35.0,),
+        p: ArrayLike = (1015.0,),
+        lat: ArrayLike = (45.0,),
+        zi: ArrayLike = (600.0,),
+        rs: ArrayLike = (150.0,),
+        rl: ArrayLike = (370.0,),
         rain: ArrayLike = None,
         cp: ArrayLike = None,
         sigH: ArrayLike = None,
-        jcool: int = 1.0,
+        jcool: int = 1,
         nits: int = 10,
     ) -> None:
-        self._bulk_loop_inputs = self._Bulk_Loop_Inputs(
+        self._bulk_loop_inputs = self._BulkLoopInputs(
             u,
             t,
             rh,
@@ -153,7 +154,7 @@ class coare_36:
         self._run()
 
     @dataclass
-    class _Bulk_Loop_Inputs:
+    class _BulkLoopInputs:
         u: ArrayLike
         t: ArrayLike
         rh: ArrayLike
@@ -221,7 +222,9 @@ class coare_36:
 
         def _get_humidities(self):
             return qsea(self.ts, self.p, self.ss) / 1000, qair(
-                self.t, self.p, self.rh
+                self.t,
+                self.p,
+                self.rh,
             ) / 1000
 
         def _get_air_constants(self):
@@ -269,13 +272,13 @@ class coare_36:
             decl = 0  # declination angle, set to equinox value (0) for same reason as above
             solar_zenith_angle = np.arccos(
                 np.sin(self.lat) * np.sin(h)
-                + np.cos(self.lat) * np.cos(decl) * np.cos(h)
+                + np.cos(self.lat) * np.cos(decl) * np.cos(h),
             )
             # eqn 2.77 from https://www.ecmwf.int/en/elibrary/81189-ifs-documentation-cy47r1-part-iv-physical-processes
             return 0.037 / (1.1 * solar_zenith_angle**1.4 + 0.15)
 
     @dataclass
-    class _Bulk_Loop_Outputs:
+    class _BulkLoopOutputs:
         ut: NDArray[np.float64]
         usr: NDArray[np.float64]
         tsr: NDArray[np.float64]
@@ -304,17 +307,24 @@ class coare_36:
 
         self.fluxes = fluxes(self._bulk_loop_inputs, self._bulk_loop_outputs)
         self.transfer_coefficients = transfer_coefficients(
-            self._bulk_loop_inputs, self._bulk_loop_outputs, self.fluxes
+            self._bulk_loop_inputs,
+            self._bulk_loop_outputs,
+            self.fluxes,
         )
         self.stability_functions = stability_functions(
-            self._bulk_loop_inputs, self._bulk_loop_outputs
+            self._bulk_loop_inputs,
+            self._bulk_loop_outputs,
         )
         self.stability_parameters = stability_parameters(self._bulk_loop_outputs)
         self.velocities = velocities(
-            self._bulk_loop_inputs, self._bulk_loop_outputs, self.stability_functions
+            self._bulk_loop_inputs,
+            self._bulk_loop_outputs,
+            self.stability_functions,
         )
         self.temperatures = temperatures(
-            self._bulk_loop_inputs, self._bulk_loop_outputs, self.stability_functions
+            self._bulk_loop_inputs,
+            self._bulk_loop_outputs,
+            self.stability_functions,
         )
         self.humidities = humidities(
             self._bulk_loop_inputs,
@@ -324,34 +334,42 @@ class coare_36:
         )
 
     def _bulk_loop(self):
-        _bulk_loop_inputs = self._bulk_loop_inputs
-        rnl = _bulk_loop_inputs.rnl
-        rns = _bulk_loop_inputs.rns
+        bulk_loop_inputs = self._bulk_loop_inputs
+        rnl = bulk_loop_inputs.rnl
+        rns = bulk_loop_inputs.rns
 
         # first guess
         du, dt, dq = self._get_dudtdq()
-        ta = _bulk_loop_inputs.t + self.TDK
+        ta = bulk_loop_inputs.t + self.TDK
         ug = 0.5
         dter = 0.3
 
         ut = np.sqrt(du**2 + ug**2)
-        u10 = ut * np.log(10 / 1e-4) / np.log(_bulk_loop_inputs.zu / 1e-4)
+        u10 = ut * np.log(10 / 1e-4) / np.log(bulk_loop_inputs.zu / 1e-4)
         usr = 0.035 * u10
 
         zo10, _, zot10 = self._get_roughness(np.nan, usr, setup=True)
         zetu, k50 = self._get_mo_stability_setup(ta, ut, zo10, dt, dq, dter)
         obukL10 = self._get_obukhov_length(zetu)
         usr, tsr, qsr = self._get_star(
-            ut, dt, dq, dter, zo10, zot10, np.nan, obukL10, setup=True
+            ut,
+            dt,
+            dq,
+            dter,
+            zo10,
+            zot10,
+            np.nan,
+            obukL10,
+            setup=True,
         )
-        tkt = 0.001 * np.ones(_bulk_loop_inputs.shape)
+        tkt = 0.001 * np.ones(bulk_loop_inputs.shape)
         charnC, charnS = self._get_charn(u10, usr, setup=True)
 
-        for i in range(_bulk_loop_inputs.nits):
+        for i in range(bulk_loop_inputs.nits):
             zet = (
                 self.VON
-                * _bulk_loop_inputs.grav
-                * _bulk_loop_inputs.zu
+                * bulk_loop_inputs.grav
+                * bulk_loop_inputs.zu
                 / ta
                 * (tsr + 0.61 * ta * qsr)
                 / (usr**2)
@@ -359,32 +377,29 @@ class coare_36:
 
             charn = charnC
             # using parameterized significant wave height for this
-            charn[_bulk_loop_inputs.waveage_flag] = charnS[
-                _bulk_loop_inputs.waveage_flag
-            ]
-            charn[_bulk_loop_inputs.seastate_flag] = charnS[
-                _bulk_loop_inputs.seastate_flag
+            charn[bulk_loop_inputs.waveage_flag] = charnS[bulk_loop_inputs.waveage_flag]
+            charn[bulk_loop_inputs.seastate_flag] = charnS[
+                bulk_loop_inputs.seastate_flag
             ]
 
             obukL = self._get_obukhov_length(zet)
             zo, zoq, zot = self._get_roughness(charn, usr)
             usr, tsr, qsr = self._get_star(ut, dt, dq, dter, zo, zot, zoq, obukL)
-            tssr = tsr * (1 + 0.51 * _bulk_loop_inputs.q) + 0.51 * ta * qsr
-            tvsr = tsr * (1 + 0.61 * _bulk_loop_inputs.q) + 0.61 * ta * qsr
+            tssr = tsr * (1 + 0.51 * bulk_loop_inputs.q) + 0.51 * ta * qsr
+            tvsr = tsr * (1 + 0.61 * bulk_loop_inputs.q) + 0.61 * ta * qsr
 
             ug = self._get_ug(ta, usr, tvsr)
             ut = np.sqrt(du**2 + ug**2)
             # probably a better way to do this, but this avoids a divide by zero runtime warning
-            gf = np.full(_bulk_loop_inputs.shape, np.inf)
+            gf = np.full(bulk_loop_inputs.shape, np.inf)
             k = du != 0
             gf[k] = ut[k] / du[k]
 
             tkt, dter, dqer = self._get_cool_skin(usr, tsr, qsr, tkt, rnl)
             rnl = 0.97 * (
                 5.67e-8
-                * (_bulk_loop_inputs.ts - dter * _bulk_loop_inputs.jcool + self.TDK)
-                ** 4
-                - _bulk_loop_inputs.rl
+                * (bulk_loop_inputs.ts - dter * bulk_loop_inputs.jcool + self.TDK) ** 4
+                - bulk_loop_inputs.rl
             )
 
             # save first iteration solution for case of zetu>50
@@ -399,7 +414,7 @@ class coare_36:
                 tkt50 = tkt[k50]
 
             u10N = usr / self.VON / gf * np.log(10 / zo)
-            charnC, charnS = self._get_charn(u10N, usr, _bulk_loop_inputs)
+            charnC, charnS = self._get_charn(u10N, usr, bulk_loop_inputs)
 
         # insert first iteration solution for case with zetau>50
         usr[k50] = usr50
@@ -407,10 +422,10 @@ class coare_36:
         qsr[k50] = qsr50
         obukL[k50] = obukL50
         zet[k50] = zet50
-        dter[k50] = dter50
+        dter[k50] = dter50  # ty:ignore[invalid-assignment]
         dqer[k50] = dqer50
         tkt[k50] = tkt50
-        _bulk_loop_outputs = self._Bulk_Loop_Outputs(
+        bulk_loop_outputs = self._BulkLoopOutputs(
             ut,
             usr,
             tsr,
@@ -433,45 +448,45 @@ class coare_36:
             zoq,
             ta,
         )
-        return _bulk_loop_outputs
+        return bulk_loop_outputs
 
     def _get_dudtdq(self):
-        _bulk_loop_inputs = self._bulk_loop_inputs
-        du = _bulk_loop_inputs.u - _bulk_loop_inputs.us
+        bulk_loop_inputs = self._bulk_loop_inputs
+        du = bulk_loop_inputs.u - bulk_loop_inputs.us
         dt = (
-            _bulk_loop_inputs.ts
-            - _bulk_loop_inputs.t
-            - _bulk_loop_inputs.grav / coare_36.CPA * _bulk_loop_inputs.zt
+            bulk_loop_inputs.ts
+            - bulk_loop_inputs.t
+            - bulk_loop_inputs.grav / coare_36.CPA * bulk_loop_inputs.zt
         )
-        dq = _bulk_loop_inputs.qs - _bulk_loop_inputs.q
+        dq = bulk_loop_inputs.qs - bulk_loop_inputs.q
         return du, dt, dq
 
     def _get_ug(self, ta, usr, tvsr):
-        _bulk_loop_inputs = self._bulk_loop_inputs
-        Bf = -_bulk_loop_inputs.grav / ta * usr * tvsr
-        ug = 0.2 * np.ones(_bulk_loop_inputs.shape)
+        bulk_loop_inputs = self._bulk_loop_inputs
+        Bf = -bulk_loop_inputs.grav / ta * usr * tvsr
+        ug = 0.2 * np.ones(bulk_loop_inputs.shape)
         k = Bf > 0
-        if _bulk_loop_inputs.zrf.size == 1:
-            ug[k] = self.BETA * (Bf[k] * _bulk_loop_inputs.zi) ** (1 / 3)
+        if bulk_loop_inputs.zrf.size == 1:
+            ug[k] = self.BETA * (Bf[k] * bulk_loop_inputs.zi) ** (1 / 3)
         else:
-            ug[k] = self.BETA * (Bf[k] * _bulk_loop_inputs.zi[k]) ** (1 / 3)
+            ug[k] = self.BETA * (Bf[k] * bulk_loop_inputs.zi[k]) ** (1 / 3)
         return ug
 
     def _get_mo_stability_setup(self, ta, ut, zo, dt, dq, dter):
-        _bulk_loop_inputs = self._bulk_loop_inputs
+        bulk_loop_inputs = self._bulk_loop_inputs
         cd10 = (self.VON / np.log(10 / zo)) ** 2
         ch10 = 0.00115
         ct10 = ch10 / np.sqrt(cd10)
         zot10 = 10 / np.exp(self.VON / ct10)
-        cd = (self.VON / np.log(_bulk_loop_inputs.zu / zo)) ** 2
-        ct = self.VON / np.log(_bulk_loop_inputs.zt / zot10)
+        cd = (self.VON / np.log(bulk_loop_inputs.zu / zo)) ** 2
+        ct = self.VON / np.log(bulk_loop_inputs.zt / zot10)
         cc = self.VON * ct / cd
-        ribcu = -_bulk_loop_inputs.zu / _bulk_loop_inputs.zi / 0.004 / self.BETA**3
+        ribcu = -bulk_loop_inputs.zu / bulk_loop_inputs.zi / 0.004 / self.BETA**3
         ribu = (
-            -_bulk_loop_inputs.grav
-            * _bulk_loop_inputs.zu
+            -bulk_loop_inputs.grav
+            * bulk_loop_inputs.zu
             / ta
-            * ((dt - dter * _bulk_loop_inputs.jcool) + 0.61 * ta * dq)
+            * ((dt - dter * bulk_loop_inputs.jcool) + 0.61 * ta * dq)
             / ut**2
         )
         zetu = cc * ribu * (1 + 27 / 9 * ribu / cc)
@@ -484,40 +499,36 @@ class coare_36:
             zetu[k] = cc[k] * ribu[k] / (1 + ribu[k] / ribcu[k])
         return zetu, k50
 
-    def _get_charn(self, u, usr, setup=False):
-        _bulk_loop_inputs = self._bulk_loop_inputs
+    def _get_charn(self, u, usr, setup=False):  # noqa: FBT002, fine for private function
+        bulk_loop_inputs = self._bulk_loop_inputs
         # The following gives the new formulation for the Charnock variable
         charnC = self.A1 * u + self.A2
         charnC[u > self.UMAX] = self.A1 * self.UMAX + self.A2
         # if wave age is given but not wave height, use parameterized wave height based on wind speed
-        mask = np.isnan(_bulk_loop_inputs.sigH) & _bulk_loop_inputs.waveage_flag
-        _bulk_loop_inputs.sigH[mask] = np.maximum(
-            (0.02 * (_bulk_loop_inputs.cp[mask] / u[mask]) ** 1.1 - 0.0025)
+        mask = np.isnan(bulk_loop_inputs.sigH) & bulk_loop_inputs.waveage_flag
+        bulk_loop_inputs.sigH[mask] = np.maximum(
+            (0.02 * (bulk_loop_inputs.cp[mask] / u[mask]) ** 1.1 - 0.0025)
             * u[mask] ** 2,
             0.25,
         )
         if setup:
             zoS = (
-                _bulk_loop_inputs.sigH
-                * self.AD
-                * (usr / _bulk_loop_inputs.cp) ** self.BD
+                bulk_loop_inputs.sigH * self.AD * (usr / bulk_loop_inputs.cp) ** self.BD
             )
         else:
             # same as above in this version, unlike coare_36
             zoS = (
-                _bulk_loop_inputs.sigH
-                * self.AD
-                * (usr / _bulk_loop_inputs.cp) ** self.BD
+                bulk_loop_inputs.sigH * self.AD * (usr / bulk_loop_inputs.cp) ** self.BD
             )
-        charnS = zoS * _bulk_loop_inputs.grav / usr**2
+        charnS = zoS * bulk_loop_inputs.grav / usr**2
         return charnC, charnS
 
-    def _get_roughness(self, charn, usr, setup=False):
-        _bulk_loop_inputs = self._bulk_loop_inputs
+    def _get_roughness(self, charn, usr, setup=False):  # noqa: FBT002, fine for private function
+        bulk_loop_inputs = self._bulk_loop_inputs
         if setup:
             zo = (
-                0.011 * usr**2 / _bulk_loop_inputs.grav
-                + 0.11 * _bulk_loop_inputs.visa / usr
+                0.011 * usr**2 / bulk_loop_inputs.grav
+                + 0.11 * bulk_loop_inputs.visa / usr
             )
             cd = (self.VON / np.log(10 / zo)) ** 2
             ch = 0.00115
@@ -528,10 +539,10 @@ class coare_36:
             # thermal roughness lengths give Stanton and Dalton numbers that
             # closely approximate COARE 3.0
             zo = (
-                charn * usr**2 / _bulk_loop_inputs.grav
-                + 0.11 * _bulk_loop_inputs.visa / usr
+                charn * usr**2 / bulk_loop_inputs.grav
+                + 0.11 * bulk_loop_inputs.visa / usr
             )
-            rr = zo * usr / _bulk_loop_inputs.visa
+            rr = zo * usr / bulk_loop_inputs.visa
             zoq = np.minimum(1.6e-4, 5.8e-5 / rr**0.72)
             zot = zoq
         return zo, zoq, zot
@@ -539,121 +550,108 @@ class coare_36:
     def _get_obukhov_length(self, zet):
         return self._bulk_loop_inputs.zu / zet
 
-    def _get_star(self, ut, dt, dq, dter, zo, zot, zoq, obukL, setup=False):
-        _bulk_loop_inputs = self._bulk_loop_inputs
+    def _get_star(self, ut, dt, dq, dter, zo, zot, zoq, obukL, setup=False):  # noqa: FBT002, fine for private function
+        bulk_loop_inputs = self._bulk_loop_inputs
         if setup:
             # unclear why psiu_40 is used here rather than psiu_26 - only place psiu_40 is used
             usr = (
                 ut
                 * self.VON
                 / (
-                    np.log(_bulk_loop_inputs.zu / zo)
-                    - psiu_40(_bulk_loop_inputs.zu / obukL)
+                    np.log(bulk_loop_inputs.zu / zo)
+                    - psiu_40(bulk_loop_inputs.zu / obukL)
                 )
             )
             tsr = (
-                -(dt - dter * _bulk_loop_inputs.jcool)
+                -(dt - dter * bulk_loop_inputs.jcool)
                 * self.VON
                 * self.FDG
                 / (
-                    np.log(_bulk_loop_inputs.zt / zot)
-                    - psit_26(_bulk_loop_inputs.zt / obukL)
+                    np.log(bulk_loop_inputs.zt / zot)
+                    - psit_26(bulk_loop_inputs.zt / obukL)
                 )
             )
             qsr = (
-                -(dq - _bulk_loop_inputs.wetc * dter * _bulk_loop_inputs.jcool)
+                -(dq - bulk_loop_inputs.wetc * dter * bulk_loop_inputs.jcool)
                 * self.VON
                 * self.FDG
                 / (
-                    np.log(_bulk_loop_inputs.zq / zot)
-                    - psit_26(_bulk_loop_inputs.zq / obukL)
+                    np.log(bulk_loop_inputs.zq / zot)
+                    - psit_26(bulk_loop_inputs.zq / obukL)
                 )
             )
         else:
             cdhf = self.VON / (
-                np.log(_bulk_loop_inputs.zu / zo)
-                - psiu_26(_bulk_loop_inputs.zu / obukL)
+                np.log(bulk_loop_inputs.zu / zo) - psiu_26(bulk_loop_inputs.zu / obukL)
             )
             cqhf = (
                 self.VON
                 * self.FDG
                 / (
-                    np.log(_bulk_loop_inputs.zq / zoq)
-                    - psit_26(_bulk_loop_inputs.zq / obukL)
+                    np.log(bulk_loop_inputs.zq / zoq)
+                    - psit_26(bulk_loop_inputs.zq / obukL)
                 )
             )
             cthf = (
                 self.VON
                 * self.FDG
                 / (
-                    np.log(_bulk_loop_inputs.zt / zot)
-                    - psit_26(_bulk_loop_inputs.zt / obukL)
+                    np.log(bulk_loop_inputs.zt / zot)
+                    - psit_26(bulk_loop_inputs.zt / obukL)
                 )
             )
             usr = ut * cdhf
-            qsr = -(dq - _bulk_loop_inputs.wetc * dter * _bulk_loop_inputs.jcool) * cqhf
-            tsr = -(dt - dter * _bulk_loop_inputs.jcool) * cthf
+            qsr = -(dq - bulk_loop_inputs.wetc * dter * bulk_loop_inputs.jcool) * cqhf
+            tsr = -(dt - dter * bulk_loop_inputs.jcool) * cthf
         return usr, tsr, qsr
 
     def _get_cool_skin(self, usr, tsr, qsr, tkt, rnl):
-        _bulk_loop_inputs = self._bulk_loop_inputs
-        hsb = -_bulk_loop_inputs.rhoa * self.CPA * usr * tsr
-        hlb = -_bulk_loop_inputs.rhoa * _bulk_loop_inputs.lhvap * usr * qsr
+        bulk_loop_inputs = self._bulk_loop_inputs
+        hsb = -bulk_loop_inputs.rhoa * self.CPA * usr * tsr
+        hlb = -bulk_loop_inputs.rhoa * bulk_loop_inputs.lhvap * usr * qsr
         qout = rnl + hsb + hlb
-        dels = _bulk_loop_inputs.rns * (
+        dels = bulk_loop_inputs.rns * (
             0.065 + 11 * tkt - 6.6e-5 / tkt * (1 - np.exp(-tkt / 8.0e-4))
         )
         qcol = qout - dels
         alq = (
-            _bulk_loop_inputs.al * qcol
-            + self.BE * hlb * self.CPW / _bulk_loop_inputs.lhvap
+            bulk_loop_inputs.al * qcol
+            + self.BE * hlb * self.CPW / bulk_loop_inputs.lhvap
         )
-        xlamx = 6.0 * np.ones(_bulk_loop_inputs.shape)
+        xlamx = 6.0 * np.ones(bulk_loop_inputs.shape)
         tkt = np.minimum(
             0.01,
-            xlamx * self.VISW / (np.sqrt(_bulk_loop_inputs.rhoa / self.RHOW) * usr),
+            xlamx * self.VISW / (np.sqrt(bulk_loop_inputs.rhoa / self.RHOW) * usr),
         )
         k = alq > 0
         xlamx[k] = (
-            6
-            / (1 + (_bulk_loop_inputs.bigc[k] * alq[k] / usr[k] ** 4) ** 0.75) ** 0.333
+            6 / (1 + (bulk_loop_inputs.bigc[k] * alq[k] / usr[k] ** 4) ** 0.75) ** 0.333
         )
         tkt[k] = (
             xlamx[k]
             * self.VISW
-            / (np.sqrt(_bulk_loop_inputs.rhoa[k] / self.RHOW) * usr[k])
+            / (np.sqrt(bulk_loop_inputs.rhoa[k] / self.RHOW) * usr[k])
         )
         dter = qcol * tkt / self.TCW
-        dqer = _bulk_loop_inputs.wetc * dter
+        dqer = bulk_loop_inputs.wetc * dter
         return tkt, dter, dqer
 
     def _return_vars(self, out):
         outputs = {}
-        outputs.update(
-            {key: value for key, value in vars(self._bulk_loop_inputs).items()}
-        )
-        outputs.update(
-            {key: value for key, value in vars(self._bulk_loop_outputs).items()}
-        )
-        outputs.update({key: value for key, value in vars(self.fluxes).items()})
-        outputs.update(
-            {key: value for key, value in vars(self.transfer_coefficients).items()}
-        )
-        outputs.update({key: value for key, value in vars(self.velocities).items()})
-        outputs.update({key: value for key, value in vars(self.temperatures).items()})
-        outputs.update({key: value for key, value in vars(self.humidities).items()})
-        outputs.update(
-            {key: value for key, value in vars(self.stability_functions).items()}
-        )
-        outputs.update(
-            {key: value for key, value in vars(self.stability_parameters).items()}
-        )
+        outputs.update(dict(vars(self._bulk_loop_inputs).items()))
+        outputs.update(dict(vars(self._bulk_loop_outputs).items()))
+        outputs.update(dict(vars(self.fluxes).items()))
+        outputs.update(dict(vars(self.transfer_coefficients).items()))
+        outputs.update(dict(vars(self.velocities).items()))
+        outputs.update(dict(vars(self.temperatures).items()))
+        outputs.update(dict(vars(self.humidities).items()))
+        outputs.update(dict(vars(self.stability_functions).items()))
+        outputs.update(dict(vars(self.stability_parameters).items()))
         return outputs[out]
 
 
 class fluxes:
-    """
-    Class containing the flux outputs computed from the COARE v3.6 algorithm.
+    """Contains the flux outputs computed from the COARE v3.6 algorithm.
 
     An instance of this class is created whenever a :class:`coare_36` class is created.
     Variables in this class should only be accessed through this instance of the :class:`coare_36` class::
@@ -782,8 +780,7 @@ class fluxes:
 
 
 class velocities:
-    """
-    Class containing the velocity outputs computed from the COARE v3.6 algorithm.
+    """Contains the velocity outputs computed from the COARE v3.6 algorithm.
 
     An instance of this class is created whenever a :class:`coare_36` class is created.
     Variables in this class should only be accessed through this instance of the :class:`coare_36` class::
@@ -845,8 +842,7 @@ class velocities:
 
 
 class temperatures:
-    """
-    Class containing temperature outputs computed from the COARE v3.6 algorithm.
+    """Contains temperature outputs computed from the COARE v3.6 algorithm.
 
     An instance of this class is created whenever a :class:`coare_36` class is created.
     Variables in this class should only be accessed through this instance of the :class:`coare_36` class::
@@ -897,8 +893,7 @@ class temperatures:
 
 
 class humidities:
-    """
-    Class containing the humidity outputs computed from the COARE v3.6 algorithm.
+    """Contains the humidity outputs computed from the COARE v3.6 algorithm.
 
     An instance of this class is created whenever a :class:`coare_36` class is created.
     Variables in this class should only be accessed through this instance of the :class:`coare_36` class::
@@ -924,7 +919,11 @@ class humidities:
     """
 
     def __init__(
-        self, _bulk_loop_inputs, _bulk_loop_outputs, stability_functions, temperatures
+        self,
+        _bulk_loop_inputs,
+        _bulk_loop_outputs,
+        stability_functions,
+        temperatures,
     ):
         self.dq = _bulk_loop_outputs.dq
         self.dqer = _bulk_loop_outputs.dqer
@@ -951,8 +950,7 @@ class humidities:
 
 
 class stability_parameters:
-    """
-    Class containing the stability parameters computed from the COARE v3.6 algorithm.
+    """Contains the stability parameters computed from the COARE v3.6 algorithm.
 
     An instance of this class is created whenever a :class:`coare_36` class is created.
     Variables in this class should only be accessed through this instance of the :class:`coare_36` class::
@@ -999,8 +997,7 @@ class stability_parameters:
 
 
 class transfer_coefficients:
-    """
-    Class containing the transfer coefficients computed from the COARE v3.6 algorithm.
+    """Contains the transfer coefficients computed from the COARE v3.6 algorithm.
 
     An instance of this class is created whenever a :class:`coare_36` class is created.
     Variables in this class should only be accessed through this instance of the :class:`coare_36` class::
@@ -1070,8 +1067,7 @@ class transfer_coefficients:
 
 
 class stability_functions:
-    """
-    Class containing stability functions calculated from the COARE v3.6 algorithm.
+    """Contains the stability functions calculated from the COARE v3.6 algorithm.
 
     An instance of this class is created whenever a :class:`coare_36` class is created.
     Variables in this class should only be accessed through this instance of the :class:`coare_36` class::

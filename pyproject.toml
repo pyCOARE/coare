@@ -27,3 +27,27 @@ Source = 'https://github.com/pyCOARE/coare'
 
 [dependency-groups]
 dev = ["pytest>=8.3.5"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "E501",    # Line too long
+    "DOC201",  # not working with pydocstyle convention
+    "N801",    # class name should be in PascalCase, but subclasses act as attributes for the main class, so this feels more appropriate
+    "N803",    # sigH and obukL follow from community convention; other variables should follow snake_case convention
+    "N806",    # same as above
+    "N815",    # same as above
+    "CPY001",  # no copyright at top of files
+    "PLR0913", # too many arguments in some functions, but this is necessary to follow the structure of the original MATLAB code
+    "PLR0917", # same as above for positional args
+    "PLR0914", # too many local vars, but this is necessary to follow the structure of the original MATLAB code
+    "PLR0915", # same as above for statements
+    "D107",    # missing docstring for __init__ method, but this is not necessary since the class docstring covers it
+    "ANN001",  # missing type annotation for arguments (mostly in private functions), just haven't gotten to it yet
+    "ANN204",  # missing return type annotation for special methods, just haven't gotten to it yet
+    "ANN202",  # same as above for private functions
+    "RET504",  # unnecessary assign statement before return, I just don't like this rule very much for clarity
+    "D203",    # favor D211 (no blank line before class docstring)
+    "D213",    # favor D212 (summary line on first line of docstring)
+    "PLR2004", # we use magic values (specifically 50) in a few places to match the original MATLAB code
+]
