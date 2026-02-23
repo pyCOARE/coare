@@ -1078,7 +1078,7 @@ class coare_35:
             / ut**2
         )
         zetu = cc * ribu * (1 + 27 / 9 * ribu / cc)
-        k50 = zetu > 50  # stable with thin M-O length relative to zu  # noqa: PLR2004
+        k50 = zetu > 50  # stable with thin M-O length relative to zu
 
         k = ribu < 0
         if ribcu.size == 1:
