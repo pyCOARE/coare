@@ -244,6 +244,7 @@ def _check_size(
                 UserWarning,
                 stacklevel=2,
             )
-        arr *= np.ones(N, dtype=np.float64)
+        # this line relies on broadcasting to create an array of the correct shape so can't use *=
+        arr = arr * np.ones(N, dtype=np.float64)
         return arr
     return arr
