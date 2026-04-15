@@ -270,12 +270,11 @@ class coare_36:
         def _get_albedo(self):
             h = 0  # hour angle, set to noon unless someone wants to implement time of day into this package
             decl = 0  # declination angle, set to equinox value (0) for same reason as above
-            solar_zenith_angle = np.arccos(
-                np.sin(self.lat) * np.sin(h)
-                + np.cos(self.lat) * np.cos(decl) * np.cos(h),
-            )
+            cos_solar_zenith_angle = np.sin(np.deg2rad(self.lat)) * np.sin(h) + np.cos(
+                np.deg2rad(self.lat),
+            ) * np.cos(decl) * np.cos(h)
             # eqn 2.77 from https://www.ecmwf.int/en/elibrary/81189-ifs-documentation-cy47r1-part-iv-physical-processes
-            return 0.037 / (1.1 * solar_zenith_angle**1.4 + 0.15)
+            return 0.037 / (1.1 * cos_solar_zenith_angle**1.4 + 0.15)
 
     @dataclass
     class _BulkLoopOutputs:
