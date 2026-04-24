@@ -29,7 +29,26 @@ def load_expected():
     return expected
 
 
-class TestOutputC35:
+class TestOutputC36:
+    def test_inputs(self, load_input):
+        expected = load_input
+        actual = coare_36(**load_input)._bulk_loop_inputs  # noqa: SLF001
+        np.testing.assert_allclose(actual.u, expected["u"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.t, expected["t"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.rh, expected["rh"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.zu, expected["zu"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.zt, expected["zt"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.zq, expected["zq"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.zrf, expected["zrf"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.us, expected["us"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.ts, expected["ts"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.p, expected["p"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.lat, expected["lat"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.zi, expected["zi"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.rs, expected["rs"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.rl, expected["rl"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.rain, expected["rain"], atol=1e-10, rtol=0)
+
     def test_fluxes(self, load_input, load_expected):
         expected = load_expected
         actual = coare_36(**load_input).fluxes
@@ -160,105 +179,105 @@ class TestOutputC35:
         )
 
 
-class TestC35Attributes:
+class TestC36Attributes:
     def test_fluxes(self, load_input):
-        c35 = coare_36(**load_input)
-        assert hasattr(c35, "fluxes")
+        c36 = coare_36(**load_input)
+        assert hasattr(c36, "fluxes")
 
     def test_velocities(self, load_input):
-        c35 = coare_36(**load_input)
-        assert hasattr(c35, "velocities")
+        c36 = coare_36(**load_input)
+        assert hasattr(c36, "velocities")
 
     def test_temperatures(self, load_input):
-        c35 = coare_36(**load_input)
-        assert hasattr(c35, "temperatures")
+        c36 = coare_36(**load_input)
+        assert hasattr(c36, "temperatures")
 
     def test_humidities(self, load_input):
-        c35 = coare_36(**load_input)
-        assert hasattr(c35, "humidities")
+        c36 = coare_36(**load_input)
+        assert hasattr(c36, "humidities")
 
     def test_stability_parameters(self, load_input):
-        c35 = coare_36(**load_input)
-        assert hasattr(c35, "stability_parameters")
+        c36 = coare_36(**load_input)
+        assert hasattr(c36, "stability_parameters")
 
     def test_transfer_coefficients(self, load_input):
-        c35 = coare_36(**load_input)
-        assert hasattr(c35, "transfer_coefficients")
+        c36 = coare_36(**load_input)
+        assert hasattr(c36, "transfer_coefficients")
 
     def test_stability_functions(self, load_input):
-        c35 = coare_36(**load_input)
-        assert hasattr(c35, "stability_functions")
+        c36 = coare_36(**load_input)
+        assert hasattr(c36, "stability_functions")
 
 
 class TestSubclassAttributes:
     def test_fluxes(self, load_input):
-        c35 = coare_36(**load_input)
-        assert hasattr(c35.fluxes, "rnl")
-        assert hasattr(c35.fluxes, "tau")
-        assert hasattr(c35.fluxes, "hsb")
-        assert hasattr(c35.fluxes, "hlb")
-        assert hasattr(c35.fluxes, "hbb")
-        assert hasattr(c35.fluxes, "hsbb")
-        assert hasattr(c35.fluxes, "hlwebb")
-        assert hasattr(c35.fluxes, "evap")
-        assert hasattr(c35.fluxes, "rf")
+        c36 = coare_36(**load_input)
+        assert hasattr(c36.fluxes, "rnl")
+        assert hasattr(c36.fluxes, "tau")
+        assert hasattr(c36.fluxes, "hsb")
+        assert hasattr(c36.fluxes, "hlb")
+        assert hasattr(c36.fluxes, "hbb")
+        assert hasattr(c36.fluxes, "hsbb")
+        assert hasattr(c36.fluxes, "hlwebb")
+        assert hasattr(c36.fluxes, "evap")
+        assert hasattr(c36.fluxes, "rf")
 
     def test_velocities(self, load_input):
-        c35 = coare_36(**load_input)
-        assert hasattr(c35.velocities, "ut")
-        assert hasattr(c35.velocities, "usr")
-        assert hasattr(c35.velocities, "du")
-        assert hasattr(c35.velocities, "gf")
-        assert hasattr(c35.velocities, "u")
-        assert hasattr(c35.velocities, "u_rf")
-        assert hasattr(c35.velocities, "u_n")
-        assert hasattr(c35.velocities, "u_n_rf")
+        c36 = coare_36(**load_input)
+        assert hasattr(c36.velocities, "ut")
+        assert hasattr(c36.velocities, "usr")
+        assert hasattr(c36.velocities, "du")
+        assert hasattr(c36.velocities, "gf")
+        assert hasattr(c36.velocities, "u")
+        assert hasattr(c36.velocities, "u_rf")
+        assert hasattr(c36.velocities, "u_n")
+        assert hasattr(c36.velocities, "u_n_rf")
 
     def test_temperatures(self, load_input):
-        c35 = coare_36(**load_input)
-        assert hasattr(c35.temperatures, "lapse")
-        assert hasattr(c35.temperatures, "dt")
-        assert hasattr(c35.temperatures, "dter")
-        assert hasattr(c35.temperatures, "t_rf")
-        assert hasattr(c35.temperatures, "t_n")
-        assert hasattr(c35.temperatures, "t_n_rf")
+        c36 = coare_36(**load_input)
+        assert hasattr(c36.temperatures, "lapse")
+        assert hasattr(c36.temperatures, "dt")
+        assert hasattr(c36.temperatures, "dter")
+        assert hasattr(c36.temperatures, "t_rf")
+        assert hasattr(c36.temperatures, "t_n")
+        assert hasattr(c36.temperatures, "t_n_rf")
 
     def test_humidities(self, load_input):
-        c35 = coare_36(**load_input)
-        assert hasattr(c35.humidities, "dq")
-        assert hasattr(c35.humidities, "dqer")
-        assert hasattr(c35.humidities, "q_rf")
-        assert hasattr(c35.humidities, "q_n")
-        assert hasattr(c35.humidities, "q_n_rf")
-        assert hasattr(c35.humidities, "rh_rf")
+        c36 = coare_36(**load_input)
+        assert hasattr(c36.humidities, "dq")
+        assert hasattr(c36.humidities, "dqer")
+        assert hasattr(c36.humidities, "q_rf")
+        assert hasattr(c36.humidities, "q_n")
+        assert hasattr(c36.humidities, "q_n_rf")
+        assert hasattr(c36.humidities, "rh_rf")
 
     def test_stability_parameters(self, load_input):
-        c35 = coare_36(**load_input)
-        assert hasattr(c35.stability_parameters, "tsr")
-        assert hasattr(c35.stability_parameters, "tvsr")
-        assert hasattr(c35.stability_parameters, "tssr")
-        assert hasattr(c35.stability_parameters, "qsr")
-        assert hasattr(c35.stability_parameters, "tkt")
-        assert hasattr(c35.stability_parameters, "obukL")
-        assert hasattr(c35.stability_parameters, "zet")
-        assert hasattr(c35.stability_parameters, "zo")
-        assert hasattr(c35.stability_parameters, "zot")
-        assert hasattr(c35.stability_parameters, "zoq")
+        c36 = coare_36(**load_input)
+        assert hasattr(c36.stability_parameters, "tsr")
+        assert hasattr(c36.stability_parameters, "tvsr")
+        assert hasattr(c36.stability_parameters, "tssr")
+        assert hasattr(c36.stability_parameters, "qsr")
+        assert hasattr(c36.stability_parameters, "tkt")
+        assert hasattr(c36.stability_parameters, "obukL")
+        assert hasattr(c36.stability_parameters, "zet")
+        assert hasattr(c36.stability_parameters, "zo")
+        assert hasattr(c36.stability_parameters, "zot")
+        assert hasattr(c36.stability_parameters, "zoq")
 
     def test_transfer_coefficients(self, load_input):
-        c35 = coare_36(**load_input)
-        assert hasattr(c35.transfer_coefficients, "cd")
-        assert hasattr(c35.transfer_coefficients, "ch")
-        assert hasattr(c35.transfer_coefficients, "ce")
-        assert hasattr(c35.transfer_coefficients, "cdn_rf")
-        assert hasattr(c35.transfer_coefficients, "chn_rf")
-        assert hasattr(c35.transfer_coefficients, "cen_rf")
+        c36 = coare_36(**load_input)
+        assert hasattr(c36.transfer_coefficients, "cd")
+        assert hasattr(c36.transfer_coefficients, "ch")
+        assert hasattr(c36.transfer_coefficients, "ce")
+        assert hasattr(c36.transfer_coefficients, "cdn_rf")
+        assert hasattr(c36.transfer_coefficients, "chn_rf")
+        assert hasattr(c36.transfer_coefficients, "cen_rf")
 
     def test_stability_functions(self, load_input):
-        c35 = coare_36(**load_input)
-        assert hasattr(c35.stability_functions, "psi_u")
-        assert hasattr(c35.stability_functions, "psi_u_rf")
-        assert hasattr(c35.stability_functions, "psi_t")
-        assert hasattr(c35.stability_functions, "psi_t_rf")
-        assert hasattr(c35.stability_functions, "psi_q")
-        assert hasattr(c35.stability_functions, "psi_q_rf")
+        c36 = coare_36(**load_input)
+        assert hasattr(c36.stability_functions, "psi_u")
+        assert hasattr(c36.stability_functions, "psi_u_rf")
+        assert hasattr(c36.stability_functions, "psi_t")
+        assert hasattr(c36.stability_functions, "psi_t_rf")
+        assert hasattr(c36.stability_functions, "psi_q")
+        assert hasattr(c36.stability_functions, "psi_q_rf")

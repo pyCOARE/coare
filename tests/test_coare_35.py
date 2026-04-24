@@ -30,6 +30,25 @@ def load_expected():
 
 
 class TestOutputC35:
+    def test_inputs(self, load_input):
+        expected = load_input
+        actual = coare_35(**load_input)._bulk_loop_inputs  # noqa: SLF001
+        np.testing.assert_allclose(actual.u, expected["u"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.t, expected["t"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.rh, expected["rh"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.zu, expected["zu"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.zt, expected["zt"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.zq, expected["zq"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.zrf, expected["zrf"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.us, expected["us"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.ts, expected["ts"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.p, expected["p"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.lat, expected["lat"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.zi, expected["zi"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.rs, expected["rs"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.rl, expected["rl"], atol=1e-10, rtol=0)
+        np.testing.assert_allclose(actual.rain, expected["rain"], atol=1e-10, rtol=0)
+
     def test_fluxes(self, load_input, load_expected):
         expected = load_expected
         actual = coare_35(**load_input).fluxes
