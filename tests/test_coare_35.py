@@ -1,5 +1,7 @@
 """Tests for the COARE functions in pycoare.coare_35"""
 
+from __future__ import annotations
+
 import csv
 import os
 
