@@ -23,7 +23,7 @@ classifiers = [
 dependencies = [
     "numpy",
     "pyyaml>=6.0.3",
-    "xarray[accel,io,parallel]>=2024.7.0",
+    "xarray>=2024.7.0",
 ]
 
 [project.urls]
