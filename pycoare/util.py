@@ -7,12 +7,15 @@ from __future__ import annotations
 
 import pkgutil
 import warnings
-from typing import Any, Callable
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 import xarray as xr
 import yaml
 from numpy.typing import NDArray
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 NDArrayRealNum = NDArray[np.integer] | NDArray[np.floating]
 
