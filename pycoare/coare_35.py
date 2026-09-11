@@ -1526,6 +1526,8 @@ class humidities:
         )
         self.rh_rf = rhcalc(temperatures.t_rf, _bulk_loop_inputs.p, self.q_rf)
         # convert to g/kg
+        self.dq *= 1000
+        self.dqer *= 1000
         self.q_rf *= 1000
         self.q_n *= 1000
         self.q_n_rf *= 1000
