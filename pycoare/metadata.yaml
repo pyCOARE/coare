@@ -1,0 +1,210 @@
+rns:
+  long_name: Net Shortwave Radiation
+  standard_name: surface_net_upward_shortwave_flux
+  units: W m^-2
+rnl:
+  long_name: Net Longwave Radiation
+  standard_name: surface_net_upward_longwave_flux
+  units: W m^-2
+tau:
+  long_name: Wind Stress Magnitude
+  standard_name: magnitude_of_surface_downward_stress
+  units: N m^-2
+hsb:
+  long_name: Sensible Heat Flux
+  standard_name: surface_upward_sensible_heat_flux
+  units: W m^-2
+hlb:
+  long_name: Latent Heat Flux
+  standard_name: surface_upward_latent_heat_flux
+  units: W m^-2
+hbb:
+  long_name: Buoyancy Flux
+  standard_name: surface_buoyancy_flux_into_air
+  units: W m^-2
+hsbb:
+  long_name: Sonic Buoyancy Flux
+  standard_name: surface_sonic_buoyancy_flux_into_air
+  units: W m^-2
+hlwebb:
+  long_name: Webb Correction for Latent Heat Flux
+  standard_name: surface_upward_latent_heat_flux
+  units: W m^-2
+evap:
+  long_name: Evaporation
+  standard_name: surface_water_evaporation_flux
+  units: mm hr^-1
+rf:
+  long_name: Rain Heat Flux
+  standard_name: temperature_flux_due_to_rainfall_expressed_as_heat_flux_into_sea_water
+  units: W m^-2
+ut:
+  long_name: Wind Speed at Height zt
+  standard_name: wind_speed
+  units: m s^-1
+usr:
+  long_name: Friction Velocity
+  standard_name: magnitude_of_surface_friction_velocity_in_air
+  units: m s^-1
+du:
+  long_name: Difference Between Wind Speed and Ocean Surface Current
+  standard_name: wind_speed
+  units: m s^-1
+gf:
+  long_name: Wind Speed Difference Ratio
+  standard_name: wind_speed
+  units: 1
+u:
+  long_name: Wind Speed at Height zu
+  standard_name: wind_speed
+  units: m s^-1
+u_rf:
+  long_name: Wind Speed at Reference Height zrf
+  standard_name: wind_speed
+  units: m s^-1
+u_n:
+  long_name: Neutral Wind Speed at Height zu
+  standard_name: wind_speed
+  units: m s^-1
+u_n_rf:
+  long_name: Neutral Wind Speed at Reference Height zrf
+  standard_name: wind_speed
+  units: m s^-1
+lapse:
+  long_name: Adiabatic Lapse Rate
+  standard_name: air_temperature_lapse_rate
+  units: K m^-1
+dt:
+  long_name: Air-Sea Temperature Difference
+  standard_name: difference_between_sea_surface_temperature_and_air_temperature
+  units: K
+  units_metadata:
+    temperature: difference
+dter:
+  long_name: Cool Skin Temperature Depression
+  standard_name: sea_surface_skin_temperature
+  units: K
+t_rf:
+  long_name: Temperature at Reference Height zrf
+  standard_name: air_temperature
+  units: K
+t_n:
+  long_name: Neutral Temperature at Height zt
+  standard_name: air_temperature
+  units: K
+t_n_rf:
+  long_name: Neutral Temperature at Reference Height zrf
+  standard_name: air_temperature
+  units: K
+dq:
+  long_name: Air-Sea Specific Humidity Difference
+  standard_name: air_sea_specific_humidity_difference
+  units: g kg^-1
+dqer:
+  long_name: Cool Skin Humidity Depression
+  standard_name: specific_humidity
+  units: g kg^-1
+q_rf:
+  long_name: Specific Humidity at Reference Height zrf
+  standard_name: specific_humidity
+  units: g kg^-1
+q_n:
+  long_name: Neutral Specific Humidity at Height zq
+  standard_name: specific_humidity
+  units: g kg^-1
+q_n_rf:
+  long_name: Neutral Specific Humidity at Reference Height zrf
+  standard_name: specific_humidity
+  units: g kg^-1
+rh_rf:
+  long_name: Relative Humidity at Reference Height zrf
+  standard_name: relative_humidity
+  units: '%'
+tsr:
+  long_name: Temperature Scaling Parameter
+  standard_name: air_temperature_scaling_parameter
+  units: K
+tvsr:
+  long_name: Virtual Potential Temperature Scaling Parameter
+  standard_name: virtual_temperature_scaling_parameter
+  units: K
+tssr:
+  long_name: Sonic Temperature Scaling Parameter
+  standard_name: sonic_temperature_scaling_parameter
+  units: K
+qsr:
+  long_name: Humidity Scaling Parameter
+  standard_name: specific_humidity_scaling_parameter
+  units: g kg^-1
+tkt:
+  long_name: Cool Skin Thickness
+  standard_name: cool_skin_thickness
+  units: m
+obukL:
+  long_name: Obukhov Length Scale
+  standard_name: atmosphere_obukhov_length
+  units: m
+zet:
+  long_name: Monin-Obukhov Stability Parameter
+  standard_name: monin_obukhov_stability_parameter
+  units: 1
+zo:
+  long_name: Roughness Length
+  standard_name: surface_roughness_length
+  units: m
+zot:
+  long_name: Thermal Roughness Length
+  standard_name: thermal_roughness_length
+  units: m
+zoq:
+  long_name: Moisture Roughness Length
+  standard_name: moisture_roughness_length
+  units: m
+cd:
+  long_name: Wind Stress Transfer Coefficient at Height zu
+  standard_name: surface_drag_coefficient_in_air
+  units: 1
+ch:
+  long_name: Sensible Heat Transfer Coefficient at Height zu
+  standard_name: sensible_heat_transfer_coefficient
+  units: 1
+ce:
+  long_name: Latent Heat Transfer Coefficient at Height zu
+  standard_name: latent_heat_transfer_coefficient
+  units: 1
+cdn_rf:
+  long_name: Neutral Wind Stress Transfer Coefficient at Reference Height zrf
+  standard_name: surface_drag_coefficient_in_air
+  units: 1
+chn_rf:
+  long_name: Neutral Sensible Heat Transfer Coefficient at Reference Height zrf
+  standard_name: sensible_heat_transfer_coefficient
+  units: 1
+cen_rf:
+  long_name: Neutral Latent Heat Transfer Coefficient at Reference Height zrf
+  standard_name: latent_heat_transfer_coefficient
+  units: 1
+psi_u:
+  long_name: Velocity Structure Function
+  standard_name: velocity_structure_function
+  units: 1
+psi_u_rf:
+  long_name: Velocity Structure Function at Reference Height zrf
+  standard_name: velocity_structure_function
+  units: 1
+psi_t:
+  long_name: Temperature Structure Function
+  standard_name: temperature_structure_function
+  units: 1
+psi_t_rf:
+  long_name: Temperature Structure Function at Reference Height zrf
+  standard_name: temperature_structure_function
+  units: 1
+psi_q:
+  long_name: Moisture Structure Function
+  standard_name: moisture_structure_function
+  units: 1
+psi_q_rf:
+  long_name: Moisture Structure Function at Reference Height zrf
+  standard_name: moisture_structure_function
+  units: 1
